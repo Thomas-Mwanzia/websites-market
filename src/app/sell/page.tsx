@@ -30,7 +30,7 @@ export default function SellPage() {
                             Submit Your Site <ArrowRight className="ml-2 w-5 h-5" />
                         </Link>
                         <Link
-                            href="/about"
+                            href="/sell/guide"
                             className="px-10 py-5 bg-white text-gray-900 border border-gray-200 rounded-full font-bold text-lg hover:bg-gray-50 transition-all dark:bg-black dark:text-white dark:border-gray-800 dark:hover:bg-gray-900"
                         >
                             How it Works
