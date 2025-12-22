@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { ArrowRight, Star } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { urlForImage } from '@/sanity/lib/image'
 
 interface ProductProps {
@@ -18,44 +18,46 @@ interface ProductProps {
 export function ProductCard({ product }: { product: ProductProps }) {
     return (
         <motion.div
-            whileHover={{ y: -5 }}
-            className="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300"
+            whileHover={{ y: -4 }}
+            className="group bg-white dark:bg-black rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-900 transition-all duration-300"
         >
             <Link href={`/shop/${product.slug.current}`}>
-                <div className="relative aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
+                <div className="relative aspect-[16/10] overflow-hidden bg-gray-50 dark:bg-gray-900">
                     {product.image ? (
                         <Image
                             src={urlForImage(product.image).url()}
                             alt={product.title}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                         />
                     ) : (
                         <div className="flex items-center justify-center h-full text-gray-400">
                             No Image
                         </div>
                     )}
-                    <div className="absolute top-4 right-4 bg-white/90 dark:bg-black/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold shadow-sm">
-                        ${product.price}
-                    </div>
                 </div>
 
-                <div className="p-6">
-                    <div className="flex items-center space-x-1 mb-2">
-                        <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                        <span className="text-sm font-medium text-gray-600 dark:text-gray-400">5.0 (New)</span>
+                <div className="p-8">
+                    <div className="flex justify-between items-start mb-4">
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
+                            {product.title}
+                        </h3>
+                        <div className="text-xl font-black text-blue-600">
+                            ${product.price}
+                        </div>
                     </div>
 
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 transition-colors">
-                        {product.title}
-                    </h3>
-
-                    <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 mb-4">
+                    <p className="text-gray-500 dark:text-gray-400 text-base line-clamp-2 mb-8 font-medium">
                         {product.description}
                     </p>
 
-                    <div className="flex items-center text-blue-600 font-medium group-hover:translate-x-1 transition-transform">
-                        View Details <ArrowRight className="ml-2 w-4 h-4" />
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-600">
+                            {product.category || 'Starter Kit'}
+                        </span>
+                        <div className="w-10 h-10 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center justify-center text-gray-900 dark:text-white group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-all">
+                            <ArrowRight className="w-5 h-5" />
+                        </div>
                     </div>
                 </div>
             </Link>

@@ -2,11 +2,30 @@ import { client } from '@/sanity/lib/client'
 import { urlForImage } from '@/sanity/lib/image'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Check, Shield, Zap } from 'lucide-react'
+import { Check, Shield, Zap, ArrowLeft } from 'lucide-react'
+
+import { Metadata } from 'next'
 
 async function getProduct(slug: string) {
     const query = `*[_type == "product" && slug.current == $slug][0]`
     return client.fetch(query, { slug })
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params
+    const product = await getProduct(slug)
+
+    if (!product) return { title: 'Product Not Found' }
+
+    return {
+        title: `${product.title} | Websites Arena`,
+        description: product.description.substring(0, 160),
+        openGraph: {
+            title: product.title,
+            description: product.description.substring(0, 160),
+            images: [urlForImage(product.image).url()],
+        },
+    }
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -14,16 +33,45 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     const product = await getProduct(slug)
 
     if (!product) {
-        return <div>Product not found</div>
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold mb-4">Product not found</h1>
+                    <Link href="/shop" className="text-blue-600 hover:underline">Return to Marketplace</Link>
+                </div>
+            </div>
+        )
+    }
+
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.title,
+        image: urlForImage(product.image).url(),
+        description: product.description,
+        offers: {
+            '@type': 'Offer',
+            price: product.price,
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock',
+        },
     }
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black py-12">
+        <div className="min-h-screen bg-white dark:bg-black pt-24 pb-32">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <Link href="/shop" className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-gray-900 dark:hover:text-white mb-12 transition-colors uppercase tracking-widest">
+                    <ArrowLeft className="w-4 h-4 mr-2" /> Back to Marketplace
+                </Link>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
                     {/* Left Column: Images & Video */}
-                    <div className="space-y-8">
-                        <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-800">
+                    <div className="space-y-12">
+                        <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
                             {product.image && (
                                 <Image
                                     src={urlForImage(product.image).url()}
@@ -35,7 +83,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         </div>
 
                         {product.youtubeUrl && (
-                            <div className="aspect-video rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800">
+                            <div className="aspect-video rounded-[2rem] overflow-hidden border border-gray-200 dark:border-gray-800 bg-black">
                                 <iframe
                                     width="100%"
                                     height="100%"
@@ -50,57 +98,53 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     </div>
 
                     {/* Right Column: Details & Buy */}
-                    <div>
-                        <div className="mb-8">
-                            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                                {product.title}
-                            </h1>
-                            <div className="flex items-center space-x-4 mb-6">
-                                <span className="text-3xl font-bold text-blue-600">
-                                    ${product.price}
-                                </span>
-                                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-                                    Instant Download
-                                </span>
+                    <div className="flex flex-col justify-center">
+                        <div className="mb-12">
+                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 mb-6 font-bold text-xs uppercase tracking-widest">
+                                Premium Asset
                             </div>
-                            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                            <div className="text-4xl font-black text-blue-600 mb-8">
+                                ${product.price}
+                            </div>
+                            <p className="text-xl text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
                                 {product.description}
                             </p>
                         </div>
 
-                        <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 mb-8 border border-gray-100 dark:border-gray-800">
-                            <h3 className="font-bold text-gray-900 dark:text-white mb-4">What's Included:</h3>
-                            <ul className="space-y-3">
-                                <li className="flex items-center text-gray-600 dark:text-gray-300">
-                                    <Check className="w-5 h-5 text-green-500 mr-3" /> Full Source Code (Next.js)
-                                </li>
-                                <li className="flex items-center text-gray-600 dark:text-gray-300">
-                                    <Check className="w-5 h-5 text-green-500 mr-3" /> CMS Configuration
-                                </li>
-                                <li className="flex items-center text-gray-600 dark:text-gray-300">
-                                    <Check className="w-5 h-5 text-green-500 mr-3" /> Installation Guide
-                                </li>
-                                <li className="flex items-center text-gray-600 dark:text-gray-300">
-                                    <Check className="w-5 h-5 text-green-500 mr-3" /> 6 Months Support
-                                </li>
-                            </ul>
+                        <div className="space-y-6 mb-12">
+                            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">What's Included</h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {[
+                                    "Full Source Code (Next.js)",
+                                    "CMS Configuration",
+                                    "Installation Guide",
+                                    "6 Months Support"
+                                ].map((item) => (
+                                    <div key={item} className="flex items-center text-gray-900 dark:text-white font-bold">
+                                        <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                                            <Check className="w-3 h-3 text-white" />
+                                        </div>
+                                        {item}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         <a
-                            href={product.checkoutUrl || "#"} // This goes to the secure payment page
+                            href={product.checkoutUrl || "#"}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block w-full py-4 bg-blue-600 text-white text-center rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg hover:shadow-blue-500/25 mb-6"
+                            className="block w-full py-6 bg-black text-white dark:bg-white dark:text-black text-center rounded-full font-bold text-xl hover:bg-gray-800 dark:hover:bg-gray-100 transition-all mb-8"
                         >
                             Buy Now & Download
                         </a>
 
-                        <div className="flex items-center justify-center space-x-6 text-sm text-gray-500">
+                        <div className="flex items-center justify-center space-x-8 text-sm font-bold text-gray-400 uppercase tracking-widest">
                             <div className="flex items-center">
-                                <Shield className="w-4 h-4 mr-2" /> Secure Payment
+                                <Shield className="w-4 h-4 mr-2" /> Secure
                             </div>
                             <div className="flex items-center">
-                                <Zap className="w-4 h-4 mr-2" /> Instant Access
+                                <Zap className="w-4 h-4 mr-2" /> Instant
                             </div>
                         </div>
                     </div>

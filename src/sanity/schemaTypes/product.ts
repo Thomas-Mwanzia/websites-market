@@ -34,6 +34,20 @@ export default defineType({
             validation: (rule) => rule.required(),
         }),
         defineField({
+            name: 'category',
+            title: 'Category',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'SaaS', value: 'saas' },
+                    { title: 'E-commerce', value: 'ecommerce' },
+                    { title: 'Blog', value: 'blog' },
+                    { title: 'Portfolio', value: 'portfolio' },
+                    { title: 'Tool', value: 'tool' },
+                ]
+            }
+        }),
+        defineField({
             name: 'image',
             title: 'Main Image',
             type: 'image',
