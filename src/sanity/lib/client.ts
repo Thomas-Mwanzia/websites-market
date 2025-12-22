@@ -2,12 +2,12 @@ import { createClient } from 'next-sanity'
 
 import { apiVersion, dataset, projectId, useCdn } from '../env'
 
-if (!projectId || projectId === 'dummy-project-id') {
-    console.warn('Sanity project ID not configured. Using dummy client.')
+if (!projectId) {
+    console.warn('Sanity project ID not configured. Check your .env.local file.')
 }
 
 export const client = createClient({
-    projectId: projectId || 'dummy-project-id',
+    projectId: projectId || 'missing-project-id',
     dataset: dataset || 'production',
     apiVersion,
     useCdn,
