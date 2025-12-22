@@ -18,20 +18,17 @@ export default function SellPage() {
                     <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-sm font-bold uppercase tracking-widest mb-8">
                         Seller Marketplace
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-8 tracking-tight leading-tight">
-                        EXIT YOUR PROJECT. <br />
-                        <span className="text-blue-600">GET PAID FAST.</span>
-                    </h1>
+
                     <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
                         List your starter website on Websites Arena and reach thousands of buyers looking for their next business venture. We handle the marketing, security, and delivery.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                        <a
-                            href="mailto:hello@websitesarena.com?subject=Sell My Website"
+                        <Link
+                            href="/sell/submit"
                             className="px-10 py-5 bg-black text-white dark:bg-white dark:text-black rounded-full font-bold text-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-all flex items-center"
                         >
                             Submit Your Site <ArrowRight className="ml-2 w-5 h-5" />
-                        </a>
+                        </Link>
                         <Link
                             href="/about"
                             className="px-10 py-5 bg-white text-gray-900 border border-gray-200 rounded-full font-bold text-lg hover:bg-gray-50 transition-all dark:bg-black dark:text-white dark:border-gray-800 dark:hover:bg-gray-900"

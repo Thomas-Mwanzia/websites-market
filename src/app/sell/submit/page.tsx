@@ -7,11 +7,44 @@ import { motion } from 'framer-motion'
 
 export default function SubmitPage() {
     const [submitted, setSubmitted] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [payoutMethod, setPayoutMethod] = useState('')
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
-        // In a real app, this would send data to an API or email service
-        setSubmitted(true)
+        setIsSubmitting(true)
+
+        const formData = new FormData(e.target as HTMLFormElement)
+        const data = {
+            url: formData.get('url'),
+            price: formData.get('price'),
+            techStack: formData.get('techStack'),
+            description: formData.get('description'),
+            email: formData.get('email'),
+            payoutMethod: formData.get('payoutMethod'),
+            payoutDetails: formData.get('payoutDetails'),
+        }
+
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+
+            if (response.ok) {
+                setSubmitted(true)
+            } else {
+                alert('Something went wrong. Please try again.')
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error)
+            alert('Something went wrong. Please try again.')
+        } finally {
+            setIsSubmitting(false)
+        }
     }
 
     if (submitted) {
@@ -64,6 +97,7 @@ export default function SubmitPage() {
                                 <Globe className="w-4 h-4 mr-2 text-blue-600" /> Website URL
                             </label>
                             <input
+                                name="url"
                                 required
                                 type="url"
                                 placeholder="https://yourproject.com"
@@ -75,6 +109,7 @@ export default function SubmitPage() {
                                 <DollarSign className="w-4 h-4 mr-2 text-blue-600" /> Asking Price ($)
                             </label>
                             <input
+                                name="price"
                                 required
                                 type="number"
                                 placeholder="e.g. 500"
@@ -85,9 +120,71 @@ export default function SubmitPage() {
 
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                            <Send className="w-4 h-4 mr-2 text-blue-600" /> Contact Email
+                        </label>
+                        <input
+                            name="email"
+                            required
+                            type="email"
+                            placeholder="you@example.com"
+                            className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                            <DollarSign className="w-4 h-4 mr-2 text-blue-600" /> Preferred Payout Method
+                        </label>
+                        <select
+                            name="payoutMethod"
+                            required
+                            value={payoutMethod}
+                            onChange={(e) => setPayoutMethod(e.target.value)}
+                            className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all appearance-none"
+                        >
+                            <option value="" disabled>Select a method...</option>
+                            <option value="PayPal">PayPal (Fees may apply)</option>
+                            <option value="Wise">Wise (Recommended)</option>
+                            <option value="Bank Transfer">Bank Transfer ($25 fee)</option>
+                            <option value="Crypto">Crypto (USDT/USDC)</option>
+                        </select>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                            * Transaction fees may be deducted from your final payout depending on the selected method.
+                        </p>
+                    </div>
+
+                    {payoutMethod && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="space-y-2"
+                        >
+                            <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                <DollarSign className="w-4 h-4 mr-2 text-blue-600" />
+                                {payoutMethod === 'Crypto' ? 'Wallet Address (USDT/USDC)' :
+                                    payoutMethod === 'Bank Transfer' ? 'Bank Details (IBAN/SWIFT)' :
+                                        `${payoutMethod} Email`}
+                            </label>
+                            <input
+                                name="payoutDetails"
+                                required
+                                type="text"
+                                placeholder={
+                                    payoutMethod === 'Crypto' ? '0x...' :
+                                        payoutMethod === 'Bank Transfer' ? 'IBAN / SWIFT / Account Number' :
+                                            'you@example.com'
+                                }
+                                className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                            />
+                        </motion.div>
+                    )}
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
                             <Code className="w-4 h-4 mr-2 text-blue-600" /> Tech Stack
                         </label>
                         <input
+                            name="techStack"
                             required
                             type="text"
                             placeholder="e.g. Next.js, Tailwind, Sanity"
@@ -100,6 +197,7 @@ export default function SubmitPage() {
                             <FileText className="w-4 h-4 mr-2 text-blue-600" /> Description & Features
                         </label>
                         <textarea
+                            name="description"
                             required
                             rows={6}
                             placeholder="Tell us about your project, why you're selling, and what's included..."
@@ -109,9 +207,10 @@ export default function SubmitPage() {
 
                     <button
                         type="submit"
-                        className="w-full py-6 bg-black text-white dark:bg-white dark:text-black rounded-full font-bold text-xl hover:bg-gray-800 dark:hover:bg-gray-100 transition-all flex items-center justify-center group"
+                        disabled={isSubmitting}
+                        className="w-full py-6 bg-black text-white dark:bg-white dark:text-black rounded-full font-bold text-xl hover:bg-gray-800 dark:hover:bg-gray-100 transition-all flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Submit for Review <Send className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        {isSubmitting ? 'Sending...' : 'Submit for Review'} <Send className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </button>
                 </form>
 

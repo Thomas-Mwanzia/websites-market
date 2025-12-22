@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 };
 
 import { Suspense } from "react";
+import Script from "next/script";
 
 export default function RootLayout({
   children,
@@ -45,6 +46,12 @@ export default function RootLayout({
           </main>
           <Footer />
         </ThemeProvider>
+        <Script
+          id="adsbygoogle-init"
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID || 'ca-pub-XXXXXXXXXXXXXXXX'}`}
+        />
       </body>
     </html>
   );
