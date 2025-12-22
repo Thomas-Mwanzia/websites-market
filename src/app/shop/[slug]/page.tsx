@@ -151,15 +151,18 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     </div>
                 </div>
 
+
                 <div className="mt-24">
-                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 text-center">Sponsored</h3>
-                    <div className="flex justify-center">
-                        <AdUnit
-                            type="adsense"
-                            format="horizontal"
-                            slot="4469469217"
-                            className="w-full max-w-4xl shadow-sm bg-white dark:bg-gray-900"
-                        />
+                    <div className="ad-section">
+                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 text-center">Sponsored</h3>
+                        <div className="flex justify-center">
+                            <AdUnit
+                                type="adsense"
+                                format="horizontal"
+                                slot="4469469217"
+                                className="w-full max-w-4xl shadow-sm bg-white dark:bg-gray-900"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>

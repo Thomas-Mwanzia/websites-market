@@ -19,6 +19,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
+  verification: {
+    google: "google-site-verification-code", // Replace with your actual Google Site Verification code
+  },
+  other: {
+    "google-adsense-account": "ca-pub-2569322292527210"
+  }
 };
 
 import { Suspense } from "react";
@@ -46,11 +52,10 @@ export default function RootLayout({
           </main>
           <Footer />
         </ThemeProvider>
-        <Script
-          id="adsbygoogle-init"
-          strategy="afterInteractive"
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID || 'ca-pub-2569322292527210'}`}
           crossOrigin="anonymous"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID || 'ca-pub-XXXXXXXXXXXXXXXX'}`}
         />
       </body>
     </html>

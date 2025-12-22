@@ -91,25 +91,27 @@ export default async function ShopPage({
                         )}
                     </div>
 
-                    {/* Sidebar Ads */}
-                    <div className="w-full lg:w-1/4 space-y-8">
-                        <div className="sticky top-24">
-                            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Sponsored</h3>
-                            <AdUnit
-                                type="adsense"
-                                format="vertical"
-                                slot="5662119628"
-                                className="w-full shadow-lg bg-white dark:bg-gray-900"
-                            />
-                            <div className="h-8"></div>
-                            <AdUnit
-                                type="adsense"
-                                format="rectangle"
-                                slot="5662119628"
-                                className="w-full shadow-lg bg-white dark:bg-gray-900"
-                            />
+                    {/* Sidebar Ads - Only show on desktop when there are products */}
+                    {products.length > 0 && (
+                        <div className="hidden lg:block w-full lg:w-1/4 space-y-8">
+                            <div className="sticky top-24">
+                                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Sponsored</h3>
+                                <AdUnit
+                                    type="adsense"
+                                    format="vertical"
+                                    slot="5662119628"
+                                    className="w-full shadow-lg bg-white dark:bg-gray-900"
+                                />
+                                <div className="h-8"></div>
+                                <AdUnit
+                                    type="adsense"
+                                    format="rectangle"
+                                    slot="5662119628"
+                                    className="w-full shadow-lg bg-white dark:bg-gray-900"
+                                />
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>
