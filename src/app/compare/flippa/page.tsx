@@ -80,7 +80,7 @@ export default function FlippaComparePage() {
                                 <ShieldCheck className="w-5 h-5 mr-2" /> Hand-Vetted
                             </div>
                             <div className="col-span-1 flex items-center justify-center text-gray-500 font-medium text-center">
-                                Automated / Mixed
+                                Automated / Varied
                             </div>
                         </div>
 
@@ -93,7 +93,7 @@ export default function FlippaComparePage() {
                                 SaaS, E-books, Templates
                             </div>
                             <div className="col-span-1 flex items-center justify-center text-gray-500 font-medium text-center text-sm">
-                                Everything (incl. junk)
+                                Open Marketplace (Mixed Quality)
                             </div>
                         </div>
                     </div>
@@ -114,9 +114,9 @@ export default function FlippaComparePage() {
                         <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mb-6 text-blue-600 dark:text-blue-400">
                             <ShieldCheck className="w-6 h-6" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">No Junk Listings</h3>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Curated Quality</h3>
                         <p className="text-gray-500 dark:text-gray-400">
-                            Flippa is full of low-quality spam. We manually vet every project to ensure a premium marketplace.
+                            Open marketplaces can be overwhelming. We manually vet every project to ensure a premium marketplace.
                         </p>
                     </div>
                     <div className="p-8 bg-gray-50 dark:bg-gray-900/30 rounded-3xl border border-gray-200 dark:border-gray-800">

@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, DollarSign, Rocket, ShieldCheck, Zap, BookOpen, Layout, Code2 } from 'lucide-react'
+import { ArrowRight, CheckCircle2, DollarSign, Rocket, ShieldCheck, Zap, BookOpen, Layout, Code2, GraduationCap, Wrench, Globe } from 'lucide-react'
 import Link from 'next/link'
 import { Metadata } from 'next'
 
@@ -19,10 +19,7 @@ export default function SellPage() {
                         Creator Marketplace
                     </div>
 
-                    <h1 className="text-5xl md:text-7xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">
-                        Turn Your Code & Content <br />
-                        <span className="text-blue-600">Into Cash.</span>
-                    </h1>
+             
 
                     <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
                         List your starter website, e-book, or design template on Websites Arena. We handle the marketing, payments, and delivery so you can focus on creating.
@@ -72,6 +69,29 @@ export default function SellPage() {
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Templates & UI Kits</h3>
                             <p className="text-gray-500 dark:text-gray-400">Figma files, Notion templates, and component libraries.</p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                        <div className="p-8 bg-white dark:bg-black rounded-3xl border border-gray-200 dark:border-gray-800 hover:border-blue-500 transition-colors group">
+                            <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center mb-6 text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
+                                <GraduationCap className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Courses & Education</h3>
+                            <p className="text-gray-500 dark:text-gray-400">Video courses, coding tutorials, and workshops.</p>
+                        </div>
+                        <div className="p-8 bg-white dark:bg-black rounded-3xl border border-gray-200 dark:border-gray-800 hover:border-blue-500 transition-colors group">
+                            <div className="w-12 h-12 bg-pink-100 dark:bg-pink-900/30 rounded-2xl flex items-center justify-center mb-6 text-pink-600 dark:text-pink-400 group-hover:scale-110 transition-transform">
+                                <Wrench className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Boilerplates & Tools</h3>
+                            <p className="text-gray-500 dark:text-gray-400">SaaS starters, automation scripts, and dev tools.</p>
+                        </div>
+                        <div className="p-8 bg-white dark:bg-black rounded-3xl border border-gray-200 dark:border-gray-800 hover:border-blue-500 transition-colors group">
+                            <div className="w-12 h-12 bg-cyan-100 dark:bg-cyan-900/30 rounded-2xl flex items-center justify-center mb-6 text-cyan-600 dark:text-cyan-400 group-hover:scale-110 transition-transform">
+                                <Globe className="w-6 h-6" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Domains & More</h3>
+                            <p className="text-gray-500 dark:text-gray-400">Premium domains, plugins, and digital assets.</p>
                         </div>
                     </div>
                 </div>

@@ -17,12 +17,9 @@ export default function AcquireComparePage() {
                     <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-sm font-bold uppercase tracking-widest mb-8">
                         Websites Arena vs Acquire.com
                     </div>
-                    <h1 className="text-5xl md:text-7xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">
-                        The Open Marketplace <br />
-                        <span className="text-blue-600">For Everyone.</span>
-                    </h1>
+              
                     <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
-                        Acquire.com hides your project behind a paywall. Websites Arena puts your work in front of thousands of buyers instantly.
+                        Acquire.com often requires buyer subscriptions. Websites Arena puts your work in front of thousands of buyers instantly.
                     </p>
                     <Link
                         href="/sell"
@@ -54,7 +51,7 @@ export default function AcquireComparePage() {
                                 Open to All
                             </div>
                             <div className="col-span-1 flex items-center justify-center text-red-500 font-medium text-center">
-                                Paywalled ($300+/yr)
+                                Subscription Required
                             </div>
                         </div>
 
@@ -93,7 +90,7 @@ export default function AcquireComparePage() {
                                 Simple & Fast
                             </div>
                             <div className="col-span-1 flex items-center justify-center text-gray-500 font-medium text-center">
-                                Enterprise / Complex
+                                Enterprise Focused
                             </div>
                         </div>
                     </div>
