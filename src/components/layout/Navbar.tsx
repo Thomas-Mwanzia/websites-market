@@ -39,7 +39,7 @@ export function Navbar() {
                     {/* Logo */}
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-2 group">
-                            <div className="relative w-10 h-10 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800 transition-transform group-hover:scale-110">
+                            <div className="relative w-10 h-10 overflow-hidden rounded-full border border-black dark:border-white transition-transform group-hover:scale-110">
                                 <Image
                                     src="/icon.png"
                                     alt="Websites Arena Logo"
