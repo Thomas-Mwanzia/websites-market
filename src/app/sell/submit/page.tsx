@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent } from 'react'
-import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video } from 'lucide-react'
+import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video, GraduationCap } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
@@ -153,6 +153,7 @@ export default function SubmitPage() {
                             { id: 'saas', label: 'Website / SaaS', icon: Monitor },
                             { id: 'ebook', label: 'E-book / PDF', icon: BookOpen },
                             { id: 'template', label: 'Template / UI', icon: Layout },
+                            { id: 'course', label: 'Course', icon: GraduationCap },
                         ].map((type) => {
                             const Icon = type.icon
                             return (

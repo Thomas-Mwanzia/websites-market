@@ -21,7 +21,7 @@ export default function TermsPage() {
                     <section>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">3. Refunds</h2>
                         <p>
-                            Due to the digital nature of our products, all sales are final. We do not offer refunds once the digital assets have been delivered.
+                            Due to the digital nature of our products, all sales are final. We do not offer refunds once the digital assets have been delivered. However, if you find a product to be defective or not as described, please contact us at <span className="text-green-600 font-bold">support@websitesarena.com</span>.
                         </p>
                     </section>
 

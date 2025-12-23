@@ -1,4 +1,8 @@
 import { Shield, Target, Users, Zap } from 'lucide-react'
+import { Dancing_Script } from 'next/font/google'
+import Image from 'next/image'
+
+const signature = Dancing_Script({ subsets: ['latin'] })
 
 export default function AboutPage() {
     return (
@@ -54,14 +58,19 @@ export default function AboutPage() {
             {/* Founder Section */}
             <section className="py-32 px-4 bg-white dark:bg-black">
                 <div className="max-w-3xl mx-auto text-center">
-                    <div className="w-20 h-20 bg-black dark:bg-white rounded-full mx-auto mb-12 flex items-center justify-center text-white dark:text-black text-2xl font-black">
-                        TM
+                    <div className="relative w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden border-4 border-gray-100 dark:border-gray-800 shadow-xl">
+                        <Image
+                            src="/founder.png"
+                            alt="Thomas Mwanzia"
+                            fill
+                            className="object-cover"
+                        />
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8">A Message from the Founder</h2>
+                    <h2 className={`text-4xl md:text-5xl font-bold text-blue-600 mb-8 ${signature.className}`}>A Message from the Founder</h2>
                     <p className="text-xl italic text-gray-500 dark:text-gray-400 mb-12 leading-relaxed font-medium">
-                        "I built Websites Arena because I saw too many great ideas die in the development phase. By providing high-quality digital assets, we're giving people the head start they need to focus on growth."
+                        "In the digital economy, speed is the ultimate competitive advantage. Websites Arena was built to eliminate the technical friction that slows down innovation. Our goal is simple: to provide entrepreneurs with the high-caliber, vetted assets they need to skip the build phase and go straight to market dominance."
                     </p>
-                    <div className="text-lg font-bold text-gray-900 dark:text-white">Thomas Mwanzia</div>
+                    <div className={`text-4xl font-bold text-blue-600 mb-2 ${signature.className}`}>Thomas Mwanzia</div>
                     <div className="text-sm text-gray-500 font-bold uppercase tracking-widest">Founder, Websites Arena</div>
                 </div>
             </section>

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { ArrowRight, Book, Code2, Layout, Palette, Box } from 'lucide-react'
+import { ArrowRight, Book, Code2, Layout, Palette, Box, GraduationCap } from 'lucide-react'
 import { urlForImage } from '@/sanity/lib/image'
 
 interface ProductProps {
@@ -22,6 +22,7 @@ export function ProductCard({ product }: { product: ProductProps }) {
             case 'ui-kit': return Palette
             case 'template': return Layout
             case 'saas': return Code2
+            case 'course': return GraduationCap
             default: return Box
         }
     }

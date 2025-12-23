@@ -1,10 +1,10 @@
 import { client } from '@/sanity/lib/client'
-import { ProductCard } from '@/components/ui/ProductCard'
+import { ProductGrid } from '@/components/shop/ProductGrid'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
 async function getProducts(searchTerm?: string) {
-  let query = `*[_type == "product"] | order(_createdAt desc)`
+  let query = `*[_type == "product"] | order(_createdAt desc) [0...12]`
 
   if (searchTerm) {
     query = `*[_type == "product" && (
@@ -13,7 +13,7 @@ async function getProducts(searchTerm?: string) {
             category match "${searchTerm}*" || 
             techStack[] match "${searchTerm}*" || 
             features[] match "${searchTerm}*"
-        )] | order(_createdAt desc)`
+        )] | order(_createdAt desc) [0...12]`
   }
 
   try {
@@ -60,11 +60,7 @@ export default async function Home({
           {/* Main Content */}
           <div className="w-full">
             {products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {products.map((product: any) => (
-                  <ProductCard key={product._id} product={product} />
-                ))}
-              </div>
+              <ProductGrid initialProducts={products} searchQuery={q} />
             ) : (
               <div className="text-center py-32 bg-gray-50 dark:bg-gray-900/30 rounded-[3rem] border border-gray-200 dark:border-gray-800">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">

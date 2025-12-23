@@ -46,8 +46,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     let schemaType = 'Product'
     if (product.category === 'saas' || product.category === 'tool') {
         schemaType = 'SoftwareApplication'
-    } else if (product.category === 'e-book' || product.category === 'course') {
+    } else if (product.category === 'e-book') {
         schemaType = 'Book'
+    } else if (product.category === 'course') {
+        schemaType = 'Course'
     }
 
     const jsonLd = {
@@ -68,6 +70,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         }),
         ...(schemaType === 'Book' && {
             format: 'EBook',
+        }),
+        ...(schemaType === 'Course' && {
+            provider: {
+                '@type': 'Organization',
+                name: 'Websites Arena',
+            }
         })
     }
 
