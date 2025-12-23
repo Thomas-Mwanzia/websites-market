@@ -10,7 +10,12 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Websites Arena | Buy & Sell Profitable Starter Websites",
   description: "The premier marketplace for buying and selling high-quality starter websites, niche blogs, and micro-SaaS projects. Start your online business journey today.",
+  applicationName: "Websites Arena",
   keywords: ["buy website", "starter site", "niche blog", "micro saas", "online business", "websites arena"],
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
   openGraph: {
     title: "Websites Arena | Buy & Sell Profitable Starter Websites",
     description: "The premier marketplace for buying and selling high-quality starter websites.",
@@ -21,10 +26,50 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "google-site-verification-code", // Replace with your actual Google Site Verification code
-  },
-  other: {
-    "google-adsense-account": "ca-pub-2569322292527210"
   }
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Websites Arena",
+  "url": "https://websitesarena.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://websitesarena.com/shop?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+};
+
+const navigationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {
+      "@type": "SiteNavigationElement",
+      "position": 1,
+      "name": "Shop",
+      "url": "https://websitesarena.com/"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 2,
+      "name": "Sell",
+      "url": "https://websitesarena.com/sell"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 3,
+      "name": "Pricing",
+      "url": "https://websitesarena.com/pricing"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 4,
+      "name": "About",
+      "url": "https://websitesarena.com/about"
+    }
+  ]
 };
 
 import { Suspense } from "react";
@@ -38,6 +83,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationJsonLd) }}
+        />
+      </head>
       <body className={`${inter.className} bg-white dark:bg-black text-gray-900 dark:text-gray-100 min-h-screen flex flex-col`}>
         <ThemeProvider
           attribute="class"
@@ -54,11 +109,6 @@ export default function RootLayout({
           <Footer />
         </ThemeProvider>
         <Analytics />
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID || 'ca-pub-2569322292527210'}`}
-          crossOrigin="anonymous"
-        />
       </body>
     </html>
   );

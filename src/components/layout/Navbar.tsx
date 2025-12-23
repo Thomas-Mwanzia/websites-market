@@ -1,16 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import Image from 'next/image'
+import { Menu, X, Search } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ThemeToggle } from '../ui/ThemeToggle'
-import { Search } from 'lucide-react'
 
 const navLinks = [
-    { name: 'Marketplace', href: '/shop' },
+    { name: 'Marketplace', href: '/' },
     { name: 'Sell Your Site', href: '/sell' },
     { name: 'About', href: '/about' },
 ]
@@ -20,7 +20,7 @@ export function Navbar() {
     const pathname = usePathname()
     const router = useRouter()
     const searchParams = useSearchParams()
-    const isShop = pathname === '/shop'
+    const isHome = pathname === '/'
 
     const handleSearch = (term: string) => {
         const params = new URLSearchParams(searchParams.toString())
@@ -39,8 +39,14 @@ export function Navbar() {
                     {/* Logo */}
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-2 group">
-                            <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
-                                <span className="text-white dark:text-black font-bold text-xl">W</span>
+                            <div className="relative w-10 h-10 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800 transition-transform group-hover:scale-110">
+                                <Image
+                                    src="/icon.png"
+                                    alt="Websites Arena Logo"
+                                    fill
+                                    className="object-cover scale-125"
+                                    priority
+                                />
                             </div>
                             <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:block">
                                 Websites Arena
@@ -48,17 +54,17 @@ export function Navbar() {
                         </Link>
                     </div>
 
-                    {/* Search Bar (Only on Shop) */}
-                    {isShop && (
-                        <div className="flex-grow max-w-md mx-8 hidden md:block">
+                    {/* Search Bar (Only on Home/Marketplace) */}
+                    {isHome && (
+                        <div className="flex-grow max-w-md mx-2 sm:mx-8">
                             <div className="relative">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
                                 <input
                                     type="text"
-                                    placeholder="Search projects..."
+                                    placeholder="Search..."
                                     defaultValue={searchParams.get('q') || ''}
                                     onChange={(e) => handleSearch(e.target.value)}
-                                    className="w-full pl-12 pr-4 py-2 bg-gray-100 dark:bg-gray-900 border-none rounded-full text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                    className="w-full pl-9 sm:pl-12 pr-4 py-1.5 sm:py-2 bg-gray-100 dark:bg-gray-900 border-none rounded-full text-xs sm:text-sm focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -84,7 +90,7 @@ export function Navbar() {
                         <div className="flex items-center space-x-4 pl-4 border-l border-gray-100 dark:border-gray-900">
                             <ThemeToggle />
                             <Link
-                                href="/shop"
+                                href="/"
                                 className="px-6 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-100 transition-all"
                             >
                                 Get Started
@@ -131,7 +137,7 @@ export function Navbar() {
                                 </Link>
                             ))}
                             <Link
-                                href="/shop"
+                                href="/"
                                 className="block px-3 py-4 mt-4 bg-black text-white dark:bg-white dark:text-black rounded-xl text-center font-bold uppercase tracking-widest"
                                 onClick={() => setIsOpen(false)}
                             >

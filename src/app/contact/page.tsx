@@ -1,4 +1,4 @@
-import { Mail, MessageSquare, Phone } from 'lucide-react'
+import { Mail, MessageSquare } from 'lucide-react'
 
 export default function ContactPage() {
     return (
@@ -10,7 +10,7 @@ export default function ContactPage() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-3xl mx-auto">
                     <div className="p-10 bg-gray-50 dark:bg-gray-900/30 rounded-[2.5rem] border border-gray-200 dark:border-gray-800 text-center">
                         <div className="w-14 h-14 bg-white dark:bg-black rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-sm">
                             <Mail className="w-7 h-7 text-blue-600" />
@@ -31,17 +31,6 @@ export default function ContactPage() {
                         <a href="mailto:hello@websitesarena.com?subject=Sell My Website" className="text-blue-600 font-bold hover:underline">
                             hello@websitesarena.com
                         </a>
-                    </div>
-
-                    <div className="p-10 bg-gray-50 dark:bg-gray-900/30 rounded-[2.5rem] border border-gray-200 dark:border-gray-800 text-center">
-                        <div className="w-14 h-14 bg-white dark:bg-black rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-sm">
-                            <Phone className="w-7 h-7 text-blue-600" />
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Call Us</h3>
-                        <p className="text-gray-500 dark:text-gray-400 mb-6 font-medium">Available Mon-Fri, 9am-5pm.</p>
-                        <span className="text-gray-900 dark:text-white font-bold">
-                            +254 700 000 000
-                        </span>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function Footer() {
     return (
@@ -7,8 +8,13 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div className="col-span-1 md:col-span-2">
                         <Link href="/" className="flex items-center space-x-2 mb-6 group">
-                            <div className="w-8 h-8 bg-black dark:bg-white rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
-                                <span className="text-white dark:text-black font-bold text-xl">W</span>
+                            <div className="relative w-10 h-10 overflow-hidden rounded-full border border-gray-100 dark:border-gray-800 transition-transform group-hover:scale-110">
+                                <Image
+                                    src="/icon.png"
+                                    alt="Websites Arena Logo"
+                                    fill
+                                    className="object-cover scale-125"
+                                />
                             </div>
                             <span className="text-xl font-bold text-gray-900 dark:text-white">
                                 Websites Arena

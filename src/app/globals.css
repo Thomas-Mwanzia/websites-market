@@ -18,12 +18,7 @@
   .text-balance {
     text-wrap: balance;
   }
-  
-  /* Hide "Sponsored" heading if AdSense doesn't load */
-  .ad-section:has(.adsbygoogle:empty) {
-    display: none;
-  }
-  
+
   .glass {
     @apply bg-white/70 backdrop-blur-lg border border-white/20 dark:bg-black/70 dark:border-white/10;
   }
