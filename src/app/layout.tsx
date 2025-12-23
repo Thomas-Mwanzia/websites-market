@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "Websites Arena | Buy & Sell Digital Assets, Websites & Templates",
   description: "The premier marketplace for buying and selling premium digital assets: starter websites, SaaS codebases, e-books, design templates, and more.",
   applicationName: "Websites Arena",
-  keywords: ["buy website", "starter site", "digital assets", "micro saas", "e-books", "templates", "ui kits", "online business", "websites arena", "flippa alternative", "acquire.com alternative", "tiny acquisitions alternative"],
+  keywords: ["buy website", "starter site", "digital assets", "micro saas", "e-books", "templates", "ui kits", "online business", "websites arena", "web arena", "webs arena", "website arena", "dev arena", "site arena", "flippa alternative", "acquire.com alternative", "tiny acquisitions alternative"],
   icons: {
     icon: "/icon.png",
     apple: "/apple-icon.png",

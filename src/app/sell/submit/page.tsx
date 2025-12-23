@@ -5,6 +5,7 @@ import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shiel
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 export default function SubmitPage() {
     const [submitted, setSubmitted] = useState(false)
@@ -13,6 +14,7 @@ export default function SubmitPage() {
     const [productType, setProductType] = useState('saas') // saas, ebook, template
     const [submissionMethod, setSubmissionMethod] = useState<'link' | 'file'>('link')
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [captchaToken, setCaptchaToken] = useState<string | null>(null)
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -42,10 +44,17 @@ export default function SubmitPage() {
         // Append manual fields if needed, but FormData captures inputs automatically.
         // We just need to ensure 'productType' is there if it's not an input.
         formData.set('productType', productType)
+        formData.set('captchaToken', captchaToken!)
 
         // If file method is chosen but no file, alert
         if (submissionMethod === 'file' && !selectedFile && productType !== 'saas') {
             toast.error('Please select a file to upload.')
+            setIsSubmitting(false)
+            return
+        }
+
+        if (!captchaToken) {
+            toast.error('Please complete the captcha verification.')
             setIsSubmitting(false)
             return
         }
@@ -156,8 +165,8 @@ export default function SubmitPage() {
                                         if (type.id === 'saas') setSubmissionMethod('link')
                                     }}
                                     className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center transition-all ${productType === type.id
-                                            ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600'
-                                            : 'border-gray-200 dark:border-gray-800 hover:border-blue-300 dark:hover:border-blue-700 text-gray-500'
+                                        ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600'
+                                        : 'border-gray-200 dark:border-gray-800 hover:border-blue-300 dark:hover:border-blue-700 text-gray-500'
                                         }`}
                                 >
                                     <Icon className="w-6 h-6 mb-2" />
@@ -211,8 +220,8 @@ export default function SubmitPage() {
                                     type="button"
                                     onClick={() => setSubmissionMethod('link')}
                                     className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${submissionMethod === 'link'
-                                            ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
-                                            : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
+                                        ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
+                                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
                                         }`}
                                 >
                                     Share Link
@@ -221,8 +230,8 @@ export default function SubmitPage() {
                                     type="button"
                                     onClick={() => setSubmissionMethod('file')}
                                     className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${submissionMethod === 'file'
-                                            ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
-                                            : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
+                                        ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
+                                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
                                         }`}
                                 >
                                     Upload File
@@ -246,7 +255,10 @@ export default function SubmitPage() {
                                         className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                                     />
                                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-2">
-                                        * Provide a secure link to your asset (Google Drive, Dropbox, GitHub).
+                                        {productType === 'saas'
+                                            ? <span className="text-amber-600 dark:text-amber-500 font-bold">* Requirement: Please ensure your repo includes a README.md (Setup Guide) and LICENSE file.</span>
+                                            : '* Provide a secure link to your asset (Google Drive, Dropbox, GitHub).'
+                                        }
                                     </p>
                                 </motion.div>
                             ) : (
@@ -382,6 +394,14 @@ export default function SubmitPage() {
                             rows={6}
                             placeholder="Tell us about your project, what's included, and why it's valuable..."
                             className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all resize-none"
+                        />
+                    </div>
+
+                    <div className="flex justify-center">
+                        <ReCAPTCHA
+                            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                            onChange={(token) => setCaptchaToken(token)}
+                            theme="light"
                         />
                     </div>
 

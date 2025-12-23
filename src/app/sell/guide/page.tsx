@@ -35,7 +35,8 @@ export default function SellGuidePage() {
                 "High-resolution PDF/Images (for E-books)",
                 "Complete documentation",
                 "Working demo link",
-                "No personal data included"
+                "No personal data included",
+                "SaaS: Upload as ZIP with README.md (Setup Guide) & LICENSE"
             ],
             icon: FileCheck
         },

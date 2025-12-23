@@ -9,8 +9,42 @@ export async function POST(request: Request) {
         // Lazy-load Resend instance to avoid build-time errors
         const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder');
 
-        const body = await request.json();
-        const { productType, url, price, assetLink, techStack, description, email, payoutMethod, payoutDetails } = body;
+        const formData = await request.formData();
+        
+        const captchaToken = formData.get('captchaToken') as string;
+        const productType = formData.get('productType') as string;
+        const url = formData.get('url') as string;
+        const price = formData.get('price') as string;
+        const assetLink = formData.get('assetLink') as string;
+        const techStack = formData.get('techStack') as string;
+        const description = formData.get('description') as string;
+        const email = formData.get('email') as string;
+        const payoutMethod = formData.get('payoutMethod') as string;
+        const payoutDetails = formData.get('payoutDetails') as string;
+        const file = formData.get('file') as File | null;
+
+        // Verify reCAPTCHA
+        if (captchaToken) {
+            const verificationResponse = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`, {
+                method: 'POST',
+            });
+            const verificationData = await verificationResponse.json();
+            if (!verificationData.success) {
+                return NextResponse.json({ error: 'Captcha verification failed' }, { status: 400 });
+            }
+        } else {
+             return NextResponse.json({ error: 'Captcha token missing' }, { status: 400 });
+        }
+
+        // Handle File Attachment
+        let attachments = [];
+        if (file && file.size > 0) {
+            const buffer = Buffer.from(await file.arrayBuffer());
+            attachments.push({
+                filename: file.name,
+                content: buffer,
+            });
+        }
 
         // Admin notification email template
         const adminEmailHtml = `
@@ -36,6 +70,11 @@ export async function POST(request: Request) {
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Asset / Repo Link:</td>
                             <td style="padding: 12px 0;"><a href="${assetLink}" target="_blank" style="color: #2563eb; text-decoration: none;">${assetLink}</a></td>
                         </tr>
+                        ${file ? `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Attached File:</td>
+                            <td style="padding: 12px 0;">${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</td>
+                        </tr>` : ''}
                         ${techStack ? `
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Tech Stack:</td>
@@ -106,6 +145,7 @@ export async function POST(request: Request) {
             replyTo: email,
             subject: `New Project Submission: ${url}`,
             html: adminEmailHtml,
+            attachments: attachments,
         });
 
         if (adminEmail.error) {
