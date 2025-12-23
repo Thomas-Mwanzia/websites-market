@@ -10,7 +10,7 @@ export async function POST(request: Request) {
         const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder');
 
         const formData = await request.formData();
-        
+
         const captchaToken = formData.get('captchaToken') as string;
         const productType = formData.get('productType') as string;
         const url = formData.get('url') as string;
@@ -21,6 +21,7 @@ export async function POST(request: Request) {
         const email = formData.get('email') as string;
         const payoutMethod = formData.get('payoutMethod') as string;
         const payoutDetails = formData.get('payoutDetails') as string;
+        const videoPreviewLink = formData.get('videoPreviewLink') as string;
         const file = formData.get('file') as File | null;
 
         // Verify reCAPTCHA
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
                 return NextResponse.json({ error: 'Captcha verification failed' }, { status: 400 });
             }
         } else {
-             return NextResponse.json({ error: 'Captcha token missing' }, { status: 400 });
+            return NextResponse.json({ error: 'Captcha token missing' }, { status: 400 });
         }
 
         // Handle File Attachment
@@ -79,6 +80,11 @@ export async function POST(request: Request) {
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Tech Stack:</td>
                             <td style="padding: 12px 0;">${techStack}</td>
+                        </tr>` : ''}
+                        ${videoPreviewLink ? `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Video Preview:</td>
+                            <td style="padding: 12px 0;"><a href="${videoPreviewLink}" target="_blank" style="color: #2563eb; text-decoration: none;">${videoPreviewLink}</a></td>
                         </tr>` : ''}
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Seller Email:</td>

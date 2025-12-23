@@ -19,7 +19,9 @@ export default function SellPage() {
                         Creator Marketplace
                     </div>
 
-             
+                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
+                        Sell Your Digital Assets
+                    </h1>
 
                     <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
                         List your starter website, e-book, or design template on Websites Arena. We handle the marketing, payments, and delivery so you can focus on creating.

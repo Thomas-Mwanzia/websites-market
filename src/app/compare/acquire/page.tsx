@@ -17,7 +17,9 @@ export default function AcquireComparePage() {
                     <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-sm font-bold uppercase tracking-widest mb-8">
                         Websites Arena vs Acquire.com
                     </div>
-              
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
+                        A Simpler Way to Buy and Sell
+                    </h1>
                     <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
                         Acquire.com often requires buyer subscriptions. Websites Arena puts your work in front of thousands of buyers instantly.
                     </p>
@@ -74,7 +76,7 @@ export default function AcquireComparePage() {
                                 Asset Variety
                             </div>
                             <div className="col-span-1 flex items-center justify-center text-blue-600 font-bold text-center text-sm">
-                                SaaS, E-books, Templates
+                                SaaS, E-books, Courses, Templates, Tools
                             </div>
                             <div className="col-span-1 flex items-center justify-center text-gray-500 font-medium text-center text-sm">
                                 SaaS Only

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent } from 'react'
-import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
@@ -301,6 +301,24 @@ export default function SubmitPage() {
                                 </motion.div>
                             )}
                         </AnimatePresence>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                            <Video className="w-4 h-4 mr-2 text-blue-600" /> Video Preview Link (Optional)
+                        </label>
+                        <input
+                            name="videoPreviewLink"
+                            type="url"
+                            placeholder="https://youtube.com/... or https://vimeo.com/..."
+                            className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                        />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                            {productType === 'course'
+                                ? 'Provide a short video summary of your course (1-3 minutes recommended)'
+                                : 'Add a demo video to increase buyer confidence (YouTube, Vimeo, Loom, etc.)'
+                            }
+                        </p>
                     </div>
 
                     <div className="space-y-2">
