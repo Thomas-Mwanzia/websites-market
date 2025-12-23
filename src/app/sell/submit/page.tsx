@@ -1,47 +1,84 @@
 'use client'
 
-import { useState, FormEvent } from 'react'
-import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield } from 'lucide-react'
+import { useState, FormEvent, ChangeEvent } from 'react'
+import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function SubmitPage() {
     const [submitted, setSubmitted] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [payoutMethod, setPayoutMethod] = useState('')
+    const [productType, setProductType] = useState('saas') // saas, ebook, template
+    const [submissionMethod, setSubmissionMethod] = useState<'link' | 'file'>('link')
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0]
+            if (file.size > 10 * 1024 * 1024) { // 10MB
+                toast.error('File is too large (Max 10MB). Please use a link instead.', {
+                    icon: '⚠️',
+                    style: {
+                        borderRadius: '10px',
+                        background: '#333',
+                        color: '#fff',
+                    },
+                })
+                e.target.value = '' // Reset input
+                return
+            }
+            setSelectedFile(file)
+        }
+    }
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         setIsSubmitting(true)
 
         const formData = new FormData(e.target as HTMLFormElement)
-        const data = {
-            url: formData.get('url'),
-            price: formData.get('price'),
-            techStack: formData.get('techStack'),
-            description: formData.get('description'),
-            email: formData.get('email'),
-            payoutMethod: formData.get('payoutMethod'),
-            payoutDetails: formData.get('payoutDetails'),
+
+        // Append manual fields if needed, but FormData captures inputs automatically.
+        // We just need to ensure 'productType' is there if it's not an input.
+        formData.set('productType', productType)
+
+        // If file method is chosen but no file, alert
+        if (submissionMethod === 'file' && !selectedFile && productType !== 'saas') {
+            toast.error('Please select a file to upload.')
+            setIsSubmitting(false)
+            return
         }
 
         try {
+            // Note: We are sending FormData directly, not JSON
             const response = await fetch('/api/send-email', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
+                body: formData,
             })
 
             if (response.ok) {
                 setSubmitted(true)
             } else {
-                alert('Something went wrong. Please try again.')
+                toast.error('Something went wrong. Please try again.', {
+                    duration: 4000,
+                    style: {
+                        background: '#ef4444',
+                        color: '#fff',
+                        fontWeight: 'bold',
+                    },
+                })
             }
         } catch (error) {
             console.error('Error submitting form:', error)
-            alert('Something went wrong. Please try again.')
+            toast.error('Failed to submit. Please check your connection and try again.', {
+                duration: 4000,
+                style: {
+                    background: '#ef4444',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                },
+            })
         } finally {
             setIsSubmitting(false)
         }
@@ -75,6 +112,16 @@ export default function SubmitPage() {
 
     return (
         <div className="min-h-screen bg-white dark:bg-black pt-24 pb-32">
+            <Toaster
+                position="top-center"
+                toastOptions={{
+                    className: 'dark:bg-gray-800 dark:text-white',
+                    style: {
+                        borderRadius: '12px',
+                        padding: '16px',
+                    },
+                }}
+            />
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                 <Link href="/sell" className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-gray-900 dark:hover:text-white mb-12 transition-colors uppercase tracking-widest">
                     <ArrowLeft className="w-4 h-4 mr-2" /> Back
@@ -83,24 +130,54 @@ export default function SubmitPage() {
                 <div className="mb-16">
                     <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
                         SUBMIT YOUR <br />
-                        <span className="text-blue-600">PROJECT.</span>
+                        <span className="text-blue-600">DIGITAL ASSET.</span>
                     </h1>
                     <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">
-                        Fill out the form below to start the vetting process. We'll review your code, design, and potential.
+                        Fill out the form below to start the vetting process. We'll review your submission and get back to you shortly.
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">
+                    {/* Product Type Selector */}
+                    <div className="grid grid-cols-3 gap-4 mb-8">
+                        {[
+                            { id: 'saas', label: 'Website / SaaS', icon: Monitor },
+                            { id: 'ebook', label: 'E-book / PDF', icon: BookOpen },
+                            { id: 'template', label: 'Template / UI', icon: Layout },
+                        ].map((type) => {
+                            const Icon = type.icon
+                            return (
+                                <button
+                                    key={type.id}
+                                    type="button"
+                                    onClick={() => {
+                                        setProductType(type.id)
+                                        // Reset submission method to link for SaaS, or default to link for others
+                                        if (type.id === 'saas') setSubmissionMethod('link')
+                                    }}
+                                    className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center transition-all ${productType === type.id
+                                            ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600'
+                                            : 'border-gray-200 dark:border-gray-800 hover:border-blue-300 dark:hover:border-blue-700 text-gray-500'
+                                        }`}
+                                >
+                                    <Icon className="w-6 h-6 mb-2" />
+                                    <span className="text-sm font-bold">{type.label}</span>
+                                </button>
+                            )
+                        })}
+                    </div>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
-                                <Globe className="w-4 h-4 mr-2 text-blue-600" /> Website URL
+                                <Globe className="w-4 h-4 mr-2 text-blue-600" />
+                                {productType === 'saas' ? 'Website URL' : 'Demo / Preview URL'}
                             </label>
                             <input
                                 name="url"
                                 required
                                 type="url"
-                                placeholder="https://yourproject.com"
+                                placeholder={productType === 'saas' ? "https://yourproject.com" : "https://gumroad.com/..."}
                                 className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                             />
                         </div>
@@ -116,6 +193,102 @@ export default function SubmitPage() {
                                 className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                             />
                         </div>
+                    </div>
+
+                    {/* Asset Delivery Section */}
+                    <div className="space-y-4">
+                        <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                            {productType === 'saas' ? (
+                                <><Code className="w-4 h-4 mr-2 text-blue-600" /> Source Code / Repo</>
+                            ) : (
+                                <><Upload className="w-4 h-4 mr-2 text-blue-600" /> Asset Delivery</>
+                            )}
+                        </label>
+
+                        {productType !== 'saas' && (
+                            <div className="flex bg-gray-100 dark:bg-gray-900 p-1 rounded-xl w-fit mb-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setSubmissionMethod('link')}
+                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${submissionMethod === 'link'
+                                            ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
+                                            : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
+                                        }`}
+                                >
+                                    Share Link
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setSubmissionMethod('file')}
+                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${submissionMethod === 'file'
+                                            ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
+                                            : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
+                                        }`}
+                                >
+                                    Upload File
+                                </button>
+                            </div>
+                        )}
+
+                        <AnimatePresence mode="wait">
+                            {submissionMethod === 'link' || productType === 'saas' ? (
+                                <motion.div
+                                    key="link-input"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                >
+                                    <input
+                                        name="assetLink"
+                                        required={submissionMethod === 'link'}
+                                        type="url"
+                                        placeholder={productType === 'saas' ? "https://github.com/username/repo" : "https://dropbox.com/s/..."}
+                                        className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                    />
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-2">
+                                        * Provide a secure link to your asset (Google Drive, Dropbox, GitHub).
+                                    </p>
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="file-input"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                >
+                                    <div className="relative group">
+                                        <input
+                                            name="file"
+                                            type="file"
+                                            accept=".pdf,.zip,.rar,.png,.jpg"
+                                            onChange={handleFileChange}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                        />
+                                        <div className="w-full px-6 py-8 bg-gray-50 dark:bg-gray-900 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl group-hover:border-blue-500 transition-colors flex flex-col items-center justify-center text-center">
+                                            {selectedFile ? (
+                                                <>
+                                                    <CheckCircle2 className="w-8 h-8 text-green-500 mb-2" />
+                                                    <span className="font-bold text-gray-900 dark:text-white">{selectedFile.name}</span>
+                                                    <span className="text-sm text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                                                    <span className="font-bold text-gray-900 dark:text-white">Click to Upload File</span>
+                                                    <span className="text-sm text-gray-500">PDF, ZIP, Images (Max 10MB)</span>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start mt-3 ml-2 text-amber-600 dark:text-amber-500">
+                                        <AlertCircle className="w-4 h-4 mr-1.5 flex-shrink-0 mt-0.5" />
+                                        <p className="text-xs font-medium">
+                                            File limit is 10MB. If your file is larger, please switch to "Share Link" and provide a Dropbox/Drive link.
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
 
                     <div className="space-y-2">
@@ -179,18 +352,25 @@ export default function SubmitPage() {
                         </motion.div>
                     )}
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
-                            <Code className="w-4 h-4 mr-2 text-blue-600" /> Tech Stack
-                        </label>
-                        <input
-                            name="techStack"
-                            required
-                            type="text"
-                            placeholder="e.g. Next.js, Tailwind, Sanity"
-                            className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                        />
-                    </div>
+                    {/* Conditional Tech Stack Field */}
+                    {productType === 'saas' && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="space-y-2"
+                        >
+                            <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                <Code className="w-4 h-4 mr-2 text-blue-600" /> Tech Stack
+                            </label>
+                            <input
+                                name="techStack"
+                                required
+                                type="text"
+                                placeholder="e.g. Next.js, Tailwind, Sanity"
+                                className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                            />
+                        </motion.div>
+                    )}
 
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
@@ -200,7 +380,7 @@ export default function SubmitPage() {
                             name="description"
                             required
                             rows={6}
-                            placeholder="Tell us about your project, why you're selling, and what's included..."
+                            placeholder="Tell us about your project, what's included, and why it's valuable..."
                             className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all resize-none"
                         />
                     </div>

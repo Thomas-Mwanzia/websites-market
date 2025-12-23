@@ -51,7 +51,7 @@ export default async function Home({
           )}
           {!q && (
             <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium leading-relaxed">
-              Discover profitable starter websites and micro-SaaS projects. Hand-vetted and ready for launch.
+              Discover profitable starter websites, micro-SaaS projects, and premium digital assets. Hand-vetted and ready for launch.
             </p>
           )}
         </div>
@@ -88,7 +88,7 @@ export default async function Home({
                     href="/sell"
                     className="inline-flex items-center px-8 py-4 bg-blue-600 text-white rounded-full font-bold transition-all"
                   >
-                    List Your Site <ArrowRight className="ml-2 w-5 h-5" />
+                    List Your Project <ArrowRight className="ml-2 w-5 h-5" />
                   </Link>
                 )}
               </div>

@@ -10,18 +10,22 @@ export async function POST(request: Request) {
         const resend = new Resend(process.env.RESEND_API_KEY || 're_placeholder');
 
         const body = await request.json();
-        const { url, price, techStack, description, email, payoutMethod, payoutDetails } = body;
+        const { productType, url, price, assetLink, techStack, description, email, payoutMethod, payoutDetails } = body;
 
         // Admin notification email template
         const adminEmailHtml = `
             <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
                 <div style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 20px; color: white; border-radius: 8px 8px 0 0;">
-                    <h1 style="margin: 0; font-size: 24px;">� New Project Submission</h1>
+                    <h1 style="margin: 0; font-size: 24px;">🚀 New ${productType.toUpperCase()} Submission</h1>
                 </div>
                 <div style="background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb;">
                     <table style="width: 100%; border-collapse: collapse;">
                         <tr style="border-bottom: 1px solid #e5e7eb;">
-                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Website URL:</td>
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Product Type:</td>
+                            <td style="padding: 12px 0;">${productType}</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">URL / Demo:</td>
                             <td style="padding: 12px 0;"><a href="${url}" target="_blank" style="color: #2563eb; text-decoration: none;">${url}</a></td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e5e7eb;">
@@ -29,9 +33,14 @@ export async function POST(request: Request) {
                             <td style="padding: 12px 0;">$${price}</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Asset / Repo Link:</td>
+                            <td style="padding: 12px 0;"><a href="${assetLink}" target="_blank" style="color: #2563eb; text-decoration: none;">${assetLink}</a></td>
+                        </tr>
+                        ${techStack ? `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Tech Stack:</td>
                             <td style="padding: 12px 0;">${techStack}</td>
-                        </tr>
+                        </tr>` : ''}
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Seller Email:</td>
                             <td style="padding: 12px 0;"><a href="mailto:${email}" style="color: #2563eb; text-decoration: none;">${email}</a></td>
@@ -62,14 +71,14 @@ export async function POST(request: Request) {
                 <div style="background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb;">
                     <p style="font-size: 16px; line-height: 1.6;">Hi there,</p>
                     <p style="line-height: 1.6; color: #666;">
-                        Thank you for submitting your website to <strong>Websites Arena</strong>! We've received your submission and our team will review it shortly.
+                        Thank you for submitting your project to <strong>Websites Arena</strong>! We've received your submission and our team will review it shortly.
                     </p>
                     
                     <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb; margin: 20px 0;">
                         <h3 style="margin-top: 0; color: #2563eb;">Submission Details:</h3>
-                        <p style="margin: 8px 0;"><strong>Website:</strong> ${url}</p>
+                        <p style="margin: 8px 0;"><strong>Type:</strong> ${productType}</p>
+                        <p style="margin: 8px 0;"><strong>URL:</strong> ${url}</p>
                         <p style="margin: 8px 0;"><strong>Asking Price:</strong> $${price}</p>
-                        <p style="margin: 8px 0;"><strong>Tech Stack:</strong> ${techStack}</p>
                     </div>
 
                     <h3 style="color: #2563eb; margin-top: 24px;">What's Next?</h3>

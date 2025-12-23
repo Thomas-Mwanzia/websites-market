@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Book, Code2, Layout, Palette, Box } from 'lucide-react'
 import { urlForImage } from '@/sanity/lib/image'
 
 interface ProductProps {
@@ -16,6 +16,18 @@ interface ProductProps {
 }
 
 export function ProductCard({ product }: { product: ProductProps }) {
+    const getIcon = (category: string) => {
+        switch (category?.toLowerCase()) {
+            case 'e-book': return Book
+            case 'ui-kit': return Palette
+            case 'template': return Layout
+            case 'saas': return Code2
+            default: return Box
+        }
+    }
+
+    const CategoryIcon = getIcon(product.category || '')
+
     return (
         <motion.div
             whileHover={{ y: -4 }}
@@ -35,6 +47,12 @@ export function ProductCard({ product }: { product: ProductProps }) {
                             No Image
                         </div>
                     )}
+                    <div className="absolute top-4 right-4 bg-white/90 dark:bg-black/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-2 border border-gray-200 dark:border-gray-800">
+                        <CategoryIcon className="w-4 h-4 text-blue-600" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white">
+                            {product.category || 'Asset'}
+                        </span>
+                    </div>
                 </div>
 
                 <div className="p-8">
@@ -53,7 +71,7 @@ export function ProductCard({ product }: { product: ProductProps }) {
 
                     <div className="flex items-center justify-between">
                         <span className="text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-600">
-                            {product.category || 'Starter Kit'}
+                            View Details
                         </span>
                         <div className="w-10 h-10 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center justify-center text-gray-900 dark:text-white group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-all">
                             <ArrowRight className="w-5 h-5" />

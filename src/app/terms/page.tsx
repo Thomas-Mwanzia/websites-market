@@ -14,7 +14,7 @@ export default function TermsPage() {
                     <section>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">2. Use License</h2>
                         <p>
-                            When you purchase a website from Websites Arena, you are granted a non-exclusive, non-transferable license to use the code for your own business purposes. You may not resell the code as a template or starter kit.
+                            When you purchase a digital asset from Websites Arena, you are granted a non-exclusive, non-transferable license to use the code/files for your own business purposes. You may not resell the asset as a template or starter kit.
                         </p>
                     </section>
 

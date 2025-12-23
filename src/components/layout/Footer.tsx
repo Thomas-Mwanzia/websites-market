@@ -36,6 +36,15 @@ export function Footer() {
                     </div>
 
                     <div>
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-widest">Compare</h3>
+                        <ul className="space-y-4">
+                            <li><Link href="/compare/flippa" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">vs Flippa</Link></li>
+                            <li><Link href="/compare/acquire" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">vs Acquire.com</Link></li>
+                            <li><Link href="/compare/tiny-acquisitions" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">vs Tiny Acquisitions</Link></li>
+                        </ul>
+                    </div>
+
+                    <div>
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-widest">Company</h3>
                         <ul className="space-y-4">
                             <li><Link href="/about" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">About Us</Link></li>

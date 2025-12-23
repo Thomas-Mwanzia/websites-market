@@ -1,25 +1,21 @@
-import { ArrowRight, CheckCircle2, DollarSign, Rocket, ShieldCheck, Clock, FileCheck, TrendingUp, Users, Zap } from 'lucide-react'
+import { ArrowRight, CheckCircle2, DollarSign, Rocket, ShieldCheck, Clock, FileCheck, TrendingUp, Users, Zap, BookOpen, Layout } from 'lucide-react'
 import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: "How to Sell Your Website | Complete Seller Guide | Websites Arena",
-    description: "Learn how to sell your website, starter project, or micro-SaaS on Websites Arena. Complete step-by-step guide covering listing, pricing, and selling your digital asset for maximum profit.",
+    title: "How to Sell Digital Assets | Seller Guide | Websites Arena",
+    description: "Learn how to sell your website, e-book, or design template on Websites Arena. Complete step-by-step guide covering listing, pricing, and selling your digital asset.",
     keywords: [
-        "how to sell a website",
-        "website selling guide",
-        "sell startup project",
-        "micro saas seller",
-        "exit strategy",
+        "how to sell digital products",
+        "sell e-book guide",
+        "sell website guide",
         "digital asset marketplace",
-        "website valuation",
         "passive income",
-        "sell side hustle",
-        "seller guide"
+        "creator economy"
     ],
     openGraph: {
-        title: "How to Sell Your Website | Complete Seller Guide | Websites Arena",
-        description: "Learn how to sell your website, starter project, or micro-SaaS on Websites Arena. Complete step-by-step guide covering listing, pricing, and selling your digital asset for maximum profit.",
+        title: "How to Sell Digital Assets | Seller Guide | Websites Arena",
+        description: "Learn how to sell your website, e-book, or design template on Websites Arena. Complete step-by-step guide covering listing, pricing, and selling your digital asset.",
         url: "https://websitesarena.com/sell/guide",
         siteName: "Websites Arena",
         type: "article",
@@ -32,94 +28,68 @@ export default function SellGuidePage() {
     const steps = [
         {
             number: 1,
-            title: "Prepare Your Project",
-            description: "Before listing, ensure your website is in excellent condition. Make sure your code is clean, documentation is clear, and all assets are organized.",
+            title: "Prepare Your Asset",
+            description: "Ensure your product is ready for the public. For code, clean it up. For PDFs, ensure high-quality formatting.",
             details: [
-                "Clean, well-commented code",
-                "Complete setup documentation",
-                "Working demo or live link",
-                "All assets and databases included",
-                "No personal data or credentials in code"
+                "Clean, well-commented code (for SaaS)",
+                "High-resolution PDF/Images (for E-books)",
+                "Complete documentation",
+                "Working demo link",
+                "No personal data included"
             ],
             icon: FileCheck
         },
         {
             number: 2,
             title: "Calculate Your Price",
-            description: "Research similar projects and use our valuation guide to set a competitive price. Consider monthly revenue, traffic, and potential.",
+            description: "Research similar products. SaaS projects often sell for 24x monthly revenue. E-books and templates typically range from $20-$200.",
             details: [
                 "Analyze comparable listings",
-                "Calculate multiples of revenue",
-                "Factor in growth potential",
+                "Calculate revenue multiples (for SaaS)",
+                "Factor in uniqueness",
                 "Consider market demand",
-                "Set tiered pricing options"
+                "Set a fair fixed price"
             ],
             icon: DollarSign
         },
         {
             number: 3,
-            title: "Create Your Listing",
-            description: "Submit your project with compelling descriptions, screenshots, and metrics. Highlight what makes your project unique and valuable.",
+            title: "Submit Your Listing",
+            description: "Fill out our simple submission form. Select your product type (SaaS, E-book, Template) and provide the details.",
             details: [
-                "Write compelling title and description",
+                "Select correct category",
+                "Write compelling description",
                 "Add high-quality screenshots",
-                "Showcase revenue/traffic metrics",
-                "List all features and technologies",
-                "Include testimonials or proof of traction"
+                "List all features",
+                "Include proof of traction"
             ],
             icon: Rocket
         },
         {
             number: 4,
             title: "Review & Approval",
-            description: "Our team reviews your listing for quality and authenticity. We typically approve legitimate listings within 24-48 hours.",
+            description: "Our team reviews your listing for quality. We typically approve legitimate listings within 24-48 hours.",
             details: [
-                "Quality and code assessment",
-                "Revenue verification",
-                "Technology stack evaluation",
+                "Quality assessment",
+                "Virus/Malware check (for files)",
                 "Market fit analysis",
-                "Approval or feedback"
+                "Approval or feedback",
+                "Live notification"
             ],
             icon: CheckCircle2
         },
         {
             number: 5,
-            title: "Go Live on Marketplace",
-            description: "Your approved listing goes live and is instantly visible to thousands of potential buyers actively browsing our marketplace.",
+            title: "Go Live & Get Paid",
+            description: "Your listing goes live. When a sale happens, we handle the delivery and send you 85% of the sale price.",
             details: [
-                "Featured on marketplace",
-                "SEO optimization",
-                "Social media promotion",
-                "Email to interested buyers",
-                "24/7 availability"
+                "Instant file delivery",
+                "Secure payment processing",
+                "15% commission deducted",
+                "85% paid to you",
+                "Automated payouts"
             ],
             icon: TrendingUp
-        },
-        {
-            number: 6,
-            title: "Negotiate & Close Sale",
-            description: "Interested buyers can reach out through our secure messaging. Negotiate terms and close the deal using our escrow system.",
-            details: [
-                "Communicate with buyers",
-                "Answer due diligence questions",
-                "Negotiate if needed",
-                "Funds held in secure escrow",
-                "Transfer ownership and assets"
-            ],
-            icon: ShieldCheck
-        },
-        {
-            number: 7,
-            title: "Receive Payment",
-            description: "Once the buyer confirms delivery, we release funds minus our 15% commission. You receive 85% of the sale price.",
-            details: [
-                "Buyer confirms receipt",
-                "15% commission deducted",
-                "85% paid to your account",
-                "Multiple payout methods",
-                "Fast processing"
-            ],
-            icon: CheckCircle2
         }
     ]
 
@@ -127,17 +97,17 @@ export default function SellGuidePage() {
         {
             icon: Zap,
             title: "Fast Processing",
-            description: "Listing approval within 24-48 hours. Start selling your project immediately."
+            description: "Listing approval within 24-48 hours. Start selling immediately."
         },
         {
             icon: Users,
             title: "Thousands of Buyers",
-            description: "Access to our network of entrepreneurs and investors actively looking to buy."
+            description: "Access our network of entrepreneurs and creators looking for assets."
         },
         {
             icon: ShieldCheck,
-            title: "Secure Escrow",
-            description: "All transactions are protected. Funds held securely until successful delivery."
+            title: "Secure Delivery",
+            description: "We handle the file hosting and delivery. You don't need to lift a finger."
         },
         {
             icon: TrendingUp,
@@ -151,43 +121,31 @@ export default function SellGuidePage() {
         },
         {
             icon: Clock,
-            title: "No Maintenance",
-            description: "Stop maintaining and supporting your project. Sell and move on."
+            title: "Passive Income",
+            description: "List once, sell forever. Perfect for e-books and templates."
         }
     ]
 
     const faqs = [
         {
-            question: "What types of websites can I sell?",
-            answer: "We accept starter websites, niche blogs, micro-SaaS projects, side hustles, and any digital property with proven metrics. Must have clean code and working functionality."
+            question: "What can I sell?",
+            answer: "We accept starter websites, micro-SaaS projects, e-books (PDF), UI kits (Figma), Notion templates, and more. If it's digital and valuable, you can sell it."
         },
         {
-            question: "How long does the listing approval take?",
-            answer: "Most listings are reviewed and approved within 24-48 hours. We assess code quality, documentation, and market potential."
+            question: "How do I deliver the file?",
+            answer: "For files (PDFs, Templates), you upload them to us (or provide a secure link) during the listing process. We handle the automated delivery to the buyer."
         },
         {
             question: "What's your commission?",
-            answer: "We take a 15% commission on successful sales. You keep 85% of the sale price. No hidden fees or surprise charges."
+            answer: "We take a 15% commission on successful sales. You keep 85% of the sale price. No hidden fees."
         },
         {
-            question: "How do I set the right price?",
-            answer: "Use our valuation guide based on monthly revenue multiples (typically 24-36 months), traffic metrics, growth potential, and comparable listings."
+            question: "How is code transferred?",
+            answer: "For SaaS/Websites, we facilitate a secure handover of the repository (GitHub) and domain ownership after the purchase is confirmed."
         },
         {
-            question: "How is payment handled?",
-            answer: "All payments go through our secure escrow system. The buyer's funds are held until they confirm receipt and everything works as described."
-        },
-        {
-            question: "What happens after the sale?",
-            answer: "You transfer ownership (domain, hosting, code), assist with transition if needed, and we process your 85% payment automatically."
-        },
-        {
-            question: "Can I negotiate with buyers?",
-            answer: "Absolutely! You can communicate with interested buyers through our messaging system to discuss price, terms, and answer questions."
-        },
-        {
-            question: "Is there a minimum price?",
-            answer: "No minimum price, but typically projects sell better when priced between $500-$50,000. Our tool helps you find the sweet spot."
+            question: "How do I get paid?",
+            answer: "We support PayPal, Wise, Bank Transfer, and Crypto. Payouts are processed automatically after the sale is finalized."
         }
     ]
 
@@ -202,10 +160,10 @@ export default function SellGuidePage() {
                     </div>
 
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                        How to Sell Your Website in 7 Simple Steps
+                        How to Sell Digital Assets <br /> in 5 Simple Steps
                     </h1>
                     <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-                        A complete guide to selling your starter website, micro-SaaS, or niche blog on Websites Arena. Learn the proven process we use to help sellers succeed.
+                        A complete guide to selling your code, content, and designs on Websites Arena. Learn how to turn your work into passive income.
                     </p>
                     <Link
                         href="/sell/submit"
@@ -277,48 +235,8 @@ export default function SellGuidePage() {
                 </div>
             </section>
 
-            {/* Pricing & Valuations */}
-            <section className="py-20 px-4 bg-gray-50 dark:bg-gray-900/50 border-y border-gray-200 dark:border-gray-900">
-                <div className="max-w-4xl mx-auto">
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8">How to Price Your Website</h2>
-                    <div className="space-y-6 mb-12">
-                        <div className="p-6 bg-white dark:bg-black rounded-2xl border border-gray-200 dark:border-gray-800">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Revenue Multiple Method</h3>
-                            <p className="text-gray-600 dark:text-gray-400 mb-4">
-                                Most websites sell for 24-36 months of net monthly revenue. This is the most common and reliable valuation method.
-                            </p>
-                            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg text-sm text-gray-700 dark:text-gray-300 font-mono">
-                                Annual Revenue × 2-3 = Fair Sale Price
-                            </div>
-                        </div>
-
-                        <div className="p-6 bg-white dark:bg-black rounded-2xl border border-gray-200 dark:border-gray-800">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Example Valuation</h3>
-                            <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                                <li><strong>Monthly Revenue:</strong> $1,000</li>
-                                <li><strong>Annual Revenue:</strong> $12,000</li>
-                                <li><strong>At 24x Multiple:</strong> $24,000 - $36,000</li>
-                                <li><strong>Industry Average:</strong> $28,000</li>
-                            </ul>
-                        </div>
-
-                        <div className="p-6 bg-white dark:bg-black rounded-2xl border border-gray-200 dark:border-gray-800">
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Factors That Increase Value</h3>
-                            <ul className="space-y-2 text-gray-600 dark:text-gray-400">
-                                <li>✓ Growing revenue (positive trajectory)</li>
-                                <li>✓ Recurring revenue or subscriptions</li>
-                                <li>✓ Loyal customer base</li>
-                                <li>✓ Clean, maintainable code</li>
-                                <li>✓ Established domain authority</li>
-                                <li>✓ Multiple revenue streams</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             {/* FAQ Section */}
-            <section className="py-32 px-4">
+            <section className="py-32 px-4 bg-gray-50 dark:bg-gray-900/30">
                 <div className="max-w-4xl mx-auto">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-16 text-center">Frequently Asked Questions</h2>
                     <div className="space-y-8">
@@ -335,22 +253,16 @@ export default function SellGuidePage() {
             {/* CTA Section */}
             <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-900 dark:to-blue-800">
                 <div className="max-w-4xl mx-auto text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Sell Your Website?</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Sell?</h2>
                     <p className="text-xl text-blue-100 mb-12 max-w-2xl mx-auto">
-                        Submit your project today and join hundreds of successful sellers who've earned thousands on Websites Arena.
+                        Submit your project today and join hundreds of successful creators on Websites Arena.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                         <Link
                             href="/sell/submit"
                             className="px-10 py-4 bg-white text-blue-600 rounded-full font-bold text-lg hover:bg-gray-100 transition-all inline-flex items-center"
                         >
-                            Submit Your Site <ArrowRight className="ml-2 w-5 h-5" />
-                        </Link>
-                        <Link
-                            href="/sell"
-                            className="px-10 py-4 bg-blue-500 text-white rounded-full font-bold text-lg hover:bg-blue-400 transition-all"
-                        >
-                            Learn More
+                            Submit Your Project <ArrowRight className="ml-2 w-5 h-5" />
                         </Link>
                     </div>
                 </div>

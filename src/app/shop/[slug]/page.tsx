@@ -43,9 +43,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         )
     }
 
+    let schemaType = 'Product'
+    if (product.category === 'saas' || product.category === 'tool') {
+        schemaType = 'SoftwareApplication'
+    } else if (product.category === 'e-book' || product.category === 'course') {
+        schemaType = 'Book'
+    }
+
     const jsonLd = {
         '@context': 'https://schema.org',
-        '@type': 'Product',
+        '@type': schemaType,
         name: product.title,
         image: urlForImage(product.image).url(),
         description: product.description,
@@ -55,6 +62,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             priceCurrency: 'USD',
             availability: 'https://schema.org/InStock',
         },
+        ...(schemaType === 'SoftwareApplication' && {
+            applicationCategory: 'BusinessApplication',
+            operatingSystem: 'Web',
+        }),
+        ...(schemaType === 'Book' && {
+            format: 'EBook',
+        })
     }
 
     return (
@@ -101,7 +115,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     <div className="flex flex-col justify-center">
                         <div className="mb-12">
                             <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 mb-6 font-bold text-xs uppercase tracking-widest">
-                                Premium Asset
+                                {product.category === 'saas' ? 'SaaS' :
+                                    product.category === 'ui-kit' ? 'UI Kit' :
+                                        product.category === 'e-book' ? 'E-book' :
+                                            product.category || 'Premium Asset'}
                             </div>
                             <div className="text-4xl font-black text-blue-600 mb-8">
                                 ${product.price}
@@ -114,12 +131,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         <div className="space-y-6 mb-12">
                             <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">What's Included</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {[
-                                    "Full Source Code (Next.js)",
-                                    "CMS Configuration",
-                                    "Installation Guide",
-                                    "6 Months Support"
-                                ].map((item) => (
+                                {(product.features && product.features.length > 0 ? product.features : [
+                                    "Instant Download",
+                                    "Secure Payment",
+                                    "Lifetime Access",
+                                    "Premium Support"
+                                ]).map((item: string) => (
                                     <div key={item} className="flex items-center text-gray-900 dark:text-white font-bold">
                                         <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
                                             <Check className="w-3 h-3 text-white" />

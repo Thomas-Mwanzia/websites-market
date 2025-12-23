@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Websites Arena | Buy & Sell Profitable Starter Websites",
-  description: "The premier marketplace for buying and selling high-quality starter websites, niche blogs, and micro-SaaS projects. Start your online business journey today.",
+  title: "Websites Arena | Buy & Sell Digital Assets, Websites & Templates",
+  description: "The premier marketplace for buying and selling premium digital assets: starter websites, SaaS codebases, e-books, design templates, and more.",
   applicationName: "Websites Arena",
-  keywords: ["buy website", "starter site", "niche blog", "micro saas", "online business", "websites arena"],
+  keywords: ["buy website", "starter site", "digital assets", "micro saas", "e-books", "templates", "ui kits", "online business", "websites arena", "flippa alternative", "acquire.com alternative", "tiny acquisitions alternative"],
   icons: {
     icon: "/icon.png",
     apple: "/apple-icon.png",
   },
   openGraph: {
-    title: "Websites Arena | Buy & Sell Profitable Starter Websites",
-    description: "The premier marketplace for buying and selling high-quality starter websites.",
+    title: "Websites Arena | Buy & Sell Digital Assets, Websites & Templates",
+    description: "The premier marketplace for buying and selling premium digital assets: starter websites, SaaS codebases, e-books, design templates, and more.",
     url: "https://websitesarena.com",
     siteName: "Websites Arena",
     locale: "en_US",
@@ -93,7 +93,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationJsonLd) }}
         />
       </head>
-      <body className={`${inter.className} bg-white dark:bg-black text-gray-900 dark:text-gray-100 min-h-screen flex flex-col`}>
+      <body className={`${jakarta.className} bg-white dark:bg-black text-gray-900 dark:text-gray-100 min-h-screen flex flex-col`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

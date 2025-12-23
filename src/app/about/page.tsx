@@ -7,7 +7,7 @@ export default function AboutPage() {
             <section className="pt-24 pb-32 px-4 bg-white dark:bg-black">
                 <div className="max-w-7xl mx-auto text-center">
                     <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
-                        Websites Arena is the premier marketplace for high-quality, pre-built starter websites. We bridge the gap between talented developers and ambitious entrepreneurs.
+                        Websites Arena is the premier marketplace for high-quality digital assets. We bridge the gap between talented creators and ambitious entrepreneurs.
                     </p>
                 </div>
             </section>
@@ -19,10 +19,10 @@ export default function AboutPage() {
                         <div>
                             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8">Empowering Creators</h2>
                             <p className="text-lg text-gray-500 dark:text-gray-400 mb-8 leading-relaxed font-medium">
-                                We believe that starting an online business shouldn't take months of development and thousands of dollars. Our mission is to provide ready-to-launch assets that allow anyone to start their entrepreneurial journey in minutes.
+                                We believe that starting an online business shouldn't take months of development. Our mission is to provide ready-to-launch assets—from SaaS codebases to design templates—that allow anyone to start their entrepreneurial journey in minutes.
                             </p>
                             <p className="text-lg text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
-                                Every website listed on our platform is hand-vetted for quality, SEO optimization, and ease of use. We don't just sell code; we sell the foundation for your future success.
+                                Every asset listed on our platform is hand-vetted for quality, utility, and ease of use. We don't just sell files; we sell the foundation for your future success.
                             </p>
                         </div>
                         <div className="grid grid-cols-2 gap-8">
@@ -59,7 +59,7 @@ export default function AboutPage() {
                     </div>
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8">A Message from the Founder</h2>
                     <p className="text-xl italic text-gray-500 dark:text-gray-400 mb-12 leading-relaxed font-medium">
-                        "I built Websites Arena because I saw too many great ideas die in the development phase. By providing high-quality starter sites, we're giving people the head start they need to focus on growth."
+                        "I built Websites Arena because I saw too many great ideas die in the development phase. By providing high-quality digital assets, we're giving people the head start they need to focus on growth."
                     </p>
                     <div className="text-lg font-bold text-gray-900 dark:text-white">Thomas Mwanzia</div>
                     <div className="text-sm text-gray-500 font-bold uppercase tracking-widest">Founder, Websites Arena</div>
