@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
 async function getProducts(searchTerm?: string) {
-  let query = `*[_type == "product"] | order(_createdAt desc) [0...12]`
+  let query = `*[_type == "product"] | order(_createdAt desc) [0...20]`
 
   if (searchTerm) {
     query = `*[_type == "product" && (
@@ -13,7 +13,7 @@ async function getProducts(searchTerm?: string) {
             category match "${searchTerm}*" || 
             techStack[] match "${searchTerm}*" || 
             features[] match "${searchTerm}*"
-        )] | order(_createdAt desc) [0...12]`
+        )] | order(_createdAt desc) [0...20]`
   }
 
   try {

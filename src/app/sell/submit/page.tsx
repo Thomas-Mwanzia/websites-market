@@ -1,20 +1,32 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent } from 'react'
-import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video, GraduationCap } from 'lucide-react'
+import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video, GraduationCap, Camera, Image as ImageIcon, Film } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
 import ReCAPTCHA from 'react-google-recaptcha'
 
+const ASSET_CATEGORIES = ['Photography', 'Video Footage', 'Digital Art', 'Template', 'E-book', 'Course']
+
 export default function SubmitPage() {
     const [submitted, setSubmitted] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [payoutMethod, setPayoutMethod] = useState('')
-    const [productType, setProductType] = useState('saas') // saas, ebook, template
+    const [productType, setProductType] = useState('saas')
     const [submissionMethod, setSubmissionMethod] = useState<'link' | 'file'>('link')
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+
+    // Form Data State
+    const [formData, setFormData] = useState({
+        revenue: '',
+        profit: '',
+        traffic: '',
+        age: '',
+        resolution: '',
+        format: ''
+    })
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -39,15 +51,11 @@ export default function SubmitPage() {
         e.preventDefault()
         setIsSubmitting(true)
 
-        const formData = new FormData(e.target as HTMLFormElement)
+        const submitData = new FormData(e.target as HTMLFormElement)
+        submitData.set('productType', productType)
+        submitData.set('captchaToken', captchaToken!)
 
-        // Append manual fields if needed, but FormData captures inputs automatically.
-        // We just need to ensure 'productType' is there if it's not an input.
-        formData.set('productType', productType)
-        formData.set('captchaToken', captchaToken!)
-
-        // If file method is chosen but no file, alert
-        if (submissionMethod === 'file' && !selectedFile && productType !== 'saas') {
+        if (submissionMethod === 'file' && !selectedFile && !['saas', 'course'].includes(productType)) {
             toast.error('Please select a file to upload.')
             setIsSubmitting(false)
             return
@@ -60,34 +68,19 @@ export default function SubmitPage() {
         }
 
         try {
-            // Note: We are sending FormData directly, not JSON
             const response = await fetch('/api/send-email', {
                 method: 'POST',
-                body: formData,
+                body: submitData,
             })
 
             if (response.ok) {
                 setSubmitted(true)
             } else {
-                toast.error('Something went wrong. Please try again.', {
-                    duration: 4000,
-                    style: {
-                        background: '#ef4444',
-                        color: '#fff',
-                        fontWeight: 'bold',
-                    },
-                })
+                toast.error('Something went wrong. Please try again.')
             }
         } catch (error) {
             console.error('Error submitting form:', error)
-            toast.error('Failed to submit. Please check your connection and try again.', {
-                duration: 4000,
-                style: {
-                    background: '#ef4444',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                },
-            })
+            toast.error('Failed to submit. Please check your connection.')
         } finally {
             setIsSubmitting(false)
         }
@@ -121,16 +114,7 @@ export default function SubmitPage() {
 
     return (
         <div className="min-h-screen bg-white dark:bg-black pt-24 pb-32">
-            <Toaster
-                position="top-center"
-                toastOptions={{
-                    className: 'dark:bg-gray-800 dark:text-white',
-                    style: {
-                        borderRadius: '12px',
-                        padding: '16px',
-                    },
-                }}
-            />
+            <Toaster position="top-center" />
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                 <Link href="/sell" className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-gray-900 dark:hover:text-white mb-12 transition-colors uppercase tracking-widest">
                     <ArrowLeft className="w-4 h-4 mr-2" /> Back
@@ -148,12 +132,15 @@ export default function SubmitPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-8">
                     {/* Product Type Selector */}
-                    <div className="grid grid-cols-3 gap-4 mb-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         {[
-                            { id: 'saas', label: 'Website / SaaS', icon: Monitor },
-                            { id: 'ebook', label: 'E-book / PDF', icon: BookOpen },
-                            { id: 'template', label: 'Template / UI', icon: Layout },
+                            { id: 'saas', label: 'SaaS / Web', icon: Monitor },
+                            { id: 'ebook', label: 'E-book', icon: BookOpen },
+                            { id: 'template', label: 'Template', icon: Layout },
                             { id: 'course', label: 'Course', icon: GraduationCap },
+                            { id: 'Photography', label: 'Photo', icon: Camera },
+                            { id: 'Video Footage', label: 'Video', icon: Film },
+                            { id: 'Digital Art', label: 'Art', icon: ImageIcon },
                         ].map((type) => {
                             const Icon = type.icon
                             return (
@@ -162,8 +149,9 @@ export default function SubmitPage() {
                                     type="button"
                                     onClick={() => {
                                         setProductType(type.id)
-                                        // Reset submission method to link for SaaS, or default to link for others
-                                        if (type.id === 'saas') setSubmissionMethod('link')
+                                        if (['saas', 'course'].includes(type.id)) {
+                                            setSubmissionMethod('link')
+                                        }
                                     }}
                                     className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center transition-all ${productType === type.id
                                         ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20 text-blue-600'
@@ -178,19 +166,21 @@ export default function SubmitPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
-                                <Globe className="w-4 h-4 mr-2 text-blue-600" />
-                                {productType === 'saas' ? 'Website URL' : 'Demo / Preview URL'}
-                            </label>
-                            <input
-                                name="url"
-                                required
-                                type="url"
-                                placeholder={productType === 'saas' ? "https://yourproject.com" : "https://gumroad.com/..."}
-                                className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                            />
-                        </div>
+                        {!['ebook', 'Photography', 'Video Footage', 'Digital Art'].includes(productType) && (
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <Globe className="w-4 h-4 mr-2 text-blue-600" />
+                                    {productType === 'saas' ? 'Website URL' : 'Demo URL'}
+                                </label>
+                                <input
+                                    name="url"
+                                    required
+                                    type="url"
+                                    placeholder="https://..."
+                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                        )}
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
                                 <DollarSign className="w-4 h-4 mr-2 text-blue-600" /> Asking Price ($)
@@ -205,17 +195,109 @@ export default function SubmitPage() {
                         </div>
                     </div>
 
+                    {/* Business Metrics - Hidden for Asset Categories */}
+                    {!ASSET_CATEGORIES.includes(productType) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                    Monthly Revenue
+                                </label>
+                                <input
+                                    type="number"
+                                    required
+                                    placeholder="0"
+                                    value={formData.revenue}
+                                    onChange={(e) => setFormData({ ...formData, revenue: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                    Monthly Profit
+                                </label>
+                                <input
+                                    type="number"
+                                    required
+                                    placeholder="0"
+                                    value={formData.profit}
+                                    onChange={(e) => setFormData({ ...formData, profit: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                    Monthly Traffic
+                                </label>
+                                <input
+                                    type="number"
+                                    required
+                                    placeholder="0"
+                                    value={formData.traffic}
+                                    onChange={(e) => setFormData({ ...formData, traffic: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                    Project Age (Months)
+                                </label>
+                                <input
+                                    type="number"
+                                    required
+                                    placeholder="12"
+                                    value={formData.age}
+                                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Asset Details - Only for Art/Media */}
+                    {['Photography', 'Video Footage', 'Digital Art'].includes(productType) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                    Resolution / Dimensions
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="e.g. 4K, 6000x4000px"
+                                    value={formData.resolution}
+                                    onChange={(e) => setFormData({ ...formData, resolution: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                    File Format
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="e.g. RAW, MP4, PNG"
+                                    value={formData.format}
+                                    onChange={(e) => setFormData({ ...formData, format: e.target.value })}
+                                    className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     {/* Asset Delivery Section */}
                     <div className="space-y-4">
                         <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
                             {productType === 'saas' ? (
                                 <><Code className="w-4 h-4 mr-2 text-blue-600" /> Source Code / Repo</>
+                            ) : productType === 'course' ? (
+                                <><LinkIcon className="w-4 h-4 mr-2 text-blue-600" /> Course Link</>
                             ) : (
                                 <><Upload className="w-4 h-4 mr-2 text-blue-600" /> Asset Delivery</>
                             )}
                         </label>
 
-                        {productType !== 'saas' && (
+                        {!['saas', 'course'].includes(productType) && (
                             <div className="flex bg-gray-100 dark:bg-gray-900 p-1 rounded-xl w-fit mb-4">
                                 <button
                                     type="button"
@@ -241,7 +323,7 @@ export default function SubmitPage() {
                         )}
 
                         <AnimatePresence mode="wait">
-                            {submissionMethod === 'link' || productType === 'saas' ? (
+                            {submissionMethod === 'link' || ['saas', 'course'].includes(productType) ? (
                                 <motion.div
                                     key="link-input"
                                     initial={{ opacity: 0, y: 10 }}
@@ -255,12 +337,6 @@ export default function SubmitPage() {
                                         placeholder={productType === 'saas' ? "https://github.com/username/repo" : "https://dropbox.com/s/..."}
                                         className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                                     />
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 ml-2">
-                                        {productType === 'saas'
-                                            ? <span className="text-amber-600 dark:text-amber-500 font-bold">* Requirement: Please ensure your repo includes a README.md (Setup Guide) and LICENSE file.</span>
-                                            : '* Provide a secure link to your asset (Google Drive, Dropbox, GitHub).'
-                                        }
-                                    </p>
                                 </motion.div>
                             ) : (
                                 <motion.div
@@ -293,33 +369,9 @@ export default function SubmitPage() {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="flex items-start mt-3 ml-2 text-amber-600 dark:text-amber-500">
-                                        <AlertCircle className="w-4 h-4 mr-1.5 flex-shrink-0 mt-0.5" />
-                                        <p className="text-xs font-medium">
-                                            File limit is 10MB. If your file is larger, please switch to "Share Link" and provide a Dropbox/Drive link.
-                                        </p>
-                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
-                            <Video className="w-4 h-4 mr-2 text-blue-600" /> Video Preview Link (Optional)
-                        </label>
-                        <input
-                            name="videoPreviewLink"
-                            type="url"
-                            placeholder="https://youtube.com/... or https://vimeo.com/..."
-                            className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                        />
-                        <p className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                            {productType === 'course'
-                                ? 'Provide a short video summary of your course (1-3 minutes recommended)'
-                                : 'Add a demo video to increase buyer confidence (YouTube, Vimeo, Loom, etc.)'
-                            }
-                        </p>
                     </div>
 
                     <div className="space-y-2">
@@ -352,9 +404,6 @@ export default function SubmitPage() {
                             <option value="Bank Transfer">Bank Transfer ($25 fee)</option>
                             <option value="Crypto">Crypto (USDT/USDC)</option>
                         </select>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                            * Transaction fees may be deducted from your final payout depending on the selected method.
-                        </p>
                     </div>
 
                     {payoutMethod && (
@@ -378,26 +427,6 @@ export default function SubmitPage() {
                                         payoutMethod === 'Bank Transfer' ? 'IBAN / SWIFT / Account Number' :
                                             'you@example.com'
                                 }
-                                className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                            />
-                        </motion.div>
-                    )}
-
-                    {/* Conditional Tech Stack Field */}
-                    {productType === 'saas' && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="space-y-2"
-                        >
-                            <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
-                                <Code className="w-4 h-4 mr-2 text-blue-600" /> Tech Stack
-                            </label>
-                            <input
-                                name="techStack"
-                                required
-                                type="text"
-                                placeholder="e.g. Next.js, Tailwind, Sanity"
                                 className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                             />
                         </motion.div>

@@ -11,6 +11,7 @@ import { ThemeToggle } from '../ui/ThemeToggle'
 
 const navLinks = [
     { name: 'Marketplace', href: '/' },
+    { name: 'Tools', href: '/tools' },
     { name: 'Sell Your Site', href: '/sell' },
     { name: 'Blog', href: '/blog' },
     { name: 'About', href: '/about' },
@@ -90,12 +91,6 @@ export function Navbar() {
 
                         <div className="flex items-center space-x-4 pl-4 border-l border-gray-100 dark:border-gray-900">
                             <ThemeToggle />
-                            <Link
-                                href="/"
-                                className="px-6 py-2 bg-black text-white dark:bg-white dark:text-black rounded-full text-sm font-bold hover:bg-gray-800 dark:hover:bg-gray-100 transition-all"
-                            >
-                                Get Started
-                            </Link>
                         </div>
                     </div>
 
@@ -137,13 +132,7 @@ export function Navbar() {
                                     {link.name}
                                 </Link>
                             ))}
-                            <Link
-                                href="/"
-                                className="block px-3 py-4 mt-4 bg-black text-white dark:bg-white dark:text-black rounded-xl text-center font-bold uppercase tracking-widest"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                Get Started
-                            </Link>
+
                         </div>
                     </motion.div>
                 )}

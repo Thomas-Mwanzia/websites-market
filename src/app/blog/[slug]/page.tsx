@@ -14,6 +14,7 @@ async function getPost(slug: string) {
     title,
     slug,
     publishedAt,
+    _updatedAt,
     mainImage,
     excerpt,
     body[]{
@@ -151,9 +152,23 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         headline: post.title,
         image: post.mainImage ? urlFor(post.mainImage).url() : undefined,
         datePublished: post.publishedAt,
+        dateModified: post._updatedAt || post.publishedAt,
         author: {
             '@type': 'Organization',
             name: 'Websites Arena',
+            url: 'https://websitesarena.com'
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'Websites Arena',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://websitesarena.com/icon.png'
+            }
+        },
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://websitesarena.com/blog/${post.slug.current}`
         },
         description: post.excerpt,
     }

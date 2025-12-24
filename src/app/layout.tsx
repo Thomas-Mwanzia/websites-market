@@ -32,14 +32,34 @@ export const metadata: Metadata = {
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Websites Arena",
-  "url": "https://websitesarena.com",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://websitesarena.com/shop?q={search_term_string}",
-    "query-input": "required name=search_term_string"
-  }
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "Websites Arena",
+      "url": "https://websitesarena.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://websitesarena.com/shop?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "name": "Websites Arena",
+      "url": "https://websitesarena.com",
+      "logo": "https://websitesarena.com/icon.png",
+      "sameAs": [
+        "https://twitter.com/websitesarena",
+        "https://linkedin.com/company/websitesarena"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "",
+        "contactType": "customer service",
+        "email": "support@websitesarena.com"
+      }
+    }
+  ]
 };
 
 const navigationJsonLd = {
@@ -67,6 +87,18 @@ const navigationJsonLd = {
     {
       "@type": "SiteNavigationElement",
       "position": 4,
+      "name": "Tools",
+      "url": "https://websitesarena.com/tools"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 5,
+      "name": "Blog",
+      "url": "https://websitesarena.com/blog"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 6,
       "name": "About",
       "url": "https://websitesarena.com/about"
     }

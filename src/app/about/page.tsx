@@ -4,9 +4,38 @@ import Image from 'next/image'
 
 const signature = Dancing_Script({ subsets: ['latin'] })
 
+export const metadata = {
+    title: 'About Us | Websites Arena',
+    description: 'We bridge the gap between talented creators and ambitious entrepreneurs. Buy and sell high-quality digital assets, SaaS codebases, and starter sites.',
+    openGraph: {
+        title: 'About Websites Arena',
+        description: 'We bridge the gap between talented creators and ambitious entrepreneurs. Buy and sell high-quality digital assets, SaaS codebases, and starter sites.',
+    }
+}
+
 export default function AboutPage() {
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'AboutPage',
+        name: 'About Websites Arena',
+        description: 'Websites Arena is the premier marketplace for high-quality digital assets.',
+        mainEntity: {
+            '@type': 'Organization',
+            name: 'Websites Arena',
+            foundingDate: '2024',
+            founder: {
+                '@type': 'Person',
+                name: 'Thomas Mwanzia'
+            }
+        }
+    }
+
     return (
         <div className="min-h-screen bg-white dark:bg-black">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             {/* Hero Section */}
             <section className="pt-24 pb-32 px-4 bg-white dark:bg-black">
                 <div className="max-w-7xl mx-auto text-center">

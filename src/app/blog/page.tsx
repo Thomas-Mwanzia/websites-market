@@ -2,7 +2,7 @@ import { client } from '@/sanity/lib/client'
 import { BlogList } from '@/components/blog/BlogList'
 
 async function getPosts(searchTerm?: string) {
-    let query = `*[_type == "post"] | order(publishedAt desc) [0...12] {
+    let query = `*[_type == "post"] | order(publishedAt desc) [0...20] {
     _id,
     title,
     slug,
@@ -15,7 +15,7 @@ async function getPosts(searchTerm?: string) {
         query = `*[_type == "post" && (
             title match "${searchTerm}*" || 
             excerpt match "${searchTerm}*"
-        )] | order(publishedAt desc) [0...12] {
+        )] | order(publishedAt desc) [0...20] {
             _id,
             title,
             slug,

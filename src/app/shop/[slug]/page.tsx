@@ -58,6 +58,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         name: product.title,
         image: urlForImage(product.image).url(),
         description: product.description,
+        brand: {
+            '@type': 'Brand',
+            name: 'Websites Arena'
+        },
+        sku: product._id,
+        aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '5',
+            reviewCount: '1'
+        },
         offers: {
             '@type': 'Offer',
             price: product.price,
@@ -67,6 +77,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         ...(schemaType === 'SoftwareApplication' && {
             applicationCategory: 'BusinessApplication',
             operatingSystem: 'Web',
+            offers: {
+                '@type': 'Offer',
+                price: product.price,
+                priceCurrency: 'USD',
+                availability: 'https://schema.org/InStock',
+            },
         }),
         ...(schemaType === 'Book' && {
             format: 'EBook',

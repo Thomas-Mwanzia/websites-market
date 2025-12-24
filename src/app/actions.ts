@@ -6,7 +6,7 @@ export async function fetchMorePosts(lastPublishedAt: string, lastId: string) {
   const query = `*[_type == "post" && (
     publishedAt < $lastPublishedAt ||
     (publishedAt == $lastPublishedAt && _id < $lastId)
-  )] | order(publishedAt desc) [0...12] {
+  )] | order(publishedAt desc) [0...20] {
     _id,
     title,
     slug,
@@ -28,7 +28,7 @@ export async function fetchMoreProducts(lastCreatedAt: string, lastId: string) {
   const query = `*[_type == "product" && (
     _createdAt < $lastCreatedAt ||
     (_createdAt == $lastCreatedAt && _id < $lastId)
-  )] | order(_createdAt desc) [0...12]`
+  )] | order(_createdAt desc) [0...20]`
 
   try {
     const products = await client.fetch(query, { lastCreatedAt, lastId })

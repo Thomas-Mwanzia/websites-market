@@ -14,13 +14,13 @@ interface ProductGridProps {
 export function ProductGrid({ initialProducts, searchQuery }: ProductGridProps) {
     const [products, setProducts] = useState(initialProducts)
     const [isLoadingMore, setIsLoadingMore] = useState(false)
-    const [hasMore, setHasMore] = useState(initialProducts.length === 12)
+    const [hasMore, setHasMore] = useState(initialProducts.length === 20)
     const { ref, inView } = useInView()
 
     // Reset state when search query changes
     useEffect(() => {
         setProducts(initialProducts)
-        setHasMore(initialProducts.length === 12)
+        setHasMore(initialProducts.length === 20)
     }, [initialProducts, searchQuery])
 
     const loadMore = useCallback(async () => {
@@ -31,7 +31,7 @@ export function ProductGrid({ initialProducts, searchQuery }: ProductGridProps) 
 
         try {
             const newProducts = await fetchMoreProducts(lastProduct._createdAt, lastProduct._id)
-            if (newProducts.length < 12) {
+            if (newProducts.length < 20) {
                 setHasMore(false)
             }
             setProducts(prev => [...prev, ...newProducts])

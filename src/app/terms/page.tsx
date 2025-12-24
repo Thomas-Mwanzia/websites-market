@@ -1,3 +1,8 @@
+export const metadata = {
+    title: 'Terms of Service | Websites Arena',
+    description: 'Review our Terms of Service to understand the rules and regulations for using Websites Arena.',
+}
+
 export default function TermsPage() {
     return (
         <div className="min-h-screen bg-white dark:bg-black pt-24 pb-32">

@@ -59,18 +59,20 @@ export async function POST(request: Request) {
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Product Type:</td>
                             <td style="padding: 12px 0;">${productType}</td>
                         </tr>
+                        ${url ? `
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">URL / Demo:</td>
                             <td style="padding: 12px 0;"><a href="${url}" target="_blank" style="color: #2563eb; text-decoration: none;">${url}</a></td>
-                        </tr>
+                        </tr>` : ''}
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Asking Price:</td>
                             <td style="padding: 12px 0;">$${price}</td>
                         </tr>
+                        ${assetLink ? `
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Asset / Repo Link:</td>
                             <td style="padding: 12px 0;"><a href="${assetLink}" target="_blank" style="color: #2563eb; text-decoration: none;">${assetLink}</a></td>
-                        </tr>
+                        </tr>` : ''}
                         ${file ? `
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Attached File:</td>
@@ -122,7 +124,7 @@ export async function POST(request: Request) {
                     <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb; margin: 20px 0;">
                         <h3 style="margin-top: 0; color: #2563eb;">Submission Details:</h3>
                         <p style="margin: 8px 0;"><strong>Type:</strong> ${productType}</p>
-                        <p style="margin: 8px 0;"><strong>URL:</strong> ${url}</p>
+                        ${url ? `<p style="margin: 8px 0;"><strong>URL:</strong> ${url}</p>` : ''}
                         <p style="margin: 8px 0;"><strong>Asking Price:</strong> $${price}</p>
                     </div>
 

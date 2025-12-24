@@ -1,5 +1,10 @@
 import { Mail, MessageSquare } from 'lucide-react'
 
+export const metadata = {
+    title: 'Contact Us | Websites Arena',
+    description: 'Have questions or need support? Contact the Websites Arena team for assistance with buying or selling digital assets.',
+}
+
 export default function ContactPage() {
     return (
         <div className="min-h-screen bg-white dark:bg-black pt-24 pb-32">

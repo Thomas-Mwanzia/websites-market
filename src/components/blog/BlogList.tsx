@@ -24,7 +24,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
 
     // Infinite Scroll State
     const [isLoadingMore, setIsLoadingMore] = useState(false)
-    const [hasMore, setHasMore] = useState(initialPosts.length === 12)
+    const [hasMore, setHasMore] = useState(initialPosts.length === 20)
     const { ref, inView } = useInView()
 
     // Load More Logic
@@ -36,7 +36,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
 
         try {
             const newPosts = await fetchMorePosts(lastPost.publishedAt, lastPost._id)
-            if (newPosts.length < 12) {
+            if (newPosts.length < 20) {
                 setHasMore(false)
             }
             setPosts(prev => [...prev, ...newPosts])
