@@ -63,7 +63,7 @@ export function Navbar() {
                                 <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                                 <input
                                     type="text"
-                                    placeholder="Search..."
+                                    placeholder="Search for a product..."
                                     defaultValue={searchParams.get('q') || ''}
                                     onChange={(e) => handleSearch(e.target.value)}
                                     className="w-full pl-10 sm:pl-14 pr-6 py-2.5 sm:py-3 bg-gray-100 dark:bg-gray-900 border-none rounded-full text-sm sm:text-base focus:ring-2 focus:ring-blue-600 outline-none transition-all shadow-sm"
