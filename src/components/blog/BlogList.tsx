@@ -117,7 +117,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         placeholder="Type to search..."
-                                        className="w-full pl-10 pr-10 py-3 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-lg"
+                                        className="w-full pl-12 pr-12 py-3 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-lg text-sm sm:text-base"
                                     />
                                     <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <button
