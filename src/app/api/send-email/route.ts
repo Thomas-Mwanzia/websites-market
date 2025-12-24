@@ -20,7 +20,14 @@ export async function POST(request: Request) {
         const description = formData.get('description') as string;
         const email = formData.get('email') as string;
         const payoutMethod = formData.get('payoutMethod') as string;
-        const payoutDetails = formData.get('payoutDetails') as string;
+        // Structured Payout Data
+        const accountName = formData.get('accountName') as string;
+        const iban = formData.get('iban') as string;
+        const swift = formData.get('swift') as string;
+        const bankName = formData.get('bankName') as string;
+        const cryptoNetwork = formData.get('cryptoNetwork') as string;
+        const walletAddress = formData.get('walletAddress') as string;
+        const payoutEmail = formData.get('payoutEmail') as string;
         const videoPreviewLink = formData.get('videoPreviewLink') as string;
         const file = formData.get('file') as File | null;
 
@@ -96,6 +103,29 @@ export async function POST(request: Request) {
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Payout Method:</td>
                             <td style="padding: 12px 0;">${payoutMethod}</td>
                         </tr>
+                        ${payoutMethod === 'Bank Transfer' ? `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Bank Details:</td>
+                            <td style="padding: 12px 0;">
+                                <strong>Name:</strong> ${accountName}<br>
+                                <strong>Bank:</strong> ${bankName}<br>
+                                <strong>IBAN:</strong> ${iban}<br>
+                                <strong>SWIFT:</strong> ${swift}
+                            </td>
+                        </tr>` : ''}
+                        ${payoutMethod === 'Crypto' ? `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Crypto Details:</td>
+                            <td style="padding: 12px 0;">
+                                <strong>Network:</strong> ${cryptoNetwork}<br>
+                                <strong>Address:</strong> ${walletAddress}
+                            </td>
+                        </tr>` : ''}
+                        ${['PayPal', 'Wise'].includes(payoutMethod) ? `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Payout Email:</td>
+                            <td style="padding: 12px 0;">${payoutEmail}</td>
+                        </tr>` : ''}
                     </table>
                     
                     <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">

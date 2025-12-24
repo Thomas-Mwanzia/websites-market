@@ -25,7 +25,15 @@ export default function SubmitPage() {
         traffic: '',
         age: '',
         resolution: '',
-        format: ''
+        format: '',
+        // Payout Details
+        accountName: '',
+        iban: '',
+        swift: '',
+        bankName: '',
+        cryptoNetwork: '',
+        walletAddress: '',
+        payoutEmail: ''
     })
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +62,19 @@ export default function SubmitPage() {
         const submitData = new FormData(e.target as HTMLFormElement)
         submitData.set('productType', productType)
         submitData.set('captchaToken', captchaToken!)
+
+        // Append structured payout data
+        if (payoutMethod === 'Bank Transfer') {
+            submitData.set('accountName', formData.accountName)
+            submitData.set('iban', formData.iban)
+            submitData.set('swift', formData.swift)
+            submitData.set('bankName', formData.bankName)
+        } else if (payoutMethod === 'Crypto') {
+            submitData.set('walletAddress', formData.walletAddress)
+            submitData.set('cryptoNetwork', formData.cryptoNetwork)
+        } else {
+            submitData.set('payoutEmail', formData.payoutEmail)
+        }
 
         if (submissionMethod === 'file' && !selectedFile && !['saas', 'course'].includes(productType)) {
             toast.error('Please select a file to upload.')
@@ -410,25 +431,118 @@ export default function SubmitPage() {
                         <motion.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
-                            className="space-y-2"
+                            className="space-y-4 bg-gray-50 dark:bg-gray-900/50 p-6 rounded-2xl border border-gray-200 dark:border-gray-800"
                         >
-                            <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
-                                <DollarSign className="w-4 h-4 mr-2 text-blue-600" />
-                                {payoutMethod === 'Crypto' ? 'Wallet Address (USDT/USDC)' :
-                                    payoutMethod === 'Bank Transfer' ? 'Bank Details (IBAN/SWIFT)' :
-                                        `${payoutMethod} Email`}
-                            </label>
-                            <input
-                                name="payoutDetails"
-                                required
-                                type="text"
-                                placeholder={
-                                    payoutMethod === 'Crypto' ? '0x...' :
-                                        payoutMethod === 'Bank Transfer' ? 'IBAN / SWIFT / Account Number' :
-                                            'you@example.com'
-                                }
-                                className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                            />
+                            {payoutMethod === 'Bank Transfer' && (
+                                <>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                                Account Holder Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="e.g. John Doe"
+                                                value={formData.accountName}
+                                                onChange={(e) => setFormData({ ...formData, accountName: e.target.value })}
+                                                className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                                Bank Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                required
+                                                placeholder="e.g. Chase Bank"
+                                                value={formData.bankName}
+                                                onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
+                                                className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                            IBAN / Account Number
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            placeholder="e.g. US123456789"
+                                            value={formData.iban}
+                                            onChange={(e) => setFormData({ ...formData, iban: e.target.value })}
+                                            className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                            SWIFT / BIC Code
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            placeholder="e.g. CHASUS33"
+                                            value={formData.swift}
+                                            onChange={(e) => setFormData({ ...formData, swift: e.target.value })}
+                                            className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                        />
+                                        <p className="text-xs text-gray-500">Required for international transfers.</p>
+                                    </div>
+                                </>
+                            )}
+
+                            {payoutMethod === 'Crypto' && (
+                                <>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                            Network
+                                        </label>
+                                        <select
+                                            required
+                                            value={formData.cryptoNetwork}
+                                            onChange={(e) => setFormData({ ...formData, cryptoNetwork: e.target.value })}
+                                            className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                        >
+                                            <option value="">Select Network...</option>
+                                            <option value="ERC20">Ethereum (ERC20)</option>
+                                            <option value="TRC20">Tron (TRC20)</option>
+                                            <option value="SOL">Solana</option>
+                                            <option value="BTC">Bitcoin</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                            Wallet Address
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            placeholder="0x..."
+                                            value={formData.walletAddress}
+                                            onChange={(e) => setFormData({ ...formData, walletAddress: e.target.value })}
+                                            className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                        />
+                                    </div>
+                                </>
+                            )}
+
+                            {['PayPal', 'Wise'].includes(payoutMethod) && (
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
+                                        {payoutMethod} Email Address
+                                    </label>
+                                    <input
+                                        type="email"
+                                        required
+                                        placeholder="you@example.com"
+                                        value={formData.payoutEmail}
+                                        onChange={(e) => setFormData({ ...formData, payoutEmail: e.target.value })}
+                                        className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                    />
+                                </div>
+                            )}
                         </motion.div>
                     )}
 

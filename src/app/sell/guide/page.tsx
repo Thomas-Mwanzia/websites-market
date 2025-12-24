@@ -31,12 +31,12 @@ export default function SellGuidePage() {
             title: "Prepare Your Asset",
             description: "Ensure your product is ready for the public. For code, clean it up. For PDFs, ensure high-quality formatting.",
             details: [
-                "Clean, well-commented code (for SaaS)",
-                "High-resolution PDF/Images (for E-books)",
-                "Complete documentation",
+                "Clean code & documentation (SaaS)",
+                "High-res files & Model Releases (Art/Media)",
+                "Course curriculum & video links (Courses)",
+                "Ownership proof (Domains)",
                 "Working demo link",
-                "No personal data included",
-                "SaaS: Upload as ZIP with README.md (Setup Guide) & LICENSE"
+                "SaaS: Upload as ZIP with README.md"
             ],
             icon: FileCheck
         },
@@ -130,7 +130,7 @@ export default function SellGuidePage() {
     const faqs = [
         {
             question: "What can I sell?",
-            answer: "We accept starter websites, micro-SaaS projects, e-books (PDF), UI kits (Figma), Notion templates, and more. If it's digital and valuable, you can sell it."
+            answer: "We accept starter websites, micro-SaaS, e-books, courses, photography, video footage, digital art, templates (Figma/Notion), and premium domains. If it's digital and valuable, you can sell it."
         },
         {
             question: "How do I deliver the file?",
