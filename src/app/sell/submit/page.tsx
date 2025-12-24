@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent } from 'react'
-import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video, GraduationCap, Camera, Image as ImageIcon, Film } from 'lucide-react'
+import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video, GraduationCap, Camera, Image as ImageIcon, Film, Calendar, RotateCcw } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
@@ -16,6 +16,7 @@ export default function SubmitPage() {
     const [productType, setProductType] = useState('saas')
     const [submissionMethod, setSubmissionMethod] = useState<'link' | 'file'>('link')
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [ownershipProofImages, setOwnershipProofImages] = useState<File[]>([])
     const [captchaToken, setCaptchaToken] = useState<string | null>(null)
 
     // Form Data State
@@ -26,6 +27,15 @@ export default function SubmitPage() {
         age: '',
         resolution: '',
         format: '',
+        // Domain-specific fields
+        domainName: '',
+        registrar: '',
+        customRegistrar: '',
+        registrationDate: '',
+        expiryDate: '',
+        purchasePrice: '',
+        yearlyRenewal: '',
+        renewalDate: '',
         // Payout Details
         accountName: '',
         iban: '',
@@ -55,6 +65,27 @@ export default function SubmitPage() {
         }
     }
 
+    const handleOwnershipProofChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const files = Array.from(e.target.files)
+            const validFiles = files.filter(file => {
+                if (file.size > 5 * 1024 * 1024) { // 5MB per image
+                    toast.error(`${file.name} is too large (Max 5MB per image)`, {
+                        icon: '⚠️',
+                        style: {
+                            borderRadius: '10px',
+                            background: '#333',
+                            color: '#fff',
+                        },
+                    })
+                    return false
+                }
+                return true
+            })
+            setOwnershipProofImages(validFiles)
+        }
+    }
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         setIsSubmitting(true)
@@ -76,8 +107,31 @@ export default function SubmitPage() {
             submitData.set('payoutEmail', formData.payoutEmail)
         }
 
-        if (submissionMethod === 'file' && !selectedFile && !['saas', 'course'].includes(productType)) {
+        // Append domain-specific data
+        if (productType === 'domain') {
+            submitData.set('domainName', formData.domainName)
+            submitData.set('registrar', formData.registrar === 'Other' ? formData.customRegistrar : formData.registrar)
+            submitData.set('registrationDate', formData.registrationDate)
+            submitData.set('expiryDate', formData.expiryDate)
+            submitData.set('purchasePrice', formData.purchasePrice)
+            submitData.set('yearlyRenewal', formData.yearlyRenewal)
+            submitData.set('renewalDate', formData.renewalDate)
+
+            // Append ownership proof images
+            ownershipProofImages.forEach((image, index) => {
+                submitData.append(`ownershipProof${index}`, image)
+            })
+            submitData.set('ownershipProofCount', ownershipProofImages.length.toString())
+        }
+
+        if (submissionMethod === 'file' && !selectedFile && !['saas', 'course', 'domain'].includes(productType)) {
             toast.error('Please select a file to upload.')
+            setIsSubmitting(false)
+            return
+        }
+
+        if (productType === 'domain' && ownershipProofImages.length === 0) {
+            toast.error('Please upload at least one ownership proof image.')
             setIsSubmitting(false)
             return
         }
@@ -162,6 +216,7 @@ export default function SubmitPage() {
                             { id: 'Photography', label: 'Photo', icon: Camera },
                             { id: 'Video Footage', label: 'Video', icon: Film },
                             { id: 'Digital Art', label: 'Art', icon: ImageIcon },
+                            { id: 'domain', label: 'Domain', icon: Globe },
                         ].map((type) => {
                             const Icon = type.icon
                             return (
@@ -186,8 +241,211 @@ export default function SubmitPage() {
                         })}
                     </div>
 
+                    {/* Domain-Specific Fields */}
+                    {productType === 'domain' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <Globe className="w-4 h-4 mr-2 text-blue-600" /> Domain Name
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="example.com"
+                                    value={formData.domainName}
+                                    onChange={(e) => setFormData({ ...formData, domainName: e.target.value })}
+                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <Shield className="w-4 h-4 mr-2 text-blue-600" /> Registrar
+                                </label>
+                                <div className="relative">
+                                    <AnimatePresence mode="wait">
+                                        {formData.registrar !== 'Other' ? (
+                                            <motion.div
+                                                key="select-mode"
+                                                initial={{ opacity: 0, scale: 0.95 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.95 }}
+                                                transition={{ duration: 0.2 }}
+                                            >
+                                                <select
+                                                    required
+                                                    value={formData.registrar}
+                                                    onChange={(e) => setFormData({ ...formData, registrar: e.target.value, customRegistrar: e.target.value !== 'Other' ? '' : formData.customRegistrar })}
+                                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all appearance-none cursor-pointer hover:border-gray-300 dark:hover:border-gray-700"
+                                                    style={{
+                                                        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                                                        backgroundPosition: 'right 1rem center',
+                                                        backgroundRepeat: 'no-repeat',
+                                                        backgroundSize: '1.5em 1.5em',
+                                                        paddingRight: '3rem'
+                                                    }}
+                                                >
+                                                    <option value="" disabled>Select registrar...</option>
+                                                    <optgroup label="Popular Registrars">
+                                                        <option value="GoDaddy">GoDaddy</option>
+                                                        <option value="Namecheap">Namecheap</option>
+                                                        <option value="Cloudflare">Cloudflare</option>
+                                                        <option value="Porkbun">Porkbun</option>
+                                                        <option value="Google Domains">Google Domains</option>
+                                                    </optgroup>
+                                                    <optgroup label="Other Registrars">
+                                                        <option value="Name.com">Name.com</option>
+                                                        <option value="Hover">Hover</option>
+                                                        <option value="Dynadot">Dynadot</option>
+                                                        <option value="Domain.com">Domain.com</option>
+                                                        <option value="NameSilo">NameSilo</option>
+                                                        <option value="Gandi">Gandi</option>
+                                                        <option value="Network Solutions">Network Solutions</option>
+                                                        <option value="IONOS">IONOS (1&1)</option>
+                                                        <option value="Bluehost">Bluehost</option>
+                                                        <option value="Hostinger">Hostinger</option>
+                                                    </optgroup>
+                                                    <optgroup label="Custom">
+                                                        <option value="Other">Other (Type manually)</option>
+                                                    </optgroup>
+                                                </select>
+                                            </motion.div>
+                                        ) : (
+                                            <motion.div
+                                                key="input-mode"
+                                                initial={{ opacity: 0, scale: 0.95 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                exit={{ opacity: 0, scale: 0.95 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="relative"
+                                            >
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    autoFocus
+                                                    placeholder="Type registrar name..."
+                                                    value={formData.customRegistrar}
+                                                    onChange={(e) => setFormData({ ...formData, customRegistrar: e.target.value })}
+                                                    className="w-full px-6 py-4 bg-white dark:bg-gray-800 border-2 border-blue-600 dark:border-blue-500 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all placeholder:text-gray-400 pr-12"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, registrar: '', customRegistrar: '' })}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                                                    title="Back to list"
+                                                >
+                                                    <RotateCcw className="w-5 h-5" />
+                                                </button>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <Calendar className="w-4 h-4 mr-2 text-blue-600" /> Registration Date
+                                </label>
+                                <input
+                                    type="date"
+                                    required
+                                    value={formData.registrationDate}
+                                    onChange={(e) => setFormData({ ...formData, registrationDate: e.target.value })}
+                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <Calendar className="w-4 h-4 mr-2 text-blue-600" /> Expiry Date
+                                </label>
+                                <input
+                                    type="date"
+                                    required
+                                    value={formData.expiryDate}
+                                    onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <DollarSign className="w-4 h-4 mr-2 text-blue-600" /> Purchase Price ($)
+                                </label>
+                                <input
+                                    type="number"
+                                    required
+                                    placeholder="e.g. 500"
+                                    value={formData.purchasePrice}
+                                    onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
+                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                                <p className="text-xs text-gray-500">How much you originally paid for this domain</p>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <DollarSign className="w-4 h-4 mr-2 text-blue-600" /> Yearly Renewal ($)
+                                </label>
+                                <input
+                                    type="number"
+                                    required
+                                    placeholder="e.g. 15"
+                                    value={formData.yearlyRenewal}
+                                    onChange={(e) => setFormData({ ...formData, yearlyRenewal: e.target.value })}
+                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                                <p className="text-xs text-gray-500">Annual renewal cost at your registrar</p>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <Calendar className="w-4 h-4 mr-2 text-blue-600" /> Next Renewal Date
+                                </label>
+                                <input
+                                    type="date"
+                                    required
+                                    value={formData.renewalDate}
+                                    onChange={(e) => setFormData({ ...formData, renewalDate: e.target.value })}
+                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                />
+                            </div>
+                            <div className="space-y-2 md:col-span-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <Shield className="w-4 h-4 mr-2 text-blue-600" /> Proof of Ownership
+                                </label>
+                                <div className="relative group">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        required
+                                        onChange={handleOwnershipProofChange}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                    />
+                                    <div className="w-full px-6 py-8 bg-gray-50 dark:bg-gray-900 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl group-hover:border-blue-500 transition-colors flex flex-col items-center justify-center text-center">
+                                        {ownershipProofImages.length > 0 ? (
+                                            <>
+                                                <CheckCircle2 className="w-8 h-8 text-green-500 mb-2" />
+                                                <span className="font-bold text-gray-900 dark:text-white">
+                                                    {ownershipProofImages.length} image{ownershipProofImages.length > 1 ? 's' : ''} selected
+                                                </span>
+                                                <div className="mt-2 text-sm text-gray-500">
+                                                    {ownershipProofImages.map((file, idx) => (
+                                                        <div key={idx}>{file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)</div>
+                                                    ))}
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                                                <span className="font-bold text-gray-900 dark:text-white">Click to Upload Ownership Proof</span>
+                                                <span className="text-sm text-gray-500">Screenshots from registrar (PNG, JPG - Max 5MB each)</span>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                                <p className="text-xs text-gray-500">Upload screenshots showing you own this domain (e.g., registrar dashboard)</p>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {!['ebook', 'Photography', 'Video Footage', 'Digital Art'].includes(productType) && (
+                        {!['ebook', 'Photography', 'Video Footage', 'Digital Art', 'domain'].includes(productType) && (
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
                                     <Globe className="w-4 h-4 mr-2 text-blue-600" />
@@ -216,8 +474,8 @@ export default function SubmitPage() {
                         </div>
                     </div>
 
-                    {/* Business Metrics - Hidden for Asset Categories */}
-                    {!ASSET_CATEGORIES.includes(productType) && (
+                    {/* Business Metrics - Hidden for Asset Categories and Domains */}
+                    {!ASSET_CATEGORIES.includes(productType) && productType !== 'domain' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">
@@ -306,94 +564,99 @@ export default function SubmitPage() {
                         </div>
                     )}
 
-                    {/* Asset Delivery Section */}
-                    <div className="space-y-4">
-                        <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
-                            {productType === 'saas' ? (
-                                <><Code className="w-4 h-4 mr-2 text-blue-600" /> Source Code / Repo</>
-                            ) : productType === 'course' ? (
-                                <><LinkIcon className="w-4 h-4 mr-2 text-blue-600" /> Course Link</>
-                            ) : (
-                                <><Upload className="w-4 h-4 mr-2 text-blue-600" /> Asset Delivery</>
+                    {/* Asset Delivery Section - Hidden for Domains */}
+                    {productType !== 'domain' && (
+                        <div className="space-y-4">
+                            <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                {productType === 'saas' ? (
+                                    <><Code className="w-4 h-4 mr-2 text-blue-600" /> Source Code / Repo</>
+                                ) : productType === 'course' ? (
+                                    <><LinkIcon className="w-4 h-4 mr-2 text-blue-600" /> Course Link</>
+                                ) : (
+                                    <><Upload className="w-4 h-4 mr-2 text-blue-600" /> Asset Delivery</>
+                                )}
+                            </label>
+
+                            {!['saas', 'course'].includes(productType) && (
+                                <div className="flex bg-gray-100 dark:bg-gray-900 p-1 rounded-xl w-fit mb-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setSubmissionMethod('link')}
+                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${submissionMethod === 'link'
+                                            ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
+                                            : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
+                                            }`}
+                                    >
+                                        Share Link
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSubmissionMethod('file')}
+                                        className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${submissionMethod === 'file'
+                                            ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
+                                            : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
+                                            }`}
+                                    >
+                                        Upload File
+                                    </button>
+                                </div>
                             )}
-                        </label>
 
-                        {!['saas', 'course'].includes(productType) && (
-                            <div className="flex bg-gray-100 dark:bg-gray-900 p-1 rounded-xl w-fit mb-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setSubmissionMethod('link')}
-                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${submissionMethod === 'link'
-                                        ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
-                                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
-                                        }`}
-                                >
-                                    Share Link
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setSubmissionMethod('file')}
-                                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${submissionMethod === 'file'
-                                        ? 'bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm'
-                                        : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-300'
-                                        }`}
-                                >
-                                    Upload File
-                                </button>
-                            </div>
-                        )}
-
-                        <AnimatePresence mode="wait">
-                            {submissionMethod === 'link' || ['saas', 'course'].includes(productType) ? (
-                                <motion.div
-                                    key="link-input"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                >
-                                    <input
-                                        name="assetLink"
-                                        required={submissionMethod === 'link'}
-                                        type="url"
-                                        placeholder={productType === 'saas' ? "https://github.com/username/repo" : "https://dropbox.com/s/..."}
-                                        className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
-                                    />
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    key="file-input"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                >
-                                    <div className="relative group">
+                            <AnimatePresence mode="wait">
+                                {submissionMethod === 'link' || ['saas', 'course'].includes(productType) ? (
+                                    <motion.div
+                                        key="link-input"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                    >
                                         <input
-                                            name="file"
-                                            type="file"
-                                            accept=".pdf,.zip,.rar,.png,.jpg"
-                                            onChange={handleFileChange}
-                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                            name="assetLink"
+                                            required={submissionMethod === 'link'}
+                                            type="url"
+                                            placeholder={
+                                                productType === 'saas' ? "https://github.com/username/repo" :
+                                                    "https://dropbox.com/s/..."
+                                            }
+                                            className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                                         />
-                                        <div className="w-full px-6 py-8 bg-gray-50 dark:bg-gray-900 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl group-hover:border-blue-500 transition-colors flex flex-col items-center justify-center text-center">
-                                            {selectedFile ? (
-                                                <>
-                                                    <CheckCircle2 className="w-8 h-8 text-green-500 mb-2" />
-                                                    <span className="font-bold text-gray-900 dark:text-white">{selectedFile.name}</span>
-                                                    <span className="text-sm text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                                                    <span className="font-bold text-gray-900 dark:text-white">Click to Upload File</span>
-                                                    <span className="text-sm text-gray-500">PDF, ZIP, Images (Max 10MB)</span>
-                                                </>
-                                            )}
+                                    </motion.div>
+                                ) : (
+                                    <motion.div
+                                        key="file-input"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                    >
+                                        <div className="relative group">
+                                            <input
+                                                name="file"
+                                                type="file"
+                                                accept=".pdf,.zip,.rar,.png,.jpg"
+                                                onChange={handleFileChange}
+                                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                            />
+                                            <div className="w-full px-6 py-8 bg-gray-50 dark:bg-gray-900 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl group-hover:border-blue-500 transition-colors flex flex-col items-center justify-center text-center">
+                                                {selectedFile ? (
+                                                    <>
+                                                        <CheckCircle2 className="w-8 h-8 text-green-500 mb-2" />
+                                                        <span className="font-bold text-gray-900 dark:text-white">{selectedFile.name}</span>
+                                                        <span className="text-sm text-gray-500">{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Upload className="w-8 h-8 text-gray-400 mb-2" />
+                                                        <span className="font-bold text-gray-900 dark:text-white">Click to Upload File</span>
+                                                        <span className="text-sm text-gray-500">PDF, ZIP, Images (Max 10MB)</span>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    )}
 
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">

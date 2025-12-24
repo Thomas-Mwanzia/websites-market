@@ -20,9 +20,9 @@ export function Footer() {
                                 Websites Arena
                             </span>
                         </Link>
-                        <p className="text-gray-500 dark:text-gray-400 max-w-sm font-medium">
-                            The premier marketplace for buying and selling high-quality starter websites.
-                            Start your online business journey today.
+                        <p className="text-gray-500 dark:text-gray-400 max-w-sm font-medium leading-relaxed">
+                            The premier global marketplace for buying and selling high-quality starter websites, SaaS projects, and online businesses.
+                            Start your digital entrepreneurship journey today with hand-vetted assets ready for launch.
                         </p>
                     </div>
 
@@ -30,7 +30,7 @@ export function Footer() {
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-widest">Marketplace</h3>
                         <ul className="space-y-4">
                             <li><Link href="/shop" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">Browse Sites</Link></li>
-                            <li><Link href="/sell" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">Sell a Site</Link></li>
+                            <li><Link href="/sell" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">Sell</Link></li>
                             <li><Link href="/about" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">How it Works</Link></li>
                         </ul>
                     </div>

@@ -51,7 +51,7 @@ export default async function Home({
           )}
           {!q && (
             <p className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto font-medium leading-relaxed">
-              Discover profitable starter websites, micro-SaaS projects, courses, templates, and premium digital assets. Hand-vetted and ready for launch.
+              Discover profitable starter websites, micro-SaaS projects, courses, templates, and premium digital assets. Hand-vetted and ready for use and for launch.
             </p>
           )}
         </div>

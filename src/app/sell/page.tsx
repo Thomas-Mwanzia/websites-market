@@ -56,7 +56,7 @@ export default function SellPage() {
                                 <Code2 className="w-6 h-6" />
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">SaaS & Websites</h3>
-                            <p className="text-gray-500 dark:text-gray-400">Next.js starters, micro-SaaS projects, and niche blogs.</p>
+                            <p className="text-gray-500 dark:text-gray-400">modern tech stack websites, micro-SaaS projects, and niche blogs among others.</p>
                         </div>
                         <div className="p-8 bg-white dark:bg-black rounded-3xl border border-gray-200 dark:border-gray-800 hover:border-blue-500 transition-colors group">
                             <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center mb-6 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">

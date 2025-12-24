@@ -9,7 +9,7 @@ import { ScrollToTop } from "@/components/ui/ScrollToTop";
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Websites Arena | Buy & Sell Digital Assets, Websites & Templates",
+  title: "Websites Arena | Buy & Sell Digital Assets, Websites, Online businesses & Templates",
   description: "The premier marketplace for buying and selling premium digital assets: starter websites, SaaS codebases, e-books, design templates, and more.",
   applicationName: "Websites Arena",
   keywords: ["buy website", "starter site", "digital assets", "micro saas", "e-books", "templates", "ui kits", "online business", "websites arena", "web arena", "webs arena", "website arena", "dev arena", "site arena", "flippa alternative", "acquire.com alternative", "tiny acquisitions alternative"],
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     apple: "/apple-icon.png",
   },
   openGraph: {
-    title: "Websites Arena | Buy & Sell Digital Assets, Websites & Templates",
+    title: "Websites Arena | Buy & Sell Digital Assets, Websites, Online businesses & Templates",
     description: "The premier marketplace for buying and selling premium digital assets: starter websites, SaaS codebases, e-books, design templates, and more.",
     url: "https://websitesarena.com",
     siteName: "Websites Arena",

@@ -12,7 +12,7 @@ import { ThemeToggle } from '../ui/ThemeToggle'
 const navLinks = [
     { name: 'Marketplace', href: '/' },
     { name: 'Tools', href: '/tools' },
-    { name: 'Sell Your Site', href: '/sell' },
+    { name: 'Sell', href: '/sell' },
     { name: 'Blog', href: '/blog' },
     { name: 'About', href: '/about' },
 ]

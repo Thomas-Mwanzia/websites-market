@@ -20,6 +20,28 @@ export async function POST(request: Request) {
         const description = formData.get('description') as string;
         const email = formData.get('email') as string;
         const payoutMethod = formData.get('payoutMethod') as string;
+        // Domain-specific fields
+        const domainName = formData.get('domainName') as string;
+        const registrar = formData.get('registrar') as string;
+        const registrationDate = formData.get('registrationDate') as string;
+        const expiryDate = formData.get('expiryDate') as string;
+        const purchasePrice = formData.get('purchasePrice') as string;
+        const yearlyRenewal = formData.get('yearlyRenewal') as string;
+        const renewalDate = formData.get('renewalDate') as string;
+        const ownershipProofCount = parseInt(formData.get('ownershipProofCount') as string || '0');
+
+        // Collect ownership proof images
+        const ownershipProofImages: { filename: string; content: Buffer }[] = [];
+        for (let i = 0; i < ownershipProofCount; i++) {
+            const proofImage = formData.get(`ownershipProof${i}`) as File | null;
+            if (proofImage && proofImage.size > 0) {
+                const buffer = Buffer.from(await proofImage.arrayBuffer());
+                ownershipProofImages.push({
+                    filename: proofImage.name,
+                    content: buffer,
+                });
+            }
+        }
         // Structured Payout Data
         const accountName = formData.get('accountName') as string;
         const iban = formData.get('iban') as string;
@@ -53,6 +75,9 @@ export async function POST(request: Request) {
                 content: buffer,
             });
         }
+
+        // Add ownership proof images as attachments
+        attachments.push(...ownershipProofImages);
 
         // Admin notification email template
         const adminEmailHtml = `
@@ -94,6 +119,25 @@ export async function POST(request: Request) {
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Video Preview:</td>
                             <td style="padding: 12px 0;"><a href="${videoPreviewLink}" target="_blank" style="color: #2563eb; text-decoration: none;">${videoPreviewLink}</a></td>
+                        </tr>` : ''}
+                        ${productType === 'domain' && domainName ? `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Domain Details:</td>
+                            <td style="padding: 12px 0;">
+                                <strong>Domain:</strong> ${domainName}<br>
+                                <strong>Registrar:</strong> ${registrar}<br>
+                                <strong>Registered:</strong> ${registrationDate}<br>
+                                <strong>Expires:</strong> ${expiryDate}<br>
+                                <strong>Next Renewal:</strong> ${renewalDate}
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Domain Financials:</td>
+                            <td style="padding: 12px 0;">
+                                <strong>Purchase Price:</strong> $${purchasePrice}<br>
+                                <strong>Yearly Renewal:</strong> $${yearlyRenewal}<br>
+                                <strong>Ownership Proofs:</strong> ${ownershipProofCount} image(s) attached
+                            </td>
                         </tr>` : ''}
                         <tr style="border-bottom: 1px solid #e5e7eb;">
                             <td style="padding: 12px 0; font-weight: bold; color: #2563eb;">Seller Email:</td>
@@ -155,6 +199,7 @@ export async function POST(request: Request) {
                         <h3 style="margin-top: 0; color: #2563eb;">Submission Details:</h3>
                         <p style="margin: 8px 0;"><strong>Type:</strong> ${productType}</p>
                         ${url ? `<p style="margin: 8px 0;"><strong>URL:</strong> ${url}</p>` : ''}
+                        ${productType === 'domain' && domainName ? `<p style="margin: 8px 0;"><strong>Domain:</strong> ${domainName}</p>` : ''}
                         <p style="margin: 8px 0;"><strong>Asking Price:</strong> $${price}</p>
                     </div>
 
