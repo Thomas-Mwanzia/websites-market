@@ -14,7 +14,7 @@ export default function Page() {
     const jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'SoftwareApplication',
-        name: 'Readme Architect',
+        name: 'Readme Generator',
         applicationCategory: 'DeveloperApplication',
         operatingSystem: 'Web',
         offers: {

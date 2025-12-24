@@ -65,7 +65,7 @@ export default function ToolsPage() {
 
                     <ToolCard
                         href="/tools/valuation"
-                        title="SaaS Price Valuation"
+                        title="Website Worth Calculator"
                         description="Estimate the selling price of your project based on revenue, traffic, and tech stack."
                         icon={Calculator}
                         color="text-green-600"
@@ -98,7 +98,7 @@ export default function ToolsPage() {
 
                     <ToolCard
                         href="/tools/social-preview"
-                        title="Social Preview"
+                        title="Open Graph Generator"
                         description="Design and generate perfect Open Graph meta tags for your product launch."
                         icon={Share2}
                         color="text-pink-600"
@@ -109,7 +109,7 @@ export default function ToolsPage() {
 
                     <ToolCard
                         href="/tools/readme"
-                        title="Readme Architect"
+                        title="Readme Generator"
                         description="Build beautiful documentation for your GitHub repositories effortlessly."
                         icon={FileText}
                         color="text-indigo-600"
@@ -120,7 +120,7 @@ export default function ToolsPage() {
 
                     <ToolCard
                         href="/tools/model-release"
-                        title="Model Release Generator"
+                        title="Model Release Form Generator"
                         description="Create legally binding consent forms for models. Essential for selling stock photography."
                         icon={FileSignature}
                         color="text-rose-600"

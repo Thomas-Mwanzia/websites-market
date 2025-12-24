@@ -14,7 +14,7 @@ export default function Page() {
     const jsonLd = {
         '@context': 'https://schema.org',
         '@type': 'SoftwareApplication',
-        name: 'Model Release Generator',
+        name: 'Model Release Form Generator',
         applicationCategory: 'LegalApplication',
         operatingSystem: 'Web',
         offers: {
