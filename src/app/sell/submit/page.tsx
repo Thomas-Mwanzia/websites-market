@@ -817,7 +817,11 @@ export default function SubmitPage() {
                             name="description"
                             required
                             rows={6}
-                            placeholder="Tell us about your project, what's included, and why it's valuable..."
+                            placeholder={
+                                productType === 'domain'
+                                    ? "Tell us about this domain, its history, and why it's valuable..."
+                                    : "Tell us about your project, what's included, and why it's valuable..."
+                            }
                             className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all resize-none"
                         />
                     </div>
@@ -845,7 +849,11 @@ export default function SubmitPage() {
                         <div>
                             <h4 className="font-bold text-gray-900 dark:text-white mb-2">Our Vetting Process</h4>
                             <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                                We manually review every submission to ensure it meets our quality standards. This includes checking for clean code, responsive design, and legitimate business potential.
+                                {productType === 'domain'
+                                    ? "We manually review every domain submission to ensure its value and legitimacy. This includes checking domain authority, history, and market potential."
+                                    : ['saas', 'template', 'course'].includes(productType)
+                                        ? "We manually review every submission to ensure it meets our quality standards. This includes checking for clean code, responsive design, and legitimate business potential."
+                                        : "We manually review every submission to ensure it meets our quality standards. This includes checking for content quality, value, and legitimate potential."}
                             </p>
                         </div>
                     </div>

@@ -173,7 +173,7 @@ export async function POST(request: Request) {
                     </table>
                     
                     <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-                        <h3 style="color: #2563eb; margin-top: 0;">Project Description:</h3>
+                        <h3 style="color: #2563eb; margin-top: 0;">${productType === 'domain' ? 'Domain' : 'Project'} Description:</h3>
                         <p style="line-height: 1.6; color: #666;">${description}</p>
                     </div>
                 </div>
@@ -192,7 +192,7 @@ export async function POST(request: Request) {
                 <div style="background: #f9fafb; padding: 30px; border: 1px solid #e5e7eb;">
                     <p style="font-size: 16px; line-height: 1.6;">Hi there,</p>
                     <p style="line-height: 1.6; color: #666;">
-                        Thank you for submitting your project to <strong>Websites Arena</strong>! We've received your submission and our team will review it shortly.
+                        Thank you for submitting your ${productType === 'domain' ? 'domain' : 'project'} to <strong>Websites Arena</strong>! We've received your submission and our team will review it shortly.
                     </p>
                     
                     <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #2563eb; margin: 20px 0;">
@@ -205,7 +205,12 @@ export async function POST(request: Request) {
 
                     <h3 style="color: #2563eb; margin-top: 24px;">What's Next?</h3>
                     <ol style="line-height: 1.8; color: #666;">
-                        <li><strong>Review Process (24-48 hours):</strong> Our team will evaluate your project's code quality, design, and potential.</li>
+                        <li><strong>Review Process (24-48 hours):</strong> Our team will evaluate your ${productType === 'domain'
+                ? 'domain\'s value and market potential'
+                : ['saas', 'template', 'course'].includes(productType)
+                    ? 'project\'s code quality, design, and potential'
+                    : 'asset\'s quality, value, and potential'
+            }.</li>
                         <li><strong>Approval Notification:</strong> We'll email you with the status and any feedback.</li>
                         <li><strong>Live on Marketplace:</strong> Once approved, your listing goes live to thousands of buyers.</li>
                         <li><strong>Get Paid:</strong> When your site sells, you keep 85% of the profit.</li>
@@ -226,7 +231,7 @@ export async function POST(request: Request) {
             from: 'Websites Arena <hello@websitesarena.com>',
             to: ['hello@websitesarena.com'],
             replyTo: email,
-            subject: `New Project Submission: ${url}`,
+            subject: `New ${productType.charAt(0).toUpperCase() + productType.slice(1)} Submission: ${productType === 'domain' ? domainName : (url || email)}`,
             html: adminEmailHtml,
             attachments: attachments,
         });
