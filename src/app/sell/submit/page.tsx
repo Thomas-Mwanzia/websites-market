@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
 import ReCAPTCHA from 'react-google-recaptcha'
 
-const ASSET_CATEGORIES = ['Photography', 'Video Footage', 'Digital Art', 'Template', 'E-book', 'Course']
+const ASSET_CATEGORIES = ['photography', 'video', 'digital-art', 'template', 'ebook', 'course']
 
 export default function SubmitPage() {
     const [submitted, setSubmitted] = useState(false)
@@ -213,9 +213,9 @@ export default function SubmitPage() {
                             { id: 'ebook', label: 'E-book', icon: BookOpen },
                             { id: 'template', label: 'Template', icon: Layout },
                             { id: 'course', label: 'Course', icon: GraduationCap },
-                            { id: 'Photography', label: 'Photo', icon: Camera },
-                            { id: 'Video Footage', label: 'Video', icon: Film },
-                            { id: 'Digital Art', label: 'Art', icon: ImageIcon },
+                            { id: 'photography', label: 'Photo', icon: Camera },
+                            { id: 'video', label: 'Video', icon: Film },
+                            { id: 'digital-art', label: 'Art', icon: ImageIcon },
                             { id: 'domain', label: 'Domain', icon: Globe },
                         ].map((type) => {
                             const Icon = type.icon
@@ -445,7 +445,7 @@ export default function SubmitPage() {
                     )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        {!['ebook', 'Photography', 'Video Footage', 'Digital Art', 'domain'].includes(productType) && (
+                        {!['ebook', 'photography', 'video', 'digital-art', 'domain'].includes(productType) && (
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
                                     <Globe className="w-4 h-4 mr-2 text-blue-600" />
@@ -533,7 +533,7 @@ export default function SubmitPage() {
                     )}
 
                     {/* Asset Details - Only for Art/Media */}
-                    {['Photography', 'Video Footage', 'Digital Art'].includes(productType) && (
+                    {['photography', 'video', 'digital-art'].includes(productType) && (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-widest">

@@ -40,9 +40,13 @@ export default defineType({
             options: {
                 list: [
                     { title: 'SaaS / Website', value: 'saas' },
-                    { title: 'E-book / PDF', value: 'e-book' },
+                    { title: 'E-book / PDF', value: 'ebook' },
                     { title: 'Template / UI Kit', value: 'template' },
                     { title: 'Course', value: 'course' },
+                    { title: 'Photography', value: 'photography' },
+                    { title: 'Video Footage', value: 'video' },
+                    { title: 'Digital Art', value: 'digital-art' },
+                    { title: 'Domain', value: 'domain' },
                     { title: 'Tool', value: 'tool' },
                     { title: 'Boilerplate', value: 'boilerplate' },
                     { title: 'E-commerce', value: 'ecommerce' },
@@ -51,44 +55,44 @@ export default defineType({
                 ]
             }
         }),
-defineField({
-    name: 'image',
-    title: 'Main Image',
-    type: 'image',
-    options: {
-        hotspot: true,
-    },
-    validation: (rule) => rule.required(),
-}),
-    defineField({
-        name: 'youtubeUrl',
-        title: 'YouTube Demo URL',
-        type: 'url',
-        description: 'Link to a YouTube video demonstrating the website.',
-    }),
-    defineField({
-        name: 'checkoutUrl',
-        title: 'Checkout URL (Lemon Squeezy)',
-        type: 'url',
-        description: 'The "Buy Now" link from Lemon Squeezy. Users click this to pay.',
-    }),
-    defineField({
-        name: 'features',
-        title: 'Key Features',
-        type: 'array',
-        of: [{ type: 'string' }],
-    }),
-    defineField({
-        name: 'techStack',
-        title: 'Tech Stack',
-        type: 'array',
-        of: [{ type: 'string' }],
-    }),
-    defineField({
-        name: 'digitalAsset',
-        title: 'Digital Asset File',
-        type: 'file',
-        description: 'Upload the digital asset directly (PDF, Zip, etc.) if not using an external link.',
-    }),
+        defineField({
+            name: 'image',
+            title: 'Main Image',
+            type: 'image',
+            options: {
+                hotspot: true,
+            },
+            validation: (rule) => rule.required(),
+        }),
+        defineField({
+            name: 'youtubeUrl',
+            title: 'YouTube Demo URL',
+            type: 'url',
+            description: 'Link to a YouTube video demonstrating the website.',
+        }),
+        defineField({
+            name: 'checkoutUrl',
+            title: 'Checkout URL (Lemon Squeezy)',
+            type: 'url',
+            description: 'The "Buy Now" link from Lemon Squeezy. Users click this to pay.',
+        }),
+        defineField({
+            name: 'features',
+            title: 'Key Features',
+            type: 'array',
+            of: [{ type: 'string' }],
+        }),
+        defineField({
+            name: 'techStack',
+            title: 'Tech Stack',
+            type: 'array',
+            of: [{ type: 'string' }],
+        }),
+        defineField({
+            name: 'digitalAsset',
+            title: 'Digital Asset File',
+            type: 'file',
+            description: 'Upload the digital asset directly (PDF, Zip, etc.) if not using an external link.',
+        }),
     ],
 })
