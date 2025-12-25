@@ -37,7 +37,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold mb-4">Product not found</h1>
-                    <Link href="/shop" className="text-blue-600 hover:underline">Return to Marketplace</Link>
+                    <Link href="/" className="text-blue-600 hover:underline">Return to Marketplace</Link>
                 </div>
             </div>
         )
