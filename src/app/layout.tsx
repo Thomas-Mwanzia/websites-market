@@ -93,12 +93,18 @@ const navigationJsonLd = {
     {
       "@type": "SiteNavigationElement",
       "position": 5,
+      "name": "Business Suite",
+      "url": "https://websitesarena.com/tools/business-suite"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 6,
       "name": "Blog",
       "url": "https://websitesarena.com/blog"
     },
     {
       "@type": "SiteNavigationElement",
-      "position": 6,
+      "position": 7,
       "name": "About",
       "url": "https://websitesarena.com/about"
     }

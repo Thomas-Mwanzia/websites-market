@@ -24,11 +24,45 @@ export async function fetchMorePosts(lastPublishedAt: string, lastId: string) {
   }
 }
 
-export async function fetchMoreProducts(lastCreatedAt: string, lastId: string) {
-  const query = `*[_type == "product" && (
+export async function fetchMoreProducts(
+  lastCreatedAt: string,
+  lastId: string,
+  filters?: { q?: string, category?: string, minPrice?: string, maxPrice?: string }
+) {
+  const conditions = ['_type == "product"']
+
+  // Pagination condition
+  conditions.push(`(
     _createdAt < $lastCreatedAt ||
     (_createdAt == $lastCreatedAt && _id < $lastId)
-  )] | order(_createdAt desc) [0...20]`
+  )`)
+
+  // Filter conditions
+  if (filters?.q) {
+    const q = filters.q
+    conditions.push(`(
+      title match "${q}*" || 
+      description match "${q}*" || 
+      category match "${q}*" || 
+      techStack[] match "${q}*" || 
+      features[] match "${q}*"
+    )`)
+  }
+
+  if (filters?.category) {
+    const categories = filters.category.split(',').map(c => `"${c.trim()}"`).join(',')
+    conditions.push(`category in [${categories}]`)
+  }
+
+  if (filters?.minPrice) {
+    conditions.push(`price >= ${filters.minPrice}`)
+  }
+
+  if (filters?.maxPrice) {
+    conditions.push(`price <= ${filters.maxPrice}`)
+  }
+
+  const query = `*[${conditions.join(' && ')}] | order(_createdAt desc) [0...20]`
 
   try {
     const products = await client.fetch(query, { lastCreatedAt, lastId })

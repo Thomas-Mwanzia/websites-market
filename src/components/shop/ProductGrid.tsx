@@ -8,29 +8,33 @@ import { Loader2 } from 'lucide-react'
 
 interface ProductGridProps {
     initialProducts: any[]
-    searchQuery?: string
+    searchParams?: { q?: string, category?: string, minPrice?: string, maxPrice?: string }
 }
 
-export function ProductGrid({ initialProducts, searchQuery }: ProductGridProps) {
+export function ProductGrid({ initialProducts, searchParams }: ProductGridProps) {
     const [products, setProducts] = useState(initialProducts)
     const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [hasMore, setHasMore] = useState(initialProducts.length === 20)
     const { ref, inView } = useInView()
 
-    // Reset state when search query changes
+    // Reset state when search params change
     useEffect(() => {
         setProducts(initialProducts)
         setHasMore(initialProducts.length === 20)
-    }, [initialProducts, searchQuery])
+    }, [initialProducts, searchParams])
 
     const loadMore = useCallback(async () => {
-        if (isLoadingMore || !hasMore || searchQuery) return
+        if (isLoadingMore || !hasMore) return
 
         setIsLoadingMore(true)
         const lastProduct = products[products.length - 1]
 
         try {
-            const newProducts = await fetchMoreProducts(lastProduct._createdAt, lastProduct._id)
+            const newProducts = await fetchMoreProducts(
+                lastProduct._createdAt,
+                lastProduct._id,
+                searchParams
+            )
             if (newProducts.length < 20) {
                 setHasMore(false)
             }
@@ -40,7 +44,7 @@ export function ProductGrid({ initialProducts, searchQuery }: ProductGridProps) 
         } finally {
             setIsLoadingMore(false)
         }
-    }, [products, isLoadingMore, hasMore, searchQuery])
+    }, [products, isLoadingMore, hasMore, searchParams])
 
     useEffect(() => {
         if (inView) {
@@ -57,7 +61,7 @@ export function ProductGrid({ initialProducts, searchQuery }: ProductGridProps) 
             </div>
 
             {/* Loading Spinner / Infinite Scroll Trigger */}
-            {!searchQuery && hasMore && (
+            {hasMore && (
                 <div ref={ref} className="mt-16 flex justify-center">
                     {isLoadingMore && (
                         <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />

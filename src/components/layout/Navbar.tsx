@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X, Search } from 'lucide-react'
+import { Menu, X, Search, SlidersHorizontal } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { ThemeToggle } from '../ui/ThemeToggle'
+import { SearchFilterDropdown } from '../shop/SearchFilterDropdown'
 
 const navLinks = [
     { name: 'Marketplace', href: '/' },
@@ -19,6 +20,7 @@ const navLinks = [
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false)
+    const [isFilterOpen, setIsFilterOpen] = useState(false)
     const pathname = usePathname()
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -58,15 +60,37 @@ export function Navbar() {
 
                     {/* Search Bar (Only on Home/Marketplace) */}
                     {isHome && (
-                        <div className="flex-grow max-w-md mx-2 sm:mx-8">
-                            <div className="relative">
-                                <Search className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                        <div className="flex-grow max-w-2xl mx-2 sm:mx-8 z-50">
+                            <div className="relative group">
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
                                 <input
                                     type="text"
-                                    placeholder="Search for a product..."
+                                    placeholder="Search websites, templates..."
                                     defaultValue={searchParams.get('q') || ''}
                                     onChange={(e) => handleSearch(e.target.value)}
-                                    className="w-full pl-10 sm:pl-14 pr-6 py-2.5 sm:py-3 bg-gray-100 dark:bg-gray-900 border-none rounded-full text-sm sm:text-base focus:ring-2 focus:ring-blue-600 outline-none transition-all shadow-sm"
+                                    className="w-full pl-12 pr-32 py-3 bg-gray-100 dark:bg-gray-900 border-2 border-transparent focus:border-blue-600/20 rounded-full text-base outline-none transition-all shadow-sm hover:bg-gray-200/50 dark:hover:bg-gray-800/50"
+                                />
+
+                                {/* Filter Button inside Search Bar */}
+                                <div className="absolute right-2 top-1/2 -translate-y-1/2">
+                                    <button
+                                        onClick={() => setIsFilterOpen(!isFilterOpen)}
+                                        className={cn(
+                                            "flex items-center space-x-2 px-4 py-1.5 rounded-full text-sm font-bold transition-all",
+                                            isFilterOpen
+                                                ? "bg-black text-white dark:bg-white dark:text-black shadow-lg"
+                                                : "bg-white dark:bg-black text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 shadow-sm"
+                                        )}
+                                    >
+                                        <SlidersHorizontal className="w-4 h-4" />
+                                        <span>Filter</span>
+                                    </button>
+                                </div>
+
+                                {/* Dropdown Component */}
+                                <SearchFilterDropdown
+                                    isOpen={isFilterOpen}
+                                    onClose={() => setIsFilterOpen(false)}
                                 />
                             </div>
                         </div>

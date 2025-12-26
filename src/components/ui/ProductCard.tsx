@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { ArrowRight, Book, Code2, Layout, Palette, Box, GraduationCap } from 'lucide-react'
+import { ArrowRight, Book, Code2, Layout, Palette, Box, GraduationCap, ShieldCheck, Gem } from 'lucide-react'
 import { urlForImage } from '@/sanity/lib/image'
 
 interface ProductProps {
@@ -13,6 +13,7 @@ interface ProductProps {
     description: string
     image: any
     category?: string
+    sellerType?: 'independent' | 'verified' | 'premium'
 }
 
 export function ProductCard({ product }: { product: ProductProps }) {
@@ -48,12 +49,28 @@ export function ProductCard({ product }: { product: ProductProps }) {
                             No Image
                         </div>
                     )}
+
+                    {/* Category Badge */}
                     <div className="absolute top-4 right-4 bg-white/90 dark:bg-black/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-2 border border-gray-200 dark:border-gray-800">
                         <CategoryIcon className="w-4 h-4 text-blue-600" />
                         <span className="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white">
                             {product.category || 'Asset'}
                         </span>
                     </div>
+
+                    {/* Seller Badge */}
+                    {product.sellerType === 'premium' && (
+                        <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-10">
+                            <Gem className="w-3 h-3 fill-current" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Premium</span>
+                        </div>
+                    )}
+                    {product.sellerType === 'verified' && (
+                        <div className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-10">
+                            <ShieldCheck className="w-3 h-3" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Verified</span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="p-8">

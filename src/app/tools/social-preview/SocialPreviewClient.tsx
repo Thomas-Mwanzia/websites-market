@@ -39,7 +39,17 @@ export default function SocialPreviewPage() {
         setIsGenerating(true)
 
         try {
-            const dataUrl = await toPng(previewRef.current, { quality: 1.0, pixelRatio: 2 })
+            // Force full scale for download
+            const dataUrl = await toPng(previewRef.current, {
+                quality: 1.0,
+                pixelRatio: 1,
+                style: {
+                    transform: 'scale(1)',
+                    transformOrigin: 'top left'
+                },
+                width: 1200,
+                height: 630
+            })
             const link = document.createElement('a')
             link.download = 'social-preview.png'
             link.href = dataUrl
@@ -191,7 +201,7 @@ export default function SocialPreviewPage() {
 
                     {/* Preview Area */}
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-gray-100 dark:bg-gray-900 rounded-3xl p-8 flex items-center justify-center min-h-[400px]">
+                        <div className="bg-gray-100 dark:bg-gray-900 rounded-3xl p-4 md:p-8 flex items-center justify-center min-h-[300px] md:min-h-[400px] overflow-hidden">
                             {/* The actual card to capture */}
                             <div
                                 ref={previewRef}
@@ -200,10 +210,8 @@ export default function SocialPreviewPage() {
                                     color: textColor,
                                     width: '1200px',
                                     height: '630px',
-                                    transform: 'scale(0.5)', // Scale down for display
-                                    transformOrigin: 'center center',
                                 }}
-                                className="flex flex-col items-center justify-center p-20 text-center relative shadow-2xl overflow-hidden"
+                                className="flex flex-col items-center justify-center p-20 text-center relative shadow-2xl overflow-hidden origin-center scale-[0.22] sm:scale-[0.35] md:scale-[0.5] lg:scale-[0.6]"
                             >
                                 {/* Background Logo */}
                                 {logo && showBgLogo && (

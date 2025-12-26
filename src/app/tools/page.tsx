@@ -1,12 +1,23 @@
 import Link from 'next/link'
-import { ArrowLeft, Image as ImageIcon, Calculator, FileText, TrendingUp, Eye, FileSignature, Lock, Share2, BarChart3, Shield, ArrowRight } from 'lucide-react'
+import { Image as ImageIcon, Calculator, FileText, Share2, BarChart3, Shield, ArrowRight, Briefcase, FileSignature, LucideIcon } from 'lucide-react'
 
 export const metadata = {
     title: 'The Armory - Developer Tools | Websites Arena',
     description: 'Equip yourself for the digital battlefield. Free tools for founders, developers, and indie hackers.',
 }
 
-const ToolCard = ({ href, title, description, icon: Icon, color, bgColor, borderColor, status }: any) => (
+interface ToolCardProps {
+    href: string
+    title: string
+    description: string
+    icon: LucideIcon
+    color: string
+    bgColor: string
+    borderColor?: string
+    status?: 'Live' | 'New' | 'Coming Soon'
+}
+
+const ToolCard = ({ href, title, description, icon: Icon, color, bgColor, borderColor, status }: ToolCardProps) => (
     <Link href={href} className={`group relative p-8 rounded-3xl border ${borderColor || 'border-gray-200 dark:border-gray-800'} ${bgColor || 'bg-gray-50 dark:bg-gray-900/30'} hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-300 flex flex-col h-full`}>
         <div className={`w-14 h-14 rounded-2xl ${bgColor} ${color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
             <Icon className="w-7 h-7" />
@@ -52,6 +63,16 @@ export default function ToolsPage() {
 
                 {/* Tools Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <ToolCard
+                        href="/tools/business-suite"
+                        title="Seller Business Suite"
+                        description="All-in-one toolkit: Generate Contracts, NDAs, Invoices, and Policies for your digital business."
+                        icon={Briefcase}
+                        color="text-slate-700 dark:text-slate-200"
+                        bgColor="bg-slate-100 dark:bg-slate-800"
+                        borderColor="border-slate-200 dark:border-slate-700"
+                        status="New"
+                    />
                     <ToolCard
                         href="/tools/image-compressor"
                         title="Image Compressor"

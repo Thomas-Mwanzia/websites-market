@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, FormEvent, ChangeEvent } from 'react'
-import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video, GraduationCap, Camera, Image as ImageIcon, Film, Calendar, RotateCcw } from 'lucide-react'
+import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video, GraduationCap, Camera, Image as ImageIcon, Film, Calendar, RotateCcw, Star, Plus, X } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import toast, { Toaster } from 'react-hot-toast'
@@ -43,8 +43,24 @@ export default function SubmitPage() {
         bankName: '',
         cryptoNetwork: '',
         walletAddress: '',
-        payoutEmail: ''
+        payoutEmail: '',
+        features: ['']
     })
+
+    const handleFeatureChange = (index: number, value: string) => {
+        const newFeatures = [...formData.features]
+        newFeatures[index] = value
+        setFormData({ ...formData, features: newFeatures })
+    }
+
+    const addFeature = () => {
+        setFormData({ ...formData, features: [...formData.features, ''] })
+    }
+
+    const removeFeature = (index: number) => {
+        const newFeatures = formData.features.filter((_, i) => i !== index)
+        setFormData({ ...formData, features: newFeatures.length ? newFeatures : [''] })
+    }
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -124,7 +140,15 @@ export default function SubmitPage() {
             submitData.set('ownershipProofCount', ownershipProofImages.length.toString())
         }
 
-        if (submissionMethod === 'file' && !selectedFile && !['saas', 'course', 'domain'].includes(productType)) {
+        // Append features
+        formData.features.forEach((feature) => {
+            if (feature.trim()) submitData.append('features', feature.trim())
+        })
+
+        // File is optional for SaaS and courses when using link method
+        const isFileRequired = !['saas', 'course', 'domain'].includes(productType) && submissionMethod === 'file'
+
+        if (isFileRequired && !selectedFile) {
             toast.error('Please select a file to upload.')
             setIsSubmitting(false)
             return
@@ -201,7 +225,7 @@ export default function SubmitPage() {
                         <span className="text-blue-600">DIGITAL ASSET.</span>
                     </h1>
                     <p className="text-lg text-gray-500 dark:text-gray-400 font-medium">
-                        Fill out the form below to start the vetting process. We'll review your submission and get back to you shortly.
+                        Fill out the form below to start the vetting process. We&apos;ll review your submission and get back to you shortly.
                     </p>
                 </div>
 
@@ -440,6 +464,11 @@ export default function SubmitPage() {
                                     </div>
                                 </div>
                                 <p className="text-xs text-gray-500">Upload screenshots showing you own this domain (e.g., registrar dashboard)</p>
+                                <div className="mt-2">
+                                    <Link href="/tools/business-suite" target="_blank" className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center">
+                                        <Shield className="w-3 h-3 mr-1" /> Protect your data? Generate NDA
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     )}
@@ -471,6 +500,60 @@ export default function SubmitPage() {
                                 placeholder="e.g. 500"
                                 className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                             />
+                            <div className="mt-1">
+                                {productType === 'saas' && (
+                                    <Link href="/tools/valuation" target="_blank" className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center">
+                                        <DollarSign className="w-3 h-3 mr-1" /> Unsure about price? Calculate Valuation
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+                    {/* Key Features Input */}
+                    <div className="space-y-4">
+                        <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                            <Star className="w-4 h-4 mr-2 text-blue-600" /> Key Features
+                        </label>
+                        <div className="space-y-3">
+                            {formData.features.map((feature, index) => (
+                                <div key={index} className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder={`Feature ${index + 1} (e.g., "Responsive Design")`}
+                                        value={feature}
+                                        onChange={(e) => {
+                                            const newFeatures = [...formData.features]
+                                            newFeatures[index] = e.target.value
+                                            setFormData({ ...formData, features: newFeatures })
+                                        }}
+                                        className="flex-1 px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                                    />
+                                    {formData.features.length > 1 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const newFeatures = formData.features.filter((_, i) => i !== index)
+                                                setFormData({ ...formData, features: newFeatures })
+                                            }}
+                                            className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                                        >
+                                            <X className="w-5 h-5" />
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, features: [...formData.features, ''] })}
+                                className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center"
+                            >
+                                <Plus className="w-4 h-4 mr-1" /> Add Feature
+                            </button>
                         </div>
                     </div>
 
@@ -569,7 +652,7 @@ export default function SubmitPage() {
                         <div className="space-y-4">
                             <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
                                 {productType === 'saas' ? (
-                                    <><Code className="w-4 h-4 mr-2 text-blue-600" /> Source Code / Repo</>
+                                    <><Code className="w-4 h-4 mr-2 text-blue-600" /> Source Code / Access Link</>
                                 ) : productType === 'course' ? (
                                     <><LinkIcon className="w-4 h-4 mr-2 text-blue-600" /> Course Link</>
                                 ) : (
@@ -577,7 +660,7 @@ export default function SubmitPage() {
                                 )}
                             </label>
 
-                            {!['saas', 'course'].includes(productType) && (
+                            {!['course'].includes(productType) && (
                                 <div className="flex bg-gray-100 dark:bg-gray-900 p-1 rounded-xl w-fit mb-4">
                                     <button
                                         type="button"
@@ -603,7 +686,7 @@ export default function SubmitPage() {
                             )}
 
                             <AnimatePresence mode="wait">
-                                {submissionMethod === 'link' || ['saas', 'course'].includes(productType) ? (
+                                {submissionMethod === 'link' || ['course'].includes(productType) ? (
                                     <motion.div
                                         key="link-input"
                                         initial={{ opacity: 0, y: 10 }}
@@ -615,11 +698,15 @@ export default function SubmitPage() {
                                             required={submissionMethod === 'link'}
                                             type="url"
                                             placeholder={
-                                                productType === 'saas' ? "https://github.com/username/repo" :
-                                                    "https://dropbox.com/s/..."
+                                                productType === 'saas' ? "https://github.com/username/repo or https://drive.google.com/..." :
+                                                    productType === 'course' ? "https://udemy.com/... or https://drive.google.com/..." :
+                                                        "https://dropbox.com/s/... or https://drive.google.com/..."
                                             }
                                             className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                                         />
+                                        {productType === 'saas' && (
+                                            <p className="text-xs text-gray-500 mt-2">Provide GitHub repo, Google Drive, Dropbox, or any secure link to your source code</p>
+                                        )}
                                     </motion.div>
                                 ) : (
                                     <motion.div
@@ -655,6 +742,16 @@ export default function SubmitPage() {
                                     </motion.div>
                                 )}
                             </AnimatePresence>
+                            <div className="mt-2 space-y-1">
+                                <Link href="/tools/business-suite" target="_blank" className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center">
+                                    <FileText className="w-3 h-3 mr-1" /> Need a contract? Generate Asset Sale Agreement
+                                </Link>
+                                {['ebook', 'template', 'course'].includes(productType) && submissionMethod === 'file' && (
+                                    <Link href="/tools/image-compressor" target="_blank" className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center">
+                                        <ImageIcon className="w-3 h-3 mr-1" /> Optimize images? Use Image Compressor
+                                    </Link>
+                                )}
+                            </div>
                         </div>
                     )}
 
@@ -858,7 +955,7 @@ export default function SubmitPage() {
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }

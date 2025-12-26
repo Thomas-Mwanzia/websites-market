@@ -94,5 +94,61 @@ export default defineType({
             type: 'file',
             description: 'Upload the digital asset directly (PDF, Zip, etc.) if not using an external link.',
         }),
+        defineField({
+            name: 'assetExternalLink',
+            title: 'External Asset Link',
+            type: 'url',
+            description: 'Link to the asset (Google Drive, Dropbox, etc.) for large files > 4MB.',
+        }),
+
+        defineField({
+            name: 'sellerType',
+            title: 'Seller Tier',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Independent Seller', value: 'independent' },
+                    { title: 'Verified Seller', value: 'verified' },
+                    { title: 'Premium (Websites Arena)', value: 'premium' },
+                ],
+            },
+            initialValue: 'independent',
+        }),
+        defineField({
+            name: 'deliveryMethod',
+            title: 'Delivery Method',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Instant Download', value: 'instant' },
+                    { title: 'Manual Transfer', value: 'transfer' },
+                ],
+            },
+            initialValue: 'instant',
+            description: 'Select "Manual Transfer" for domains, SaaS, or items requiring handover.',
+        }),
+        defineField({
+            name: 'previewImages',
+            title: 'Preview Gallery',
+            type: 'array',
+            of: [{ type: 'image' }],
+            description: 'Safe screenshots or previews to show publicly (e.g., first 5 pages of ebook).',
+        }),
+        defineField({
+            name: 'previewFile',
+            title: 'Preview PDF',
+            type: 'file',
+            description: 'Upload a TRUNCATED version of the PDF for public preview (e.g., first 5 pages).',
+        }),
+        defineField({
+            name: 'metadata',
+            title: 'Technical Details (Art/Video)',
+            type: 'object',
+            fields: [
+                defineField({ name: 'resolution', title: 'Resolution', type: 'string', description: 'e.g., 4K, 6000x4000px' }),
+                defineField({ name: 'fileFormat', title: 'File Format', type: 'string', description: 'e.g., RAW, JPG, MP4' }),
+                defineField({ name: 'aspectRatio', title: 'Aspect Ratio', type: 'string', description: 'e.g., 16:9' }),
+            ]
+        }),
     ],
 })
