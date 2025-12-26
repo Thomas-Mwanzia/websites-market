@@ -12,6 +12,8 @@ export default function SocialPreviewPage() {
     const [description, setDescription] = useState('The best way to build and launch your next big idea.')
     const [bgColor, setBgColor] = useState('#000000')
     const [textColor, setTextColor] = useState('#ffffff')
+    const [headingColor, setHeadingColor] = useState('#ffffff')
+    const [descriptionColor, setDescriptionColor] = useState('#ffffff')
     const [logo, setLogo] = useState<string | null>(null)
     const [isLogoRounded, setIsLogoRounded] = useState(false)
     const [showBgLogo, setShowBgLogo] = useState(false)
@@ -125,15 +127,27 @@ export default function SocialPreviewPage() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Text Color</label>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Heading Color</label>
                                     <div className="flex items-center space-x-2">
                                         <input
                                             type="color"
-                                            value={textColor}
-                                            onChange={(e) => setTextColor(e.target.value)}
+                                            value={headingColor}
+                                            onChange={(e) => setHeadingColor(e.target.value)}
                                             className="w-10 h-10 rounded-lg cursor-pointer border-none p-0 bg-transparent"
                                         />
-                                        <span className="text-xs font-mono text-gray-500">{textColor}</span>
+                                        <span className="text-xs font-mono text-gray-500">{headingColor}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Description Color</label>
+                                    <div className="flex items-center space-x-2">
+                                        <input
+                                            type="color"
+                                            value={descriptionColor}
+                                            onChange={(e) => setDescriptionColor(e.target.value)}
+                                            className="w-10 h-10 rounded-lg cursor-pointer border-none p-0 bg-transparent"
+                                        />
+                                        <span className="text-xs font-mono text-gray-500">{descriptionColor}</span>
                                     </div>
                                 </div>
                             </div>
@@ -201,17 +215,18 @@ export default function SocialPreviewPage() {
 
                     {/* Preview Area */}
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-gray-100 dark:bg-gray-900 rounded-3xl p-4 md:p-8 flex items-center justify-center min-h-[300px] md:min-h-[400px] overflow-hidden">
+                        <div className="bg-gray-100 dark:bg-gray-900 rounded-3xl p-4 md:p-8 flex items-center justify-center min-h-[600px] md:min-h-[700px] overflow-auto">
                             {/* The actual card to capture */}
                             <div
                                 ref={previewRef}
                                 style={{
                                     backgroundColor: bgColor,
                                     color: textColor,
-                                    width: '1200px',
-                                    height: '630px',
+                                    width: '100%',
+                                    maxWidth: '900px',
+                                    aspectRatio: '900 / 950',
                                 }}
-                                className="flex flex-col items-center justify-center p-20 text-center relative shadow-2xl overflow-hidden origin-center scale-[0.22] sm:scale-[0.35] md:scale-[0.5] lg:scale-[0.6]"
+                                className="flex flex-col items-center justify-center p-8 md:p-12 lg:p-16 text-center relative shadow-2xl overflow-hidden"
                             >
                                 {/* Background Logo */}
                                 {logo && showBgLogo && (
@@ -225,19 +240,23 @@ export default function SocialPreviewPage() {
                                     </div>
                                 )}
 
-                                <div className="relative z-10 flex flex-col items-center">
+                                <div className="relative z-10 flex flex-col items-center w-full">
                                     {logo && (
                                         // eslint-disable-next-line @next/next/no-img-element
                                         <img
                                             src={logo}
                                             alt="Logo"
-                                            className={`w-32 h-32 object-contain mb-8 ${isLogoRounded ? 'rounded-full' : ''}`}
+                                            className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain mb-4 sm:mb-6 md:mb-8 ${isLogoRounded ? 'rounded-full' : ''}`}
                                         />
                                     )}
-                                    <h1 className="text-7xl font-black mb-6 leading-tight">
+                                    <h1 
+                                        style={{ color: headingColor }}
+                                        className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 sm:mb-4 md:mb-6 leading-tight">
                                         {title}
                                     </h1>
-                                    <p className="text-4xl font-medium opacity-80 max-w-4xl leading-relaxed">
+                                    <p 
+                                        style={{ color: descriptionColor }}
+                                        className="text-sm sm:text-base md:text-lg lg:text-2xl font-medium opacity-80 max-w-3xl leading-relaxed">
                                         {description}
                                     </p>
                                 </div>
