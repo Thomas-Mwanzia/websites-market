@@ -73,8 +73,8 @@ export async function GET(request: NextRequest) {
                 pages.forEach((page: PDFPage) => {
                     const { width, height } = page.getSize();
 
-                    // Define watermark size (20% of page width)
-                    const watermarkScale = (width * 0.2) / 24; // Base SVG is 24x24
+                    // Define watermark size (50% of page width)
+                    const watermarkScale = (width * 0.5) / 24; // Base SVG is 24x24
                     const watermarkWidth = 24 * watermarkScale;
                     const watermarkHeight = 24 * watermarkScale;
 
@@ -133,14 +133,19 @@ export async function GET(request: NextRequest) {
                 console.error('   ❌ PDF watermark error:', pdfError);
                 // Return original on error
                 const originalFilename = getFilenameFromUrl(decodedUrl);
-                const filename = originalFilename.endsWith('.pdf') ? originalFilename : `${originalFilename}.pdf`;
+
+                // Determine correct content type based on file extension
+                const contentType = originalFilename.endsWith('.pdf') ? 'application/pdf' :
+                    originalFilename.endsWith('.png') ? 'image/png' :
+                        originalFilename.endsWith('.jpg') || originalFilename.endsWith('.jpeg') ? 'image/jpeg' :
+                            originalFilename.endsWith('.webp') ? 'image/webp' : 'application/octet-stream';
 
                 return new NextResponse(Buffer.from(fileBuffer), {
                     headers: {
-                        'Content-Type': 'application/pdf',
+                        'Content-Type': contentType,
                         'Cache-Control': 'public, max-age=31536000, immutable',
                         'Content-Length': fileBuffer.byteLength.toString(),
-                        'Content-Disposition': `inline; filename="${filename}"`,
+                        'Content-Disposition': `inline; filename="${originalFilename}"`,
                     },
                 });
             }
@@ -156,8 +161,8 @@ export async function GET(request: NextRequest) {
             const height = metadata.height || 630;
             console.log(`   Image dimensions: ${width}x${height}`);
 
-            // Calculate logo size (20% of image width)
-            const logoWidth = Math.round(width * 0.2);
+            // Calculate logo size (50% of image width)
+            const logoWidth = Math.round(width * 0.5);
 
             // Define watermark SVG directly to avoid file I/O issues
             const watermarkSvgString = `
