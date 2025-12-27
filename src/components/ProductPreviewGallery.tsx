@@ -13,6 +13,19 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
     const [isOpen, setIsOpen] = useState(false);
 
+    // Determine if previewFileUrl is actually a PDF or an image
+    const isPdfFile = previewFileUrl?.toLowerCase().includes('.pdf');
+    const isImageFile = previewFileUrl && 
+        (previewFileUrl.toLowerCase().includes('.jpg') || 
+         previewFileUrl.toLowerCase().includes('.jpeg') ||
+         previewFileUrl.toLowerCase().includes('.png') ||
+         previewFileUrl.toLowerCase().includes('.webp') ||
+         previewFileUrl.toLowerCase().includes('.gif'));
+
+    // If previewFileUrl is actually an image, add it to previewImages instead
+    const displayPreviewImages = previewImages || [];
+    const displayPreviewFileUrl = isPdfFile ? previewFileUrl : undefined;
+
     const handleImageClick = (index: number) => {
         setSelectedImageIndex(index);
         setIsOpen(true);
@@ -25,7 +38,7 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
     };
 
     const handleNextImage = () => {
-        if (selectedImageIndex !== null && previewImages && selectedImageIndex < previewImages.length - 1) {
+        if (selectedImageIndex !== null && displayPreviewImages && selectedImageIndex < displayPreviewImages.length - 1) {
             setSelectedImageIndex(selectedImageIndex + 1);
         }
     };
@@ -42,9 +55,9 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, selectedImageIndex, previewImages?.length]);
+    }, [isOpen, selectedImageIndex, displayPreviewImages?.length]);
 
-    if (!previewImages?.length && !previewFileUrl) return null;
+    if (!displayPreviewImages?.length && !displayPreviewFileUrl) return null;
 
     return (
         <>
@@ -52,7 +65,7 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
             <div className="lg:col-span-1">
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Preview Gallery</h3>
                 <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                    {previewImages?.map((img: any, idx: number) => (
+                    {displayPreviewImages?.map((img: any, idx: number) => (
                         <button
                             key={idx}
                             onClick={() => handleImageClick(idx)}
@@ -68,9 +81,9 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
                             </div>
                         </button>
                     ))}
-                    {previewFileUrl && (
+                    {displayPreviewFileUrl && (
                         <a
-                            href={getWatermarkedPdfUrl(previewFileUrl)}
+                            href={getWatermarkedPdfUrl(displayPreviewFileUrl)}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex flex-col items-center justify-center aspect-[3/4] rounded-lg border-2 border-dashed border-gray-200 dark:border-gray-800 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group"
@@ -89,7 +102,7 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
             </div>
 
             {/* Image Modal */}
-            {isOpen && selectedImageIndex !== null && previewImages && (
+            {isOpen && selectedImageIndex !== null && displayPreviewImages && (
                 <div
                     className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
                     onClick={() => setIsOpen(false)}
@@ -111,14 +124,14 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
                         {/* Main Image */}
                         <div className="relative bg-black rounded-lg overflow-hidden">
                             <img
-                                src={getWatermarkedImageUrl(previewImages[selectedImageIndex].asset?.url || '')}
+                                src={getWatermarkedImageUrl(displayPreviewImages[selectedImageIndex].asset?.url || '')}
                                 alt={`Preview ${selectedImageIndex + 1}`}
                                 className="w-full h-auto max-h-[80vh] object-contain"
                             />
                         </div>
 
                         {/* Navigation Arrows */}
-                        {previewImages.length > 1 && (
+                        {displayPreviewImages.length > 1 && (
                             <>
                                 {selectedImageIndex > 0 && (
                                     <button
@@ -131,7 +144,7 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
                                     </button>
                                 )}
 
-                                {selectedImageIndex < previewImages.length - 1 && (
+                                {selectedImageIndex < displayPreviewImages.length - 1 && (
                                     <button
                                         onClick={handleNextImage}
                                         className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 lg:translate-x-20 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full transition-colors"
@@ -146,7 +159,7 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
 
                         {/* Counter */}
                         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 text-white px-4 py-2 rounded-full text-sm font-medium">
-                            {selectedImageIndex + 1} / {previewImages.length}
+                            {selectedImageIndex + 1} / {displayPreviewImages.length}
                         </div>
                     </div>
                 </div>

@@ -32,8 +32,10 @@ export async function GET(request: NextRequest) {
         // Decode the URL
         const decodedUrl = decodeURIComponent(fileUrl);
         console.log(`\n📝 Processing file request:`);
+        console.log(`   Full request URL: ${request.url}`);
         console.log(`   isPdf parameter: ${isPdf}`);
-        console.log(`   URL: ${decodedUrl.substring(0, 60)}...`);
+        console.log(`   searchParams.get('pdf'): "${searchParams.get('pdf')}"`);
+        console.log(`   URL: ${decodedUrl.substring(0, 80)}...`);
 
         // Fetch the file from the URL with timeout and better error handling
         const controller = new AbortController();
@@ -154,6 +156,23 @@ export async function GET(request: NextRequest) {
         // Handle image watermarking (default)
         try {
             console.log(`   Processing as IMAGE...`);
+            
+            // Safety check: if the file starts with %PDF, it's a PDF being mishandled
+            const fileStart = Buffer.from(fileBuffer).toString('utf8', 0, 4);
+            if (fileStart.includes('PDF') || Buffer.from(fileBuffer).toString('utf8', 0, 5) === '%PDF-') {
+                console.warn(`   ⚠️ WARNING: Received PDF content but isPdf=false! Returning as application/pdf instead`);
+                const originalFilename = getFilenameFromUrl(decodedUrl);
+                const filename = originalFilename.endsWith('.pdf') ? originalFilename : `${originalFilename}.pdf`;
+                return new NextResponse(Buffer.from(fileBuffer), {
+                    headers: {
+                        'Content-Type': 'application/pdf',
+                        'Cache-Control': 'public, max-age=31536000, immutable',
+                        'Content-Length': fileBuffer.byteLength.toString(),
+                        'Content-Disposition': `inline; filename="${filename}"`,
+                    },
+                });
+            }
+            
             // Get image metadata to determine size
             const image = sharp(Buffer.from(fileBuffer));
             const metadata = await image.metadata();
