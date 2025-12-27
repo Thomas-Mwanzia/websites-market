@@ -68,28 +68,50 @@ export async function GET(request: NextRequest) {
             console.log(`   Processing as PDF...`);
             try {
                 const pdfDoc = await PDFDocument.load(fileBuffer);
-                // Use StandardFonts.Helvetica which is built-in to PDF readers (no font file needed)
-                const helveticaFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
                 const pages = pdfDoc.getPages();
 
                 pages.forEach((page: PDFPage) => {
                     const { width, height } = page.getSize();
 
-                    const text = 'Websites Arena';
-                    const fontSize = 72;
-                    const textWidth = helveticaFont.widthOfTextAtSize(text, fontSize);
-                    const textHeight = helveticaFont.heightAtSize(fontSize);
+                    // Define watermark size (20% of page width)
+                    const watermarkScale = (width * 0.2) / 24; // Base SVG is 24x24
+                    const watermarkWidth = 24 * watermarkScale;
+                    const watermarkHeight = 24 * watermarkScale;
 
-                    const centerX = (width - textWidth) / 2;
-                    const centerY = (height - textHeight) / 2;
+                    const centerX = (width - watermarkWidth) / 2;
+                    const centerY = (height - watermarkHeight) / 2;
 
-                    page.drawText(text, {
+                    // Draw Shield Background
+                    page.drawSvgPath('M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', {
                         x: centerX,
-                        y: centerY,
-                        size: fontSize,
-                        font: helveticaFont,
-                        color: rgb(0.3, 0.3, 0.3),
-                        opacity: 0.25,
+                        y: centerY + watermarkHeight, // PDF coordinates are bottom-up
+                        scale: watermarkScale,
+                        color: rgb(1, 1, 1), // White
+                        borderColor: rgb(0, 0, 0), // Black
+                        borderWidth: 1,
+                        opacity: 0.5,
+                        rotate: degrees(-45),
+                    });
+
+                    // Draw W Path
+                    page.drawSvgPath('M5.5 9L7 14L9 9L11 14L12.5 9', {
+                        x: centerX,
+                        y: centerY + watermarkHeight,
+                        scale: watermarkScale,
+                        borderColor: rgb(0, 0, 0),
+                        borderWidth: 1.5,
+                        opacity: 0.5,
+                        rotate: degrees(-45),
+                    });
+
+                    // Draw A Path
+                    page.drawSvgPath('M14 14L16 9L18 14M14.5 12.5H17.5', {
+                        x: centerX,
+                        y: centerY + watermarkHeight,
+                        scale: watermarkScale,
+                        borderColor: rgb(0, 0, 0),
+                        borderWidth: 1.5,
+                        opacity: 0.5,
                         rotate: degrees(-45),
                     });
                 });
@@ -134,24 +156,35 @@ export async function GET(request: NextRequest) {
             const height = metadata.height || 630;
             console.log(`   Image dimensions: ${width}x${height}`);
 
-            // Calculate font size based on image width (10% of width)
-            const fontSize = Math.max(Math.round(width * 0.1), 40);
+            // Calculate logo size (20% of image width)
+            const logoWidth = Math.round(width * 0.2);
 
-            // Create SVG watermark using system fonts (Arial, sans-serif)
-            // This does NOT require a font file to be loaded by Sharp/Canvas
-            const watermarkSvg = Buffer.from(`
-<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-    <g opacity="0.5" transform="translate(${width / 2},${height / 2}) rotate(-45)">
-        <text x="0" y="0" font-size="${fontSize}" font-weight="bold" text-anchor="middle" fill="white" stroke="black" stroke-width="${fontSize * 0.02}" font-family="Arial, sans-serif">Websites Arena</text>
-    </g>
-</svg>
-            `);
+            // Define watermark SVG directly to avoid file I/O issues
+            const watermarkSvgString = `
+<svg width="200" height="200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.5">
+    <!-- Shield Background -->
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="white" stroke="black" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- W Path -->
+    <path d="M5.5 9L7 14L9 9L11 14L12.5 9" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- A Path -->
+    <path d="M14 14L16 9L18 14M14.5 12.5H17.5" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>`;
+            const watermarkBuffer = Buffer.from(watermarkSvgString);
+
+            // Resize watermark to the calculated width
+            const resizedWatermark = await sharp(watermarkBuffer)
+                .resize({ width: logoWidth })
+                .toBuffer();
 
             // Apply watermark
             const watermarkedImage = await image
                 .composite([
                     {
-                        input: watermarkSvg,
+                        input: resizedWatermark,
                         gravity: 'center',
                         blend: 'over',
                     }
@@ -175,21 +208,21 @@ export async function GET(request: NextRequest) {
             });
         } catch (imgError) {
             console.error('   ❌ Image watermark error:', imgError);
-            // Return original as PNG on error
-            const fallbackImage = await sharp(Buffer.from(fileBuffer))
-                .png()
-                .toBuffer();
 
+            // Return original image directly on error (most robust fallback)
+            // This ensures that even if Sharp fails completely, the user still sees the image
             const originalFilename = getFilenameFromUrl(decodedUrl);
-            const filenameWithoutExt = originalFilename.split('.')[0];
-            const filename = `${filenameWithoutExt}.png`;
+            // Try to determine content type from filename or default to binary
+            const contentType = originalFilename.endsWith('.png') ? 'image/png' :
+                originalFilename.endsWith('.jpg') || originalFilename.endsWith('.jpeg') ? 'image/jpeg' :
+                    originalFilename.endsWith('.webp') ? 'image/webp' : 'application/octet-stream';
 
-            return new NextResponse(fallbackImage as unknown as BodyInit, {
+            return new NextResponse(Buffer.from(fileBuffer), {
                 headers: {
-                    'Content-Type': 'image/png',
+                    'Content-Type': contentType,
                     'Cache-Control': 'public, max-age=31536000, immutable',
-                    'Content-Length': fallbackImage.length.toString(),
-                    'Content-Disposition': `attachment; filename="${filename}"`,
+                    'Content-Length': fileBuffer.byteLength.toString(),
+                    'Content-Disposition': `inline; filename="${originalFilename}"`,
                 },
             });
         }

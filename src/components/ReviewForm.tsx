@@ -61,7 +61,7 @@ export function ReviewForm({ productId, productTitle }: { productId: string; pro
 
       {success && (
         <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-          <p className="text-green-700 dark:text-green-400 font-semibold">✅ Thank you! Your review has been submitted and is awaiting verification.</p>
+          <p className="text-green-700 dark:text-green-400 font-semibold">✅ Thank you! Your review has been submitted.</p>
         </div>
       )}
 
