@@ -75,21 +75,19 @@ const components: PortableTextComponents = {
             const productUrl = `/shop/${value.slug}?utm_source=blog&utm_medium=embed&utm_campaign=product_card`;
 
             return (
-                <div className="my-12 p-8 bg-gray-50 dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 group hover:border-blue-500/50 transition-colors">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                <div className="my-8 p-4 md:p-6 bg-gray-50 dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 group hover:border-blue-500/50 transition-colors">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
                         {/* Product Image */}
-                        <div className="relative w-full h-40 rounded-xl overflow-hidden flex-shrink-0 bg-white dark:bg-black md:col-span-1">
+                        <Link href={productUrl} className="relative w-full h-40 md:h-48 rounded-xl overflow-hidden flex-shrink-0 bg-white dark:bg-black md:col-span-1 block m-0 p-0">
                             {value.image && (
-                                <Link href={productUrl}>
-                                    <Image
-                                        src={urlFor(value.image).url()}
-                                        alt={value.title}
-                                        fill
-                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                                    />
-                                </Link>
+                                <Image
+                                    src={urlFor(value.image).url()}
+                                    alt={value.title}
+                                    fill
+                                    className="object-cover w-full h-full transition-transform duration-500 hover:scale-105 m-0 p-0"
+                                />
                             )}
-                        </div>
+                        </Link>
 
                         {/* Product Info */}
                         <div className="md:col-span-2 flex flex-col justify-between">

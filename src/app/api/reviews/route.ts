@@ -1,4 +1,5 @@
 import { client } from '@/sanity/lib/client'
+import { writeClient } from '@/sanity/lib/write-client'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -43,8 +44,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create review in Sanity
-    const review = await client.create({
+    // Check if write token is available
+    if (!process.env.SANITY_API_WRITE_TOKEN) {
+      console.error('SANITY_API_WRITE_TOKEN is not configured')
+      return NextResponse.json(
+        { error: 'Review submission is temporarily unavailable. Please try again later.' },
+        { status: 503 }
+      )
+    }
+
+    // Create review in Sanity using write client
+    const review = await writeClient.create({
       _type: 'review',
       product: {
         _type: 'reference',
@@ -59,7 +69,7 @@ export async function POST(request: NextRequest) {
       publishedAt: new Date().toISOString(),
     })
 
-    console.log('Review created:', review._id)
+    console.log('Review created successfully:', review._id)
 
     return NextResponse.json(
       { success: true, reviewId: review._id },
@@ -67,6 +77,17 @@ export async function POST(request: NextRequest) {
     )
   } catch (error) {
     console.error('Review submission error:', error)
+    
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    
+    // Provide more specific error messages for debugging
+    if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
+      return NextResponse.json(
+        { error: 'Authentication failed. Write token may be invalid.' },
+        { status: 401 }
+      )
+    }
+    
     return NextResponse.json(
       { error: 'Failed to submit review. Please try again.' },
       { status: 500 }

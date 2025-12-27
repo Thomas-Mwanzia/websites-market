@@ -79,6 +79,7 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                             </svg>
                             <span className="text-xs font-bold text-gray-500 group-hover:text-blue-600 text-center px-1">Preview PDF</span>
+                            <span className="text-xs text-gray-400 mt-1">� Open</span>
                         </a>
                     )}
                 </div>
@@ -100,9 +101,9 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
                         {/* Close Button */}
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="absolute -top-10 -right-10 lg:-top-12 lg:-right-12 text-white hover:text-gray-300 transition-colors z-10"
+                            className="absolute top-2 right-2 lg:-top-12 lg:-right-12 text-white hover:text-gray-300 transition-colors z-50 bg-black/50 hover:bg-black/70 p-2 rounded-full"
                         >
-                            <X className="w-8 h-8" />
+                            <X className="w-6 h-6 lg:w-8 lg:h-8" />
                         </button>
 
                         {/* Main Image */}

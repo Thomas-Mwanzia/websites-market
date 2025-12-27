@@ -4,6 +4,19 @@ import { PDFDocument, PDFPage, rgb, degrees } from 'pdf-lib';
 
 export const runtime = 'nodejs';
 
+// Helper function to extract filename from URL
+function getFilenameFromUrl(url: string): string {
+    try {
+        const urlObj = new URL(url);
+        const pathname = urlObj.pathname;
+        const filename = pathname.split('/').pop() || 'file';
+        // Remove query parameters if any
+        return filename.split('?')[0];
+    } catch {
+        return 'file';
+    }
+}
+
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
@@ -17,9 +30,27 @@ export async function GET(request: NextRequest) {
         // Decode the URL
         const decodedUrl = decodeURIComponent(fileUrl);
 
-        // Fetch the file from the URL
-        const response = await fetch(decodedUrl);
+        // Fetch the file from the URL with timeout and better error handling
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        
+        let response: Response;
+        try {
+            response = await fetch(decodedUrl, {
+                signal: controller.signal,
+                headers: {
+                    'Accept': '*/*',
+                }
+            });
+            clearTimeout(timeoutId);
+        } catch (fetchError) {
+            clearTimeout(timeoutId);
+            console.error('Fetch error:', fetchError);
+            return NextResponse.json({ error: 'Failed to fetch file from URL' }, { status: 400 });
+        }
+
         if (!response.ok) {
+            console.error(`Failed to fetch file. Status: ${response.status}`);
             return NextResponse.json({ error: 'Failed to fetch file' }, { status: 400 });
         }
 
@@ -50,13 +81,15 @@ export async function GET(request: NextRequest) {
                 });
 
                 const pdfBytes = await pdfDoc.save();
+                const originalFilename = getFilenameFromUrl(decodedUrl);
+                const filename = originalFilename.endsWith('.pdf') ? originalFilename : `${originalFilename}.pdf`;
 
                 return new NextResponse(Buffer.from(pdfBytes), {
                     headers: {
                         'Content-Type': 'application/pdf',
                         'Cache-Control': 'public, max-age=31536000, immutable',
                         'Content-Length': pdfBytes.length.toString(),
-                        'Content-Disposition': 'inline; filename="watermarked.pdf"',
+                        'Content-Disposition': `inline; filename="${filename}"`,
                     },
                 });
             } catch (pdfError) {
@@ -98,12 +131,18 @@ export async function GET(request: NextRequest) {
                 .png()
                 .toBuffer();
 
+            // Get original filename and preserve it
+            const originalFilename = getFilenameFromUrl(decodedUrl);
+            const filenameWithoutExt = originalFilename.split('.')[0];
+            const filename = `${filenameWithoutExt}.png`;
+
             // Return watermarked image with cache headers
             return new NextResponse(watermarkedImage as unknown as BodyInit, {
                 headers: {
                     'Content-Type': 'image/png',
                     'Cache-Control': 'public, max-age=31536000, immutable',
                     'Content-Length': watermarkedImage.length.toString(),
+                    'Content-Disposition': `attachment; filename="${filename}"`,
                 },
             });
         } catch (imgError) {

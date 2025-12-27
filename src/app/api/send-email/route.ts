@@ -121,21 +121,17 @@ export async function POST(request: Request) {
                 // 2. Create Draft Product
                 const doc = {
                     _type: 'product',
-                    _id: `drafts.submission-${Date.now()}`, // Force draft ID
                     title: productType === 'domain' ? domainName : (url ? new URL(url).hostname : `New ${productType} Submission`),
-                    slug: { _type: 'slug', current: `draft-${Date.now()}` },
+                    slug: { _type: 'slug', current: `draft-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` },
                     price: parseFloat(price) || 0,
-                    description: description,
+                    description: description || `Submission from ${email}`,
                     category: productType,
-                    features: features,
+                    features: features && features.length > 0 ? features : [],
                     techStack: techStack ? techStack.split(',').map(s => s.trim()) : [],
-                    // Map fields
-                    ...(url && { websiteUrl: url }), // Assuming websiteUrl exists or we map to something else? Schema has 'youtubeUrl', 'checkoutUrl'. It doesn't seem to have 'websiteUrl' in the view I saw!
-                    // Wait, schema view (Step 863) showed: youtubeUrl, checkoutUrl. NO websiteUrl!
-                    // But 'saas' products usually have a demo link.
-                    // I'll put it in description for now if no field exists, or check if I missed it.
-                    // Actually, let's just put it in description or a note.
-
+                    
+                    // Map demo/preview URL to appropriate field
+                    ...(url && { youtubeUrl: url }),
+                    
                     // Asset Logic
                     ...(digitalAssetId && {
                         digitalAsset: {
@@ -145,24 +141,24 @@ export async function POST(request: Request) {
                     }),
                     ...(assetExternalLink && { assetExternalLink: assetExternalLink }),
 
-                    // Domain Logic
-                    ...(productType === 'domain' && {
-                        sellerType: 'independent', // Default
-                        deliveryMethod: 'transfer',
-                        // Store domain details in description or custom fields if they exist
-                    }),
-
-                    // Default Status
+                    // Seller/Delivery Info
                     sellerType: 'independent',
                     deliveryMethod: ['saas', 'domain'].includes(productType) ? 'transfer' : 'instant',
+                    sellerEmail: email,
+                    sellerName: accountName || 'Submitted via Form',
                 };
 
                 const createdDoc = await writeClient.create(doc);
                 sanityDraftId = createdDoc._id;
-                console.log('Sanity Draft Created:', sanityDraftId);
+                console.log('✅ Sanity Draft Created Successfully:', sanityDraftId);
 
             } catch (err) {
-                console.error('Sanity Automation Failed:', err);
+                console.error('❌ Sanity Automation Failed:', {
+                    error: err instanceof Error ? err.message : String(err),
+                    stack: err instanceof Error ? err.stack : undefined,
+                    type: productType,
+                    email: email,
+                });
                 // We DO NOT fail the request. We just log it and proceed to send emails.
             }
         }
