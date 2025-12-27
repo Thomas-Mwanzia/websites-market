@@ -1,6 +1,7 @@
 'use server'
 
 import { client } from "@/sanity/lib/client"
+import { getProductsWithRatings } from "@/lib/reviews"
 
 export async function fetchMorePosts(lastPublishedAt: string, lastId: string) {
   const query = `*[_type == "post" && (
@@ -62,11 +63,24 @@ export async function fetchMoreProducts(
     conditions.push(`price <= ${filters.maxPrice}`)
   }
 
-  const query = `*[${conditions.join(' && ')}] | order(_createdAt desc) [0...20]`
+  const query = `*[${conditions.join(' && ')}] | order(_createdAt desc) [0...20] {
+    _id,
+    title,
+    slug,
+    price,
+    description,
+    image,
+    category,
+    sellerType,
+    deliveryMethod,
+    _createdAt
+  }`
 
   try {
     const products = await client.fetch(query, { lastCreatedAt, lastId })
-    return products
+    // Enhance with rating data
+    const productsWithRatings = await getProductsWithRatings(products)
+    return productsWithRatings
   } catch (error) {
     console.error("Error fetching more products:", error)
     return []

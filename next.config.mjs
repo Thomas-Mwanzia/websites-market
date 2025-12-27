@@ -7,6 +7,14 @@ const nextConfig = {
                 hostname: 'cdn.sanity.io',
             },
         ],
+        localPatterns: [
+            {
+                pathname: '/api/watermark',
+            },
+            {
+                pathname: '/icon.png',
+            },
+        ],
     },
 };
 

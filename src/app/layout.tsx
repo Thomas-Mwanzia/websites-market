@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -7,6 +7,10 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: "Websites Arena | Buy & Sell Digital Assets, Websites, Online businesses & Templates",
@@ -113,7 +117,6 @@ const navigationJsonLd = {
 
 import { Suspense } from "react";
 import Script from "next/script";
-import { Analytics } from "@vercel/analytics/react";
 
 export default function RootLayout({
   children,
@@ -132,7 +135,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationJsonLd) }}
         />
       </head>
-      <body className={`${jakarta.className} bg-white dark:bg-black text-gray-900 dark:text-gray-100 min-h-screen flex flex-col`}>
+      <body className={`${jakarta.className} ${inter.variable} bg-white dark:bg-black text-gray-900 dark:text-gray-100 min-h-screen flex flex-col`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -147,7 +150,6 @@ export default function RootLayout({
           </main>
           <Footer />
         </ThemeProvider>
-        <Analytics />
         <ScrollToTop />
       </body>
     </html>

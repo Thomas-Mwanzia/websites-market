@@ -24,9 +24,28 @@ export default function TermsPage() {
                     </section>
 
                     <section>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">3. Refunds</h2>
-                        <p>
-                            Due to the digital nature of our products, all sales are final. We do not offer refunds once the digital assets have been delivered. However, if you find a product to be defective or not as described, please contact us at <span className="text-green-600 font-bold">support@websitesarena.com</span>.
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">3. Refund Policy</h2>
+                        <p className="mb-4">
+                            We offer a <strong>10-day money-back guarantee</strong> for all digital assets purchased on Websites Arena. If you're not satisfied with your purchase, you're entitled to a refund if you request it within 10 days of the delivery date.
+                        </p>
+                        
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">How to Request a Refund:</h3>
+                        <ul className="list-disc list-inside space-y-2 mb-4">
+                            <li>Contact us at <span className="text-green-600 font-bold">support@websitesarena.com</span> within 10 days of delivery</li>
+                            <li>Provide your order ID and brief reason for the refund request</li>
+                            <li>Our team will verify eligibility and process the refund within 5-7 business days</li>
+                        </ul>
+
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">What Qualifies for a Refund:</h3>
+                        <ul className="list-disc list-inside space-y-2 mb-4">
+                            <li>Product does not match the description or preview shown</li>
+                            <li>Product is defective or corrupted</li>
+                            <li>Product is incompatible with your environment</li>
+                            <li>Change of mind (within 10 days)</li>
+                        </ul>
+
+                        <p className="text-sm text-gray-600 dark:text-gray-500 italic">
+                            <strong>Note:</strong> The 10-day period starts from the date you received/downloaded the digital asset. Refunds are not available after this period has elapsed.
                         </p>
                     </section>
 

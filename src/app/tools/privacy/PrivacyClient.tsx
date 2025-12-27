@@ -52,8 +52,8 @@ We have put in place appropriate security measures to prevent your personal data
 
 5. REFUND POLICY
 ${formData.hasDigitalGoods
-                ? 'Since our products are digital assets, all sales are final. We do not offer refunds once the product has been downloaded or accessed, except as required by law.'
-                : 'We offer a 30-day money-back guarantee for all purchases. If you are not satisfied, please contact us for a full refund.'}
+                ? 'We offer a 10-day money-back guarantee for all digital assets. If you are not satisfied with your purchase within 10 days of delivery, please contact us at ' + (formData.email || '[Email Address]') + ' for a refund. Please see our Terms of Service for complete refund policy details.'
+                : 'We offer a 10-day money-back guarantee for all purchases. If you are not satisfied, please contact us for a refund.'}
 
 6. CONTACT DETAILS
 If you have any questions about this privacy policy or our privacy practices, please contact us at:
@@ -156,7 +156,7 @@ Email: ${formData.email || '[Email Address]'}
                                             className="w-5 h-5 rounded text-amber-600 focus:ring-amber-500 border-gray-300 dark:border-gray-700"
                                         />
                                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                            I sell digital products (No Refund Policy)
+                                            I sell digital products (with 10-day refund guarantee)
                                         </span>
                                     </label>
                                 </div>

@@ -162,7 +162,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
 
                                     {/* Content */}
                                     <div className="flex-1 p-8 flex flex-col">
-                                        <div className="flex items-center text-sm text-gray-400 mb-4 space-x-2">
+                                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4 space-x-2 font-medium">
                                             <time dateTime={post.publishedAt}>
                                                 {new Date(post.publishedAt).toLocaleDateString('en-US', {
                                                     year: 'numeric',
@@ -172,13 +172,44 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                                             </time>
                                         </div>
 
-                                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 line-clamp-2 group-hover:text-blue-500 transition-colors">
+                                        <h2 className="
+                                          text-2xl font-display font-bold
+                                          text-gray-900 dark:text-white
+                                          mb-4 line-clamp-2
+                                          group-hover:text-blue-600 dark:group-hover:text-blue-400
+                                          transition-colors
+                                        ">
                                             {post.title}
                                         </h2>
 
-                                        <p className="text-gray-500 dark:text-gray-400 mb-8 line-clamp-3 flex-grow">
+                                        <p className="
+                                          text-gray-600 dark:text-gray-400
+                                          mb-8 line-clamp-3 flex-grow
+                                          leading-relaxed font-serif
+                                        ">
                                             {post.excerpt}
                                         </p>
+
+                                        {/* Author Info */}
+                                        <div className="flex items-center gap-3 mb-6 pb-6 border-t border-gray-200 dark:border-gray-800 pt-6">
+                                            {post.authorImage && (
+                                                <div className="relative w-10 h-10 flex-shrink-0 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 ring-1 ring-gray-300 dark:ring-gray-600">
+                                                    <Image
+                                                        src={urlFor(post.authorImage).url()}
+                                                        alt={post.author || 'Author'}
+                                                        fill
+                                                        className="object-cover"
+                                                        loading="lazy"
+                                                    />
+                                                </div>
+                                            )}
+                                            <div className="flex-grow min-w-0">
+                                                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate font-display">
+                                                    {post.author || 'Websites Arena'}
+                                                </p>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Author</p>
+                                            </div>
+                                        </div>
 
                                         <div className="flex items-center text-blue-600 font-bold group-hover:translate-x-2 transition-transform">
                                             Read Article <ArrowRight className="ml-2 w-4 h-4" />

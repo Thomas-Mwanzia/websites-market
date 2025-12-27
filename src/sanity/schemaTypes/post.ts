@@ -31,6 +31,14 @@ export const post = defineType({
             options: {
                 hotspot: true,
             },
+            fields: [
+                defineField({
+                    name: 'credit',
+                    title: 'Image Credit / Attribution',
+                    type: 'string',
+                    description: 'Source or photographer credit. e.g., "Unsplash", "John Smith", "Getty Images"',
+                }),
+            ],
         }),
         defineField({
             name: 'excerpt',
@@ -38,6 +46,22 @@ export const post = defineType({
             type: 'text',
             rows: 3,
             description: 'A short summary of the post for SEO and previews.',
+        }),
+        defineField({
+            name: 'author',
+            title: 'Author',
+            type: 'string',
+            description: 'Name of the author who wrote this post.',
+            validation: (rule) => rule.required(),
+        }),
+        defineField({
+            name: 'authorImage',
+            title: 'Author Image',
+            type: 'image',
+            options: {
+                hotspot: true,
+            },
+            description: 'Profile picture of the author (optional).',
         }),
         defineField({
             name: 'body',
@@ -50,6 +74,20 @@ export const post = defineType({
                 {
                     type: 'image',
                     options: { hotspot: true },
+                    fields: [
+                        defineField({
+                            name: 'alt',
+                            title: 'Alt Text',
+                            type: 'string',
+                            description: 'Alternative text for accessibility and SEO.',
+                        }),
+                        defineField({
+                            name: 'credit',
+                            title: 'Image Credit / Attribution',
+                            type: 'string',
+                            description: 'Source or photographer credit. e.g., "Unsplash", "John Smith", "Getty Images"',
+                        }),
+                    ],
                 },
                 {
                     type: 'reference',

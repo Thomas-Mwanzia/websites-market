@@ -41,17 +41,22 @@ export default function SocialPreviewPage() {
         setIsGenerating(true)
 
         try {
-            // Force full scale for download
-            const dataUrl = await toPng(previewRef.current, {
+            // Get the element's current dimensions
+            const element = previewRef.current
+            const rect = element.getBoundingClientRect()
+            
+            // Calculate the scale to get 1200x630 output
+            const targetWidth = 1200
+            const targetHeight = 630
+            const scale = targetWidth / rect.width
+
+            const dataUrl = await toPng(element, {
                 quality: 1.0,
-                pixelRatio: 1,
-                style: {
-                    transform: 'scale(1)',
-                    transformOrigin: 'top left'
-                },
-                width: 1200,
-                height: 630
+                pixelRatio: scale,
+                width: targetWidth,
+                height: targetHeight
             })
+            
             const link = document.createElement('a')
             link.download = 'social-preview.png'
             link.href = dataUrl

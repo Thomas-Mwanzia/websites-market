@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { ArrowRight, Book, Code2, Layout, Palette, Box, GraduationCap, ShieldCheck, Gem } from 'lucide-react'
+import { ArrowRight, Book, Code2, Layout, Palette, Box, GraduationCap, ShieldCheck, Gem, Star, Zap, Download } from 'lucide-react'
 import { urlForImage } from '@/sanity/lib/image'
 
 interface ProductProps {
@@ -14,6 +14,9 @@ interface ProductProps {
     image: any
     category?: string
     sellerType?: 'independent' | 'verified' | 'premium'
+    avgRating?: number
+    reviewCount?: number
+    deliveryMethod?: 'instant' | 'transfer'
 }
 
 export function ProductCard({ product }: { product: ProductProps }) {
@@ -74,12 +77,61 @@ export function ProductCard({ product }: { product: ProductProps }) {
                 </div>
 
                 <div className="p-8">
-                    <div className="flex justify-between items-start mb-4">
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">
+                    {/* Title and Quick Stats */}
+                    <div className="mb-4">
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight mb-2">
                             {product.title}
                         </h3>
-                        <div className="text-xl font-black text-blue-600">
-                            ${product.price}
+                        
+                        {/* Star Rating */}
+                        {product.avgRating !== undefined && (
+                            <div className="flex items-center gap-2 mb-3">
+                                <div className="flex items-center gap-1">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star
+                                            key={i}
+                                            className={`w-4 h-4 ${
+                                                i < Math.floor(product.avgRating!)
+                                                    ? 'fill-yellow-400 text-yellow-400'
+                                                    : i < Math.ceil(product.avgRating!)
+                                                    ? 'fill-yellow-200 text-yellow-400'
+                                                    : 'text-gray-300 dark:text-gray-600'
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                                    {product.avgRating?.toFixed(1)} 
+                                </span>
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
+                                    ({product.reviewCount || 0})
+                                </span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Price and Quick Badges Row */}
+                    <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                        <div className="flex items-center gap-2">
+                            <div className="text-2xl font-black text-blue-600">
+                                ${product.price}
+                            </div>
+                        </div>
+                        
+                        {/* Quick Info Badges */}
+                        <div className="flex items-center gap-2 flex-wrap">
+                            {product.deliveryMethod === 'instant' && (
+                                <div className="inline-flex items-center gap-1 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-400 px-2 py-1 rounded-lg text-xs font-semibold">
+                                    <Download className="w-3 h-3" />
+                                    Instant
+                                </div>
+                            )}
+                            {product.sellerType === 'verified' && (
+                                <div className="inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-lg text-xs font-semibold">
+                                    <ShieldCheck className="w-3 h-3" />
+                                    Verified
+                                </div>
+                            )}
                         </div>
                     </div>
 
