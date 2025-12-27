@@ -25,6 +25,32 @@ export async function fetchMorePosts(lastPublishedAt: string, lastId: string) {
   }
 }
 
+export async function searchPosts(term: string) {
+  if (!term) return []
+
+  const query = `*[_type == "post" && (
+    title match "${term}*" || 
+    excerpt match "${term}*"
+  )] | order(publishedAt desc) [0...20] {
+    _id,
+    title,
+    slug,
+    publishedAt,
+    mainImage,
+    excerpt,
+    author,
+    authorImage
+  }`
+
+  try {
+    const posts = await client.fetch(query)
+    return posts
+  } catch (error) {
+    console.error("Error searching posts:", error)
+    return []
+  }
+}
+
 export async function fetchMoreProducts(
   lastCreatedAt: string,
   lastId: string,

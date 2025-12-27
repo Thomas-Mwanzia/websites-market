@@ -99,11 +99,13 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl }: Preview
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close Button */}
+                        {/* Close Button - Improved Visibility */}
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="absolute top-2 right-2 lg:-top-12 lg:-right-12 text-white hover:text-gray-300 transition-colors z-50 bg-black/50 hover:bg-black/70 p-2 rounded-full"
+                            className="absolute top-4 right-4 lg:-top-12 lg:-right-12 z-50 p-3 bg-white text-black rounded-full shadow-lg hover:bg-gray-100 hover:scale-110 transition-all duration-200 group"
+                            aria-label="Close preview"
                         >
-                            <X className="w-6 h-6 lg:w-8 lg:h-8" />
+                            <X className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
                         </button>
 
                         {/* Main Image */}

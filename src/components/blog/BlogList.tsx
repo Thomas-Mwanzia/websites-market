@@ -19,6 +19,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
     const [posts, setPosts] = useState(initialPosts)
     const [isSearchOpen, setIsSearchOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState(initialSearch || '')
+    const [isSearching, setIsSearching] = useState(false)
     const inputRef = useRef<HTMLInputElement>(null)
     const router = useRouter()
 
@@ -26,6 +27,32 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
     const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [hasMore, setHasMore] = useState(initialPosts.length === 20)
     const { ref, inView } = useInView()
+
+    // Debounced Search Logic
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            if (searchQuery.trim()) {
+                setIsSearching(true)
+                try {
+                    // Import dynamically to avoid circular dependencies if any, though direct import is fine here
+                    const { searchPosts } = await import('@/app/actions')
+                    const results = await searchPosts(searchQuery)
+                    setPosts(results)
+                    setHasMore(false) // Disable infinite scroll for search results
+                } catch (error) {
+                    console.error('Search failed:', error)
+                } finally {
+                    setIsSearching(false)
+                }
+            } else if (searchQuery === '') {
+                // Reset to initial state when search is cleared
+                setPosts(initialPosts)
+                setHasMore(initialPosts.length === 20)
+            }
+        }, 300) // 300ms debounce
+
+        return () => clearTimeout(timer)
+    }, [searchQuery, initialPosts])
 
     // Load More Logic
     const loadMore = useCallback(async () => {
@@ -54,16 +81,6 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
         }
     }, [inView, loadMore])
 
-    // Search Logic
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault()
-        if (searchQuery.trim()) {
-            router.push(`/blog?q=${encodeURIComponent(searchQuery)}`)
-        } else {
-            router.push('/blog')
-        }
-    }
-
     const handleSearchClick = () => {
         setIsSearchOpen(true)
         setTimeout(() => inputRef.current?.focus(), 100)
@@ -72,7 +89,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
     const handleCloseSearch = () => {
         setIsSearchOpen(false)
         setSearchQuery('')
-        router.push('/blog')
+        // No need to push router, state reset handles it
     }
 
     return (
@@ -109,7 +126,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                                     animate={{ width: 300, opacity: 1 }}
                                     exit={{ width: 48, opacity: 0 }}
                                     className="relative"
-                                    onSubmit={handleSearch}
+                                    onSubmit={(e) => e.preventDefault()}
                                 >
                                     <input
                                         ref={inputRef}
@@ -119,7 +136,10 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                                         placeholder="Type to search..."
                                         className="w-full pl-12 pr-12 py-3 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-lg text-sm sm:text-base"
                                     />
-                                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                                    <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 ${isSearching ? 'opacity-0' : 'opacity-100'} transition-opacity`} />
+                                    {isSearching && (
+                                        <Loader2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 animate-spin" />
+                                    )}
                                     <button
                                         type="button"
                                         onClick={handleCloseSearch}

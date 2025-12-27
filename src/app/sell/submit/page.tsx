@@ -500,6 +500,18 @@ export default function SubmitPage() {
                                 placeholder="e.g. 500"
                                 className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
                             />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                <DollarSign className="w-4 h-4 mr-2 text-blue-600" /> Asking Price ($)
+                            </label>
+                            <input
+                                name="price"
+                                required
+                                type="number"
+                                placeholder="e.g. 500"
+                                className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all"
+                            />
                             <div className="mt-1">
                                 {productType === 'saas' && (
                                     <Link href="/tools/valuation" target="_blank" className="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center">
@@ -508,6 +520,26 @@ export default function SubmitPage() {
                                 )}
                             </div>
                         </div>
+
+                        {/* Support Field - Only for relevant categories */}
+                        {!['photography', 'video', 'digital-art', 'domain'].includes(productType) && (
+                            <div className="space-y-2 md:col-span-2">
+                                <label className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest flex items-center">
+                                    <Shield className="w-4 h-4 mr-2 text-blue-600" /> Support Included?
+                                </label>
+                                <select
+                                    name="support"
+                                    className="w-full px-6 py-4 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl focus:ring-2 focus:ring-blue-600 outline-none transition-all appearance-none"
+                                >
+                                    <option value="none">No Support (Sold as-is)</option>
+                                    <option value="10-days">10 Days Support</option>
+                                    <option value="30-days">30 Days Support (Recommended)</option>
+                                    <option value="3-months">3 Months Support</option>
+                                    <option value="lifetime">Lifetime Updates & Support</option>
+                                </select>
+                                <p className="text-xs text-gray-500">Offering support increases your chance of selling by 40%.</p>
+                            </div>
+                        )}
                     </div>
 
 
@@ -659,6 +691,25 @@ export default function SubmitPage() {
                                     <><Upload className="w-4 h-4 mr-2 text-blue-600" /> Asset Delivery</>
                                 )}
                             </label>
+
+                            {/* Asset Requirements Notice - Only for Code Products */}
+                            {['saas', 'template', 'boilerplate', 'tool', 'ecommerce', 'other'].includes(productType) && (
+                                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-xl flex items-start gap-3">
+                                    <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                                    <div className="text-sm text-blue-900 dark:text-blue-200">
+                                        <p className="font-bold mb-1">Important: What to include in your delivery</p>
+                                        <p className="leading-relaxed opacity-90">
+                                            To ensure a smooth transaction and avoid refunds, your delivered asset <strong>MUST</strong> contain:
+                                        </p>
+                                        <ul className="list-disc list-inside mt-2 space-y-1 ml-1">
+                                            <li>Full Source Code & Programs</li>
+                                            <li>Relevant Documentation</li>
+                                            <li>Step-by-step Setup Guide</li>
+                                            <li>License & Terms of Use</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            )}
 
                             {!['course'].includes(productType) && (
                                 <div className="flex bg-gray-100 dark:bg-gray-900 p-1 rounded-xl w-fit mb-4">

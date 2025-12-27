@@ -99,18 +99,28 @@ export function Navbar() {
                     {/* Desktop Menu */}
                     <div className="hidden md:flex items-center space-x-8">
                         {navLinks.map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className={cn(
-                                    "text-sm font-bold uppercase tracking-widest transition-colors",
-                                    pathname === link.href
-                                        ? "text-blue-600"
-                                        : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                                )}
-                            >
-                                {link.name}
-                            </Link>
+                            link.name === 'Sell' ? (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className="px-5 py-2.5 bg-black text-white dark:bg-white dark:text-black rounded-full text-sm font-bold hover:opacity-80 transition-opacity shadow-sm"
+                                >
+                                    {link.name}
+                                </Link>
+                            ) : (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className={cn(
+                                        "text-sm font-bold uppercase tracking-widest transition-colors",
+                                        pathname === link.href
+                                            ? "text-blue-600"
+                                            : "text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                                    )}
+                                >
+                                    {link.name}
+                                </Link>
+                            )
                         ))}
 
                         <div className="flex items-center space-x-4 pl-4 border-l border-gray-100 dark:border-gray-900">

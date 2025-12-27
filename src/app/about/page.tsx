@@ -22,7 +22,7 @@ export default function AboutPage() {
         mainEntity: {
             '@type': 'Organization',
             name: 'Websites Arena',
-            foundingDate: '2024',
+            foundingDate: '2025',
             founder: {
                 '@type': 'Person',
                 name: 'Thomas Mwanzia'
@@ -87,14 +87,7 @@ export default function AboutPage() {
             {/* Founder Section */}
             <section className="py-32 px-4 bg-white dark:bg-black">
                 <div className="max-w-3xl mx-auto text-center">
-                    <div className="relative w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden border-4 border-gray-100 dark:border-gray-800 shadow-xl">
-                        <Image
-                            src="/founder.png"
-                            alt="Thomas Mwanzia"
-                            fill
-                            className="object-cover"
-                        />
-                    </div>
+            
                     <h2 className={`text-4xl md:text-5xl font-bold text-blue-600 mb-8 ${signature.className}`}>A Message from the Founder</h2>
                     <p className="text-xl italic text-gray-500 dark:text-gray-400 mb-12 leading-relaxed font-medium">
                         "In the digital economy, speed is the ultimate competitive advantage. Websites Arena was built to eliminate the technical friction that slows down innovation. Our goal is simple: to provide entrepreneurs with the high-caliber, vetted assets they need to skip the build phase and go straight to market dominance."

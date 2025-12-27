@@ -1,4 +1,5 @@
 import { client } from '@/sanity/lib/client'
+import { urlForImage } from '@/sanity/lib/image'
 import { ProductGrid } from '@/components/shop/ProductGrid'
 import { getProductsWithRatings } from '@/lib/reviews'
 import Link from 'next/link'
@@ -154,7 +155,7 @@ export default async function Home({
             'price': product.price,
             'priceCurrency': 'USD',
             'url': `https://websitesarena.com/shop/${product.slug.current}`,
-            'image': product.image?.asset?.url || 'https://websitesarena.com/icon.png',
+            'image': product.image ? urlForImage(product.image).url() : 'https://websitesarena.com/icon.png',
             'offers': {
               '@type': 'Offer',
               'price': product.price,

@@ -120,6 +120,7 @@ export async function POST(request: Request) {
 
                 // 2. Create Draft Product
                 const doc = {
+                    _id: `drafts.${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
                     _type: 'product',
                     title: productType === 'domain' ? domainName : (url ? new URL(url).hostname : `New ${productType} Submission`),
                     slug: { _type: 'slug', current: `draft-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` },
@@ -128,10 +129,10 @@ export async function POST(request: Request) {
                     category: productType,
                     features: features && features.length > 0 ? features : [],
                     techStack: techStack ? techStack.split(',').map(s => s.trim()) : [],
-                    
+
                     // Map demo/preview URL to appropriate field
                     ...(url && { youtubeUrl: url }),
-                    
+
                     // Asset Logic
                     ...(digitalAssetId && {
                         digitalAsset: {
@@ -144,8 +145,6 @@ export async function POST(request: Request) {
                     // Seller/Delivery Info
                     sellerType: 'independent',
                     deliveryMethod: ['saas', 'domain'].includes(productType) ? 'transfer' : 'instant',
-                    sellerEmail: email,
-                    sellerName: accountName || 'Submitted via Form',
                 };
 
                 const createdDoc = await writeClient.create(doc);

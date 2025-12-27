@@ -18,7 +18,7 @@ async function getReviews(productId: string) {
         author,
         publishedAt
     }`
-    return client.fetch(query, { productId })
+    return client.fetch(query, { productId }, { next: { revalidate: 60 } })
 }
 
 async function getProduct(slug: string) {
@@ -287,7 +287,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     )}
 
                     {/* Bottom Left: Preview Gallery */}
-                    <ProductPreviewGallery 
+                    <ProductPreviewGallery
                         previewImages={product.previewImages?.map((img: any) => ({
                             asset: { url: urlForImage(img).url() }
                         }))}
@@ -378,6 +378,33 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                             <div className="flex items-center">
                                 <Eye className="w-3 h-3 mr-1" /> 10 Day Refund
                             </div>
+                            {product.support && product.support !== 'none' && (
+                                <div className="flex items-center text-blue-600 dark:text-blue-400">
+                                    <Shield className="w-3 h-3 mr-1" />
+                                    {product.support === '10-days' ? '10 Days Support' :
+                                        product.support === '30-days' ? '30 Days Support' :
+                                            product.support === '3-months' ? '3 Months Support' :
+                                                product.support === 'lifetime' ? 'Lifetime Support' : 'Support Included'}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Verified Badge */}
+                        <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900 rounded-xl">
+                            <div className="flex items-center gap-3 mb-2">
+                                <ShieldCheck className="w-5 h-5 text-green-600" />
+                                <span className="font-bold text-green-700 dark:text-green-400">Verified by Websites Arena</span>
+                            </div>
+                            <p className="text-xs text-green-800 dark:text-green-300 leading-relaxed">
+                                {product.category === 'domain'
+                                    ? "This domain has been manually vetted for ownership and transferability."
+                                    : ['ebook', 'course'].includes(product.category || '')
+                                        ? "This content has been manually vetted for quality and authenticity."
+                                        : ['photography', 'video', 'digital-art'].includes(product.category || '')
+                                            ? "This asset has been manually vetted for resolution, quality, and ownership."
+                                            : "This project has been manually vetted for code quality, ownership, and functionality."
+                                }
+                            </p>
                         </div>
 
                         {/* Refund Policy Info */}

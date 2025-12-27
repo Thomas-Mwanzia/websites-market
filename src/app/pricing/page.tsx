@@ -30,7 +30,7 @@ export default function PricingPage() {
                             {[
                                 "Free to list your site",
                                 "No monthly fees",
-                                "Secure escrow payments",
+                                "Websites Arena holds funds",
                                 "Automated file delivery",
                                 "Hand-vetted listings",
                                 "Global reach"

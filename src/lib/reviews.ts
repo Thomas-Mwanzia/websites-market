@@ -30,7 +30,7 @@ export async function getProductsWithRatings(products: any[]) {
     const productIds = products.map(p => p._id)
     const reviewsData = await client.fetch(
       `*[_type == "review" && product._ref in $productIds && verified == true] {
-        product._ref,
+        "productId": product._ref,
         rating
       }`,
       { productIds }
@@ -39,10 +39,10 @@ export async function getProductsWithRatings(products: any[]) {
     // Group reviews by product
     const reviewsByProduct: { [key: string]: any[] } = {}
     reviewsData.forEach((review: any) => {
-      if (!reviewsByProduct[review.product._ref]) {
-        reviewsByProduct[review.product._ref] = []
+      if (!reviewsByProduct[review.productId]) {
+        reviewsByProduct[review.productId] = []
       }
-      reviewsByProduct[review.product._ref].push(review)
+      reviewsByProduct[review.productId].push(review)
     })
 
     // Enhance products with ratings

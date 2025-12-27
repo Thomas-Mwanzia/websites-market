@@ -128,6 +128,22 @@ export default defineType({
             description: 'Select "Manual Transfer" for domains, SaaS, or items requiring handover.',
         }),
         defineField({
+            name: 'support',
+            title: 'Support Offered',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'No Support', value: 'none' },
+                    { title: '10 Days Support', value: '10-days' },
+                    { title: '30 Days Support', value: '30-days' },
+                    { title: '3 Months Support', value: '3-months' },
+                    { title: 'Lifetime Updates & Support', value: 'lifetime' },
+                ]
+            },
+            initialValue: 'none',
+            description: 'Does the seller offer technical support after purchase?',
+        }),
+        defineField({
             name: 'previewImages',
             title: 'Preview Gallery',
             type: 'array',
