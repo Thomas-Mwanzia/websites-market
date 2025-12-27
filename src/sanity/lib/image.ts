@@ -6,5 +6,6 @@ const imageBuilder = createImageUrlBuilder({
     dataset: dataset || '',
 })
 
-return imageBuilder.image(source).auto('format').fit('max').quality(80)
+export const urlForImage = (source: any) => {
+    return imageBuilder.image(source).auto('format').fit('max').quality(80)
 }
