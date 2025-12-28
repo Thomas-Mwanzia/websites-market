@@ -289,9 +289,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
                     {/* Bottom Left: Preview Gallery */}
                     <ProductPreviewGallery
-                        previewImages={product.previewImages?.map((img: any) => ({
-                            asset: { url: urlForImage(img).url() }
-                        }))}
+                        previewImages={[
+                            ...(product.previewImages || []).map((img: any) => ({ asset: { url: urlForImage(img).url() } })),
+                            ...(product.images || []).map((img: any) => ({ asset: { url: urlForImage(img).url() } }))
+                        ]}
                         previewFileUrl={product.previewFileUrl}
                         previewFileMime={product.previewFileMime}
                     />
@@ -336,6 +337,72 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium mb-6">
                             {product.description}
                         </p>
+
+                        {/* Domain Details */}
+                        {product.category === 'domain' && product.domainDetails && (
+                            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Domain Details</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {product.domainDetails.registrar && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Registrar</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">{product.domainDetails.registrar}</div>
+                                        </div>
+                                    )}
+                                    {product.domainDetails.expiryDate && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Expires</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">{new Date(product.domainDetails.expiryDate).toLocaleDateString()}</div>
+                                        </div>
+                                    )}
+                                    {product.domainDetails.renewalPrice > 0 && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Renewal Cost</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">${product.domainDetails.renewalPrice}/yr</div>
+                                        </div>
+                                    )}
+                                    {product.domainDetails.age > 0 && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Age</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">{product.domainDetails.age} Years</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Project Metrics */}
+                        {product.metrics && (product.metrics.revenue > 0 || product.metrics.traffic > 0 || product.metrics.profit > 0) && (
+                            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Performance Metrics</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {product.metrics.revenue > 0 && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Monthly Revenue</div>
+                                            <div className="font-bold text-green-600">${product.metrics.revenue.toLocaleString()}</div>
+                                        </div>
+                                    )}
+                                    {product.metrics.profit > 0 && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Monthly Profit</div>
+                                            <div className="font-bold text-green-600">${product.metrics.profit.toLocaleString()}</div>
+                                        </div>
+                                    )}
+                                    {product.metrics.traffic > 0 && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Monthly Traffic</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">{product.metrics.traffic.toLocaleString()}</div>
+                                        </div>
+                                    )}
+                                    {product.metrics.age > 0 && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Project Age</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">{product.metrics.age} Months</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* What's Included */}
                         <div className="mb-6">

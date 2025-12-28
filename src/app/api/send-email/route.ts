@@ -33,6 +33,16 @@ export async function POST(request: Request) {
         const yearlyRenewal = formData.get('yearlyRenewal') as string;
         const renewalDate = formData.get('renewalDate') as string;
         const ownershipProofCount = parseInt(formData.get('ownershipProofCount') as string || '0');
+        const screenshotCount = parseInt(formData.get('screenshotCount') as string || '0');
+
+        // Metrics
+        const revenue = formData.get('revenue') as string;
+        const profit = formData.get('profit') as string;
+        const traffic = formData.get('traffic') as string;
+        const age = formData.get('age') as string;
+
+        // Images
+        const coverImage = formData.get('coverImage') as File | null;
 
         // Collect ownership proof images
         const ownershipProofImages: { filename: string; content: Buffer }[] = [];
@@ -56,6 +66,15 @@ export async function POST(request: Request) {
         const payoutEmail = formData.get('payoutEmail') as string;
         const videoPreviewLink = formData.get('videoPreviewLink') as string;
         const file = formData.get('file') as File | null;
+
+        // Collect screenshots
+        const screenshots: File[] = [];
+        for (let i = 0; i < screenshotCount; i++) {
+            const screenshot = formData.get(`screenshot${i}`) as File | null;
+            if (screenshot && screenshot.size > 0) {
+                screenshots.push(screenshot);
+            }
+        }
 
         // Verify reCAPTCHA
         if (captchaToken) {
@@ -97,24 +116,61 @@ export async function POST(request: Request) {
                     token: writeToken,
                 });
 
-                // 1. Upload Asset (Smart Handling)
+                // 1. Upload Assets
                 let digitalAssetId = null;
-                let assetExternalLink = assetLink; // Use provided link by default
+                let coverImageAssetId = null;
+                const screenshotAssetIds: string[] = [];
+                const ownershipProofAssetIds: string[] = [];
+                let assetExternalLink = assetLink;
 
+                // Upload Digital Asset File
                 if (file && file.size > 0) {
-                    if (file.size <= 4 * 1024 * 1024) { // < 4MB
-                        console.log('Uploading file to Sanity:', file.name);
-                        const buffer = Buffer.from(await file.arrayBuffer());
-                        const asset = await writeClient.assets.upload('file', buffer, {
-                            filename: file.name
-                        });
-                        digitalAssetId = asset._id;
+                    if (file.size <= 4 * 1024 * 1024) {
+                        try {
+                            console.log('Uploading file to Sanity:', file.name);
+                            const buffer = Buffer.from(await file.arrayBuffer());
+                            const asset = await writeClient.assets.upload('file', buffer, { filename: file.name });
+                            digitalAssetId = asset._id;
+                        } catch (e) {
+                            console.error('Failed to upload digital asset:', e);
+                        }
                     } else {
-                        // > 4MB: We can't upload via serverless function easily without timeouts/limits.
-                        // We'll rely on the user providing a link, or we store the file name as a note.
-                        console.log('File too large for auto-upload, skipping:', file.name);
-                        // If no link was provided but a file was, we might want to flag this.
-                        // For now, we just don't set digitalAssetId.
+                        console.log('File too large for auto-upload:', file.name);
+                    }
+                }
+
+                // Upload Cover Image
+                if (coverImage && coverImage.size > 0) {
+                    try {
+                        console.log('Uploading cover image:', coverImage.name);
+                        const buffer = Buffer.from(await coverImage.arrayBuffer());
+                        const asset = await writeClient.assets.upload('image', buffer, { filename: coverImage.name });
+                        coverImageAssetId = asset._id;
+                    } catch (e) {
+                        console.error('Failed to upload cover image:', e);
+                    }
+                }
+
+                // Upload Screenshots
+                for (const screenshot of screenshots) {
+                    try {
+                        console.log('Uploading screenshot:', screenshot.name);
+                        const buffer = Buffer.from(await screenshot.arrayBuffer());
+                        const asset = await writeClient.assets.upload('image', buffer, { filename: screenshot.name });
+                        screenshotAssetIds.push(asset._id);
+                    } catch (e) {
+                        console.error('Failed to upload screenshot:', e);
+                    }
+                }
+
+                // Upload Ownership Proofs
+                for (const proof of ownershipProofImages) {
+                    try {
+                        console.log('Uploading proof:', proof.filename);
+                        const asset = await writeClient.assets.upload('image', proof.content, { filename: proof.filename });
+                        ownershipProofAssetIds.push(asset._id);
+                    } catch (e) {
+                        console.error('Failed to upload proof:', e);
                     }
                 }
 
@@ -130,8 +186,29 @@ export async function POST(request: Request) {
                     features: features && features.length > 0 ? features : [],
                     techStack: techStack ? techStack.split(',').map(s => s.trim()) : [],
 
-                    // Map demo/preview URL to appropriate field
-                    ...(url && { youtubeUrl: url }),
+                    // URLs
+                    ...(url && { checkoutUrl: url }), // Mapping Website URL to checkoutUrl (or we can use a new field)
+                    ...(videoPreviewLink && { youtubeUrl: videoPreviewLink }), // Mapping video preview to youtubeUrl
+
+                    // Images
+                    ...(coverImageAssetId && {
+                        image: {
+                            _type: 'image',
+                            asset: { _type: 'reference', _ref: coverImageAssetId }
+                        }
+                    }),
+                    ...(screenshotAssetIds.length > 0 && {
+                        images: screenshotAssetIds.map(id => ({
+                            _type: 'image',
+                            asset: { _type: 'reference', _ref: id }
+                        }))
+                    }),
+                    ...(ownershipProofAssetIds.length > 0 && {
+                        ownershipProofImages: ownershipProofAssetIds.map(id => ({
+                            _type: 'image',
+                            asset: { _type: 'reference', _ref: id }
+                        }))
+                    }),
 
                     // Asset Logic
                     ...(digitalAssetId && {
@@ -145,6 +222,24 @@ export async function POST(request: Request) {
                     // Seller/Delivery Info
                     sellerType: 'independent',
                     deliveryMethod: ['saas', 'domain'].includes(productType) ? 'transfer' : 'instant',
+
+                    // Metrics
+                    metrics: {
+                        revenue: parseFloat(revenue) || 0,
+                        profit: parseFloat(profit) || 0,
+                        traffic: parseFloat(traffic) || 0,
+                        age: parseFloat(age) || 0,
+                    },
+
+                    // Domain Details
+                    ...(productType === 'domain' && {
+                        domainDetails: {
+                            registrar,
+                            expiryDate,
+                            renewalPrice: parseFloat(yearlyRenewal) || 0,
+                            age: parseFloat(age) || 0,
+                        }
+                    }),
                 };
 
                 const createdDoc = await writeClient.create(doc);

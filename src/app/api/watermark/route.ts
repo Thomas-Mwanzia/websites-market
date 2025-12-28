@@ -75,45 +75,46 @@ export async function GET(request: NextRequest) {
                 pages.forEach((page: PDFPage) => {
                     const { width, height } = page.getSize();
 
-                    // Define watermark size (50% of page width)
-                    const watermarkScale = (width * 0.5) / 24; // Base SVG is 24x24
+                    // Define watermark size (20% of page width)
+                    const watermarkScale = (width * 0.2) / 24; // Base SVG is 24x24
                     const watermarkWidth = 24 * watermarkScale;
                     const watermarkHeight = 24 * watermarkScale;
 
-                    const centerX = (width - watermarkWidth) / 2;
-                    const centerY = (height - watermarkHeight) / 2;
+                    // Position in Bottom Right corner with padding
+                    const x = width - watermarkWidth - 30;
+                    const y = 30;
 
                     // Draw Shield Background
                     page.drawSvgPath('M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', {
-                        x: centerX,
-                        y: centerY + watermarkHeight, // PDF coordinates are bottom-up
+                        x,
+                        y,
                         scale: watermarkScale,
                         color: rgb(1, 1, 1), // White
                         borderColor: rgb(0, 0, 0), // Black
                         borderWidth: 1,
-                        opacity: 0.5,
+                        opacity: 0.15,
                         rotate: degrees(-45),
                     });
 
                     // Draw W Path
                     page.drawSvgPath('M5.5 9L7 14L9 9L11 14L12.5 9', {
-                        x: centerX,
-                        y: centerY + watermarkHeight,
+                        x,
+                        y,
                         scale: watermarkScale,
                         borderColor: rgb(0, 0, 0),
                         borderWidth: 1.5,
-                        opacity: 0.5,
+                        opacity: 0.15,
                         rotate: degrees(-45),
                     });
 
                     // Draw A Path
                     page.drawSvgPath('M14 14L16 9L18 14M14.5 12.5H17.5', {
-                        x: centerX,
-                        y: centerY + watermarkHeight,
+                        x,
+                        y,
                         scale: watermarkScale,
                         borderColor: rgb(0, 0, 0),
                         borderWidth: 1.5,
-                        opacity: 0.5,
+                        opacity: 0.15,
                         rotate: degrees(-45),
                     });
                 });
@@ -156,7 +157,7 @@ export async function GET(request: NextRequest) {
         // Handle image watermarking (default)
         try {
             console.log(`   Processing as IMAGE...`);
-            
+
             // Safety check: if the file starts with %PDF, it's a PDF being mishandled
             const fileStart = Buffer.from(fileBuffer).toString('utf8', 0, 4);
             if (fileStart.includes('PDF') || Buffer.from(fileBuffer).toString('utf8', 0, 5) === '%PDF-') {
@@ -172,7 +173,7 @@ export async function GET(request: NextRequest) {
                     },
                 });
             }
-            
+
             // Get image metadata to determine size
             const image = sharp(Buffer.from(fileBuffer));
             const metadata = await image.metadata();

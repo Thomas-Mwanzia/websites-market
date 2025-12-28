@@ -166,5 +166,27 @@ export default defineType({
                 defineField({ name: 'aspectRatio', title: 'Aspect Ratio', type: 'string', description: 'e.g., 16:9' }),
             ]
         }),
+        defineField({
+            name: 'metrics',
+            title: 'Business Metrics (SaaS/Project)',
+            type: 'object',
+            fields: [
+                defineField({ name: 'revenue', title: 'Monthly Revenue ($)', type: 'number' }),
+                defineField({ name: 'profit', title: 'Monthly Profit ($)', type: 'number' }),
+                defineField({ name: 'traffic', title: 'Monthly Traffic', type: 'number' }),
+                defineField({ name: 'age', title: 'Project Age (Months)', type: 'number' }),
+            ]
+        }),
+        defineField({
+            name: 'domainDetails',
+            title: 'Domain Details',
+            type: 'object',
+            fields: [
+                defineField({ name: 'registrar', title: 'Registrar', type: 'string' }),
+                defineField({ name: 'expiryDate', title: 'Expiry Date', type: 'date' }),
+                defineField({ name: 'renewalPrice', title: 'Yearly Renewal ($)', type: 'number' }),
+                defineField({ name: 'age', title: 'Domain Age (Years)', type: 'number' }),
+            ]
+        }),
     ],
 })
