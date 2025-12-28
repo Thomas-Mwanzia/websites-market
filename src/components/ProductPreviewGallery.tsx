@@ -7,20 +7,23 @@ import { getWatermarkedImageUrl, getWatermarkedPdfUrl } from '@/lib/watermark';
 interface PreviewGalleryProps {
     previewImages?: any[];
     previewFileUrl?: string;
+    previewFileMime?: string;
 }
 
-export function ProductPreviewGallery({ previewImages, previewFileUrl }: PreviewGalleryProps) {
+export function ProductPreviewGallery({ previewImages, previewFileUrl, previewFileMime }: PreviewGalleryProps) {
     const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
     const [isOpen, setIsOpen] = useState(false);
 
-    // Determine if previewFileUrl is actually a PDF or an image
-    const isPdfFile = previewFileUrl?.toLowerCase().includes('.pdf');
-    const isImageFile = previewFileUrl && 
-        (previewFileUrl.toLowerCase().includes('.jpg') || 
-         previewFileUrl.toLowerCase().includes('.jpeg') ||
-         previewFileUrl.toLowerCase().includes('.png') ||
-         previewFileUrl.toLowerCase().includes('.webp') ||
-         previewFileUrl.toLowerCase().includes('.gif'));
+    // Determine if previewFileUrl is actually a PDF using MIME type (server-side) or URL extension (client-side fallback)
+    const isPdfFile = previewFileMime?.toLowerCase().includes('pdf') || 
+                     previewFileUrl?.toLowerCase().includes('.pdf');
+    const isImageFile = previewFileMime?.toLowerCase().includes('image/') || 
+                       (previewFileUrl && 
+                        (previewFileUrl.toLowerCase().includes('.jpg') || 
+                         previewFileUrl.toLowerCase().includes('.jpeg') ||
+                         previewFileUrl.toLowerCase().includes('.png') ||
+                         previewFileUrl.toLowerCase().includes('.webp') ||
+                         previewFileUrl.toLowerCase().includes('.gif')));
 
     // If previewFileUrl is actually an image, add it to previewImages instead
     const displayPreviewImages = previewImages || [];

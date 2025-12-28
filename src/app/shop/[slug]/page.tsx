@@ -24,7 +24,8 @@ async function getReviews(productId: string) {
 async function getProduct(slug: string) {
     const query = `*[_type == "product" && slug.current == $slug][0] {
         ...,
-        "previewFileUrl": previewFile.asset->url
+        "previewFileUrl": previewFile.asset->url,
+        "previewFileMime": previewFile.asset->mimeType
     }`
     return client.fetch(query, { slug })
 }
@@ -292,6 +293,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                             asset: { url: urlForImage(img).url() }
                         }))}
                         previewFileUrl={product.previewFileUrl}
+                        previewFileMime={product.previewFileMime}
                     />
 
                     {/* Bottom Right: Details & CTA */}
