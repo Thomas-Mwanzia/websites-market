@@ -232,75 +232,50 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 </Link>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                    {/* Top Left: Main Image */}
-                    <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
-                        {product.image && (
-                            <Image
-                                src={urlForImage(product.image).url()}
-                                alt={`${product.title} - ${categoryLabel} for sale on Websites Arena`}
-                                fill
-                                className="object-cover"
-                            />
+                    {/* Left Column: Media Stack */}
+                    <div className="space-y-6">
+                        {/* Main Image */}
+                        <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800">
+                            {product.image && (
+                                <Image
+                                    src={urlForImage(product.image).url()}
+                                    alt={`${product.title} - ${categoryLabel} for sale on Websites Arena`}
+                                    fill
+                                    className="object-cover"
+                                />
+                            )}
+                        </div>
+
+                        {/* Video Preview (if available) */}
+                        {product.youtubeUrl && (
+                            <div className="aspect-video rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-black">
+                                <iframe
+                                    width="100%"
+                                    height="100%"
+                                    src={product.youtubeUrl.replace("watch?v=", "embed/")}
+                                    title="Product Demo"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
                         )}
+
+                        {/* Preview Gallery */}
+                        <ProductPreviewGallery
+                            previewImages={[
+                                ...(product.previewImages || []).map((img: any) => ({ asset: { url: urlForImage(img).url() } })),
+                                ...(product.images || []).map((img: any) => ({ asset: { url: urlForImage(img).url() } }))
+                            ]}
+                            previewFileUrl={product.previewFileUrl}
+                            previewFileMime={product.previewFileMime}
+                        />
                     </div>
 
-                    {/* Top Right: Video or Preview (if available) */}
-                    {product.youtubeUrl ? (
-                        <div className="aspect-video rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-black">
-                            <iframe
-                                width="100%"
-                                height="100%"
-                                src={product.youtubeUrl.replace("watch?v=", "embed/")}
-                                title="Product Demo"
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                            ></iframe>
-                        </div>
-                    ) : (
-                        <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Quick Details</h3>
-                                {product.metadata && (
-                                    <div className="space-y-3">
-                                        {product.metadata.resolution && (
-                                            <div>
-                                                <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Resolution</div>
-                                                <div className="font-bold text-gray-900 dark:text-white">{product.metadata.resolution}</div>
-                                            </div>
-                                        )}
-                                        {product.metadata.fileFormat && (
-                                            <div>
-                                                <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Format</div>
-                                                <div className="font-bold text-gray-900 dark:text-white">{product.metadata.fileFormat}</div>
-                                            </div>
-                                        )}
-                                        {product.metadata.aspectRatio && (
-                                            <div>
-                                                <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Ratio</div>
-                                                <div className="font-bold text-gray-900 dark:text-white">{product.metadata.aspectRatio}</div>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Bottom Left: Preview Gallery */}
-                    <ProductPreviewGallery
-                        previewImages={[
-                            ...(product.previewImages || []).map((img: any) => ({ asset: { url: urlForImage(img).url() } })),
-                            ...(product.images || []).map((img: any) => ({ asset: { url: urlForImage(img).url() } }))
-                        ]}
-                        previewFileUrl={product.previewFileUrl}
-                        previewFileMime={product.previewFileMime}
-                    />
-
-                    {/* Bottom Right: Details & CTA */}
-                    <div className="lg:col-span-1">
-                        {/* Header Section - Compact */}
-                        <div className="mb-8">
+                    {/* Right Column: Product Info & Details */}
+                    <div className="space-y-8">
+                        {/* Header Section */}
+                        <div>
                             <div className="flex items-start justify-between mb-4">
                                 <div>
                                     <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 mb-3 font-bold text-xs uppercase tracking-widest">
@@ -334,13 +309,40 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         </div>
 
                         {/* Description */}
-                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium mb-6">
+                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
                             {product.description}
                         </p>
 
+                        {/* Quick Details (Always Visible) */}
+                        {product.metadata && (
+                            <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Quick Details</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {product.metadata.resolution && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Resolution</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">{product.metadata.resolution}</div>
+                                        </div>
+                                    )}
+                                    {product.metadata.fileFormat && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Format</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">{product.metadata.fileFormat}</div>
+                                        </div>
+                                    )}
+                                    {product.metadata.aspectRatio && (
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase tracking-wider font-bold">Ratio</div>
+                                            <div className="font-bold text-gray-900 dark:text-white">{product.metadata.aspectRatio}</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         {/* Domain Details */}
                         {product.category === 'domain' && product.domainDetails && (
-                            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
+                            <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
                                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Domain Details</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     {product.domainDetails.registrar && (
@@ -373,7 +375,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
                         {/* Project Metrics */}
                         {product.metrics && (product.metrics.revenue > 0 || product.metrics.traffic > 0 || product.metrics.profit > 0) && (
-                            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
+                            <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
                                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Performance Metrics</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     {product.metrics.revenue > 0 && (
@@ -405,7 +407,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         )}
 
                         {/* What's Included */}
-                        <div className="mb-6">
+                        <div>
                             <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">What's Included</h3>
                             <div className="space-y-2">
                                 {(product.features || []).slice(0, 4).map((item: string) => (
@@ -424,42 +426,44 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         </div>
 
                         {/* CTA & Trust Badges */}
-                        <a
-                            href={product.checkoutUrl || "#"}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block w-full py-3 bg-black text-white dark:bg-white dark:text-black text-center rounded-lg font-bold text-base hover:bg-gray-800 dark:hover:bg-gray-100 transition-all mb-4"
-                        >
-                            {product.deliveryMethod === 'transfer' ? 'Buy & Start Transfer' : 'Buy Now & Download'}
-                        </a>
+                        <div>
+                            <a
+                                href={product.checkoutUrl || "#"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block w-full py-3 bg-black text-white dark:bg-white dark:text-black text-center rounded-lg font-bold text-base hover:bg-gray-800 dark:hover:bg-gray-100 transition-all mb-4"
+                            >
+                                {product.deliveryMethod === 'transfer' ? 'Buy & Start Transfer' : 'Buy Now & Download'}
+                            </a>
 
-                        <div className="flex items-center justify-center space-x-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
-                            <div className="flex items-center">
-                                <Shield className="w-3 h-3 mr-1" /> Secure
-                            </div>
-                            <div className="flex items-center">
-                                {product.deliveryMethod === 'transfer' ? (
-                                    <><Lock className="w-3 h-3 mr-1" /> Manual Transfer</>
-                                ) : (
-                                    <><Zap className="w-3 h-3 mr-1" /> Instant</>
+                            <div className="flex items-center justify-center space-x-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
+                                <div className="flex items-center">
+                                    <Shield className="w-3 h-3 mr-1" /> Secure
+                                </div>
+                                <div className="flex items-center">
+                                    {product.deliveryMethod === 'transfer' ? (
+                                        <><Lock className="w-3 h-3 mr-1" /> Manual Transfer</>
+                                    ) : (
+                                        <><Zap className="w-3 h-3 mr-1" /> Instant</>
+                                    )}
+                                </div>
+                                <div className="flex items-center">
+                                    <Eye className="w-3 h-3 mr-1" /> 10 Day Refund
+                                </div>
+                                {product.support && product.support !== 'none' && (
+                                    <div className="flex items-center text-blue-600 dark:text-blue-400">
+                                        <Shield className="w-3 h-3 mr-1" />
+                                        {product.support === '10-days' ? '10 Days Support' :
+                                            product.support === '30-days' ? '30 Days Support' :
+                                                product.support === '3-months' ? '3 Months Support' :
+                                                    product.support === 'lifetime' ? 'Lifetime Support' : 'Support Included'}
+                                    </div>
                                 )}
                             </div>
-                            <div className="flex items-center">
-                                <Eye className="w-3 h-3 mr-1" /> 10 Day Refund
-                            </div>
-                            {product.support && product.support !== 'none' && (
-                                <div className="flex items-center text-blue-600 dark:text-blue-400">
-                                    <Shield className="w-3 h-3 mr-1" />
-                                    {product.support === '10-days' ? '10 Days Support' :
-                                        product.support === '30-days' ? '30 Days Support' :
-                                            product.support === '3-months' ? '3 Months Support' :
-                                                product.support === 'lifetime' ? 'Lifetime Support' : 'Support Included'}
-                                </div>
-                            )}
                         </div>
 
                         {/* Verified Badge */}
-                        <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900 rounded-xl">
+                        <div className="p-4 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900 rounded-xl">
                             <div className="flex items-center gap-3 mb-2">
                                 <ShieldCheck className="w-5 h-5 text-green-600" />
                                 <span className="font-bold text-green-700 dark:text-green-400">Verified by Websites Arena</span>
@@ -477,7 +481,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         </div>
 
                         {/* Refund Policy Info */}
-                        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg">
+                        <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg">
                             <p className="text-xs text-gray-700 dark:text-gray-300">
                                 <strong>10-Day Money-Back Guarantee:</strong> Not satisfied with your purchase? Get a refund within 10 days of delivery. <a href="/terms" className="text-blue-600 dark:text-blue-400 hover:underline">Learn more</a>
                             </p>

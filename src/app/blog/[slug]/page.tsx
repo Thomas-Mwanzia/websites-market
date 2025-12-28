@@ -44,6 +44,20 @@ async function getPost(slug: string) {
     return client.fetch(query, { slug })
 }
 
+async function getRelatedPosts(currentSlug: string) {
+    const query = `*[_type == "post" && slug.current != $slug] | order(publishedAt desc) [0...3] {
+        _id,
+        title,
+        slug,
+        publishedAt,
+        mainImage,
+        excerpt,
+        author,
+        authorImage
+    }`
+    return client.fetch(query, { slug: currentSlug })
+}
+
 // Components for PortableText
 const components: PortableTextComponents = {
     types: {
@@ -208,6 +222,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params
     const post = await getPost(slug)
+    const relatedPosts = await getRelatedPosts(slug)
 
     if (!post) {
         notFound()
@@ -248,154 +263,232 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
 
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Back Link */}
                 <Link
                     href="/blog"
-                    className="inline-flex items-center text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors mb-12"
+                    className="inline-flex items-center text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors mb-12 group"
                 >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
                     Back to Blog
                 </Link>
 
-                {/* Header */}
-                <header className="mb-16">
-                    <div className="flex items-center space-x-2 text-sm text-blue-600 font-bold uppercase tracking-widest mb-6">
-                        <time dateTime={post.publishedAt}>
-                            {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            })}
-                        </time>
-                    </div>
-                    <h1 className="
-                      text-5xl md:text-6xl lg:text-7xl
-                      font-display font-bold
-                      text-gray-900 dark:text-white
-                      tracking-tight leading-tight
-                      mb-10
-                    ">
-                        {post.title}
-                    </h1>
-                    {post.mainImage && (
-                        <figure className="my-8">
-                            <div className="relative w-full h-[400px] md:h-[500px] rounded-3xl overflow-hidden shadow-2xl">
-                                <Image
-                                    src={urlFor(post.mainImage).url()}
-                                    alt={post.title}
-                                    fill
-                                    className="object-cover w-full h-full"
-                                    priority
-                                />
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    {/* Main Content Column */}
+                    <div className="lg:col-span-8 lg:col-start-3">
+                        {/* Header */}
+                        <header className="mb-12 text-center">
+                            <div className="flex items-center justify-center space-x-2 text-sm text-blue-600 font-bold uppercase tracking-widest mb-6">
+                                <time dateTime={post.publishedAt}>
+                                    {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}
+                                </time>
                             </div>
-                            {post.mainImage?.credit && (
-                                <figcaption className="text-xs text-gray-500 dark:text-gray-400 mt-3 italic text-center">
-                                    Image courtesy of {post.mainImage.credit}
-                                </figcaption>
-                            )}
-                        </figure>
-                    )}
-                </header>
+                            <h1 className="
+                              text-3xl md:text-4xl lg:text-5xl
+                              font-display font-bold
+                              text-gray-900 dark:text-white
+                              tracking-tight leading-tight
+                              mb-8
+                            ">
+                                {post.title}
+                            </h1>
 
-                {/* Author Section */}
-                <div className="
-                  mb-16 p-8
-                  bg-gradient-to-r from-gray-50 to-white dark:from-gray-900/50 dark:to-gray-800/30
-                  rounded-2xl border border-gray-200 dark:border-gray-800
-                  flex items-center gap-6
-                  shadow-sm hover:shadow-md transition-shadow
-                ">
-                    {post.authorImage && (
-                        <div className="relative w-24 h-24 flex-shrink-0 rounded-full overflow-hidden border-3 border-gray-200 dark:border-gray-700 ring-2 ring-blue-100 dark:ring-blue-900/50">
-                            <Image
-                                src={urlFor(post.authorImage).url()}
-                                alt={post.author || 'Author'}
-                                fill
-                                className="object-cover"
-                            />
+                            {/* Author Byline */}
+                            <div className="flex items-center justify-center gap-3 mb-12">
+                                {post.authorImage && (
+                                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700">
+                                        <Image
+                                            src={urlFor(post.authorImage).url()}
+                                            alt={post.author || 'Author'}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </div>
+                                )}
+                                <div className="text-left">
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white">
+                                        {post.author || 'Websites Arena'}
+                                    </p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        Editor
+                                    </p>
+                                </div>
+                            </div>
+
+                            {post.mainImage && (
+                                <figure className="my-8">
+                                    <div className="relative w-full aspect-[16/9] rounded-3xl overflow-hidden shadow-2xl">
+                                        <Image
+                                            src={urlFor(post.mainImage).url()}
+                                            alt={post.title}
+                                            fill
+                                            className="object-cover w-full h-full"
+                                            priority
+                                        />
+                                    </div>
+                                    {post.mainImage?.credit && (
+                                        <figcaption className="text-xs text-gray-500 dark:text-gray-400 mt-3 italic">
+                                            Image courtesy of {post.mainImage.credit}
+                                        </figcaption>
+                                    )}
+                                </figure>
+                            )}
+                        </header>
+
+                        {/* Content */}
+                        <div className="
+                          prose prose-lg dark:prose-invert max-w-none
+                          prose-headings:font-display prose-headings:font-bold prose-headings:tracking-tight
+                          prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
+                          prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
+                          prose-p:text-xl prose-p:leading-relaxed prose-p:font-serif prose-p:text-gray-800 dark:prose-p:text-gray-300 prose-p:mb-8
+                          prose-strong:font-bold prose-strong:text-gray-900 dark:prose-strong:text-white
+                          prose-em:italic prose-em:text-gray-800 dark:prose-em:text-gray-200
+                          prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline dark:prose-a:text-blue-400
+                          prose-blockquote:border-l-4 prose-blockquote:border-blue-600 prose-blockquote:pl-6 
+                          prose-blockquote:italic prose-blockquote:text-2xl prose-blockquote:text-gray-900 dark:prose-blockquote:text-white
+                          prose-blockquote:font-serif prose-blockquote:my-12
+                          prose-code:bg-gray-100 prose-code:text-gray-900 prose-code:px-2 prose-code:py-1 
+                          prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:dark:bg-gray-800 prose-code:dark:text-white
+                          prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:p-6 prose-pre:rounded-xl
+                          prose-pre:overflow-x-auto prose-pre:border prose-pre:border-gray-800 prose-pre:dark:bg-black
+                          prose-ul:list-disc prose-ul:pl-6 prose-ul:space-y-3 prose-ul:mb-8
+                          prose-ol:list-decimal prose-ol:pl-6 prose-ol:space-y-3 prose-ol:mb-8
+                          prose-li:text-xl prose-li:font-serif prose-li:text-gray-800 dark:prose-li:text-gray-300 prose-li:leading-relaxed
+                          prose-hr:border-gray-200 dark:prose-hr:border-gray-800 prose-hr:my-12
+                          prose-img:rounded-2xl prose-img:shadow-xl prose-img:border prose-img:border-gray-200 dark:prose-img:border-gray-800
+                        ">
+                            <PortableText value={post.body} components={components} />
                         </div>
-                    )}
-                    <div className="flex-grow">
-                        <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Written by</p>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-display mb-1">{post.author || 'Websites Arena'}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                            Published on {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                            })}
-                        </p>
+
+                        {/* Mobile Sharing */}
+                        <div className="lg:hidden mt-12 pt-8 border-t border-gray-100 dark:border-gray-800">
+                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 text-center">Share this article</h4>
+                            <div className="flex justify-center gap-6">
+                                <a
+                                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://websitesarena.com/blog/${post.slug.current}`)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center px-6 py-3 bg-gray-50 dark:bg-gray-900 rounded-full text-sm font-bold text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 transition-colors"
+                                >
+                                    Twitter / X
+                                </a>
+                                <a
+                                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://websitesarena.com/blog/${post.slug.current}`)}&title=${encodeURIComponent(post.title)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center px-6 py-3 bg-gray-50 dark:bg-gray-900 rounded-full text-sm font-bold text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 transition-colors"
+                                >
+                                    LinkedIn
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* CTA */}
+                        <div className="
+                          mt-24 p-12
+                          bg-gray-50 dark:bg-gray-900
+                          rounded-3xl border border-gray-200 dark:border-gray-800
+                          text-center
+                        ">
+                            <h3 className="
+                              text-3xl font-display font-bold
+                              text-gray-900 dark:text-white
+                              mb-4
+                            ">
+                                Ready to start your journey?
+                            </h3>
+                            <p className="
+                              text-lg text-gray-600 dark:text-gray-400
+                              mb-8 max-w-md mx-auto
+                              leading-relaxed font-serif
+                            ">
+                                Browse our marketplace of vetted starter sites and micro-SaaS projects.
+                            </p>
+                            <Link
+                                href="/"
+                                className="
+                                  inline-flex items-center
+                                  px-8 py-4
+                                  bg-black text-white dark:bg-white dark:text-black
+                                  rounded-full
+                                  font-bold font-display
+                                  hover:opacity-80
+                                  transition-all shadow-lg
+                                  text-lg
+                                "
+                            >
+                                Explore Marketplace
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Sticky Sidebar (Desktop) */}
+                    <div className="hidden lg:block lg:col-span-2 lg:col-start-11">
+                        <div className="sticky top-32 space-y-8">
+                            <div>
+                                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Share</h4>
+                                <div className="flex flex-col gap-3">
+                                    <a
+                                        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://websitesarena.com/blog/${post.slug.current}`)}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-blue-500 transition-colors"
+                                    >
+                                        Twitter / X
+                                    </a>
+                                    <a
+                                        href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(`https://websitesarena.com/blog/${post.slug.current}`)}&title=${encodeURIComponent(post.title)}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors"
+                                    >
+                                        LinkedIn
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Content */}
-                <div className="
-                  prose prose-lg dark:prose-invert max-w-4xl
-                  prose-headings:font-display
-                  prose-h1:text-6xl prose-h1:font-bold prose-h1:tracking-tight prose-h1:leading-tight
-                  prose-h2:text-4xl prose-h2:font-bold prose-h2:tracking-tight prose-h2:mt-12 prose-h2:mb-6
-                  prose-h3:text-3xl prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-4
-                  prose-p:text-lg prose-p:leading-relaxed prose-p:font-serif prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:mb-6
-                  prose-strong:font-bold prose-strong:text-gray-900 dark:prose-strong:text-white
-                  prose-em:italic prose-em:text-gray-800 dark:prose-em:text-gray-200
-                  prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline dark:prose-a:text-blue-400
-                  prose-blockquote:border-l-4 prose-blockquote:border-blue-600 prose-blockquote:pl-6 
-                  prose-blockquote:italic prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-300
-                  prose-blockquote:font-serif prose-blockquote:bg-blue-50 dark:prose-blockquote:bg-blue-900/20
-                  prose-blockquote:rounded-r-lg prose-blockquote:py-4
-                  prose-code:bg-gray-900 prose-code:text-white prose-code:px-2 prose-code:py-1 
-                  prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:dark:bg-gray-800
-                  prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:p-6 prose-pre:rounded-xl
-                  prose-pre:overflow-x-auto prose-pre:border prose-pre:border-gray-800 prose-pre:dark:bg-black
-                  prose-ul:list-disc prose-ul:pl-6 prose-ul:space-y-3 prose-ul:mb-6
-                  prose-ol:list-decimal prose-ol:pl-6 prose-ol:space-y-3 prose-ol:mb-6
-                  prose-li:text-lg prose-li:text-gray-700 dark:prose-li:text-gray-300 prose-li:leading-relaxed
-                  prose-hr:border-gray-200 dark:prose-hr:border-gray-800 prose-hr:my-12
-                  prose-img:rounded-2xl prose-img:shadow-xl prose-img:border prose-img:border-gray-200 dark:prose-img:border-gray-800
-                  prose-table:mb-8 prose-th:bg-gray-100 dark:prose-th:bg-gray-900 prose-th:font-bold prose-th:px-4 prose-th:py-3
-                  prose-td:px-4 prose-td:py-3 prose-td:border prose-td:border-gray-200 dark:prose-td:border-gray-800
-                ">
-                    <PortableText value={post.body} components={components} />
-                </div>
-
-                {/* CTA */}
-                <div className="
-                  mt-24 p-12
-                  bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-950/30 dark:to-blue-900/30
-                  rounded-3xl border border-blue-200 dark:border-blue-800
-                  text-center shadow-lg
-                ">
-                    <h3 className="
-                      text-3xl md:text-4xl font-display font-bold
-                      text-gray-900 dark:text-white
-                      mb-4
-                    ">
-                        Ready to start your journey?
-                    </h3>
-                    <p className="
-                      text-lg text-gray-700 dark:text-gray-300
-                      mb-8 max-w-md mx-auto
-                      leading-relaxed font-serif
-                    ">
-                        Browse our marketplace of vetted starter sites and micro-SaaS projects.
-                    </p>
-                    <Link
-                        href="/"
-                        className="
-                          inline-flex items-center
-                          px-8 py-4
-                          bg-blue-600 text-white
-                          rounded-full
-                          font-bold font-display
-                          hover:bg-blue-700
-                          transition-all shadow-lg hover:shadow-blue-600/30
-                          text-lg
-                        "
-                    >
-                        Explore Marketplace
-                    </Link>
-                </div>
+                {/* Related Posts */}
+                {relatedPosts.length > 0 && (
+                    <div className="mt-32 border-t border-gray-200 dark:border-gray-800 pt-24">
+                        <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-12 font-display">Read Next</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {relatedPosts.map((relatedPost: any) => (
+                                <Link
+                                    href={`/blog/${relatedPost.slug.current}`}
+                                    key={relatedPost._id}
+                                    className="group block"
+                                >
+                                    <div className="relative aspect-[16/10] rounded-2xl overflow-hidden mb-6 bg-gray-100 dark:bg-gray-900">
+                                        {relatedPost.mainImage ? (
+                                            <Image
+                                                src={urlFor(relatedPost.mainImage).url()}
+                                                alt={relatedPost.title}
+                                                fill
+                                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900" />
+                                        )}
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3 group-hover:text-blue-600 transition-colors leading-tight">
+                                        {relatedPost.title}
+                                    </h3>
+                                    <p className="text-gray-600 dark:text-gray-400 line-clamp-2 font-serif">
+                                        {relatedPost.excerpt}
+                                    </p>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </article>
     )

@@ -96,13 +96,13 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
         <div className="min-h-screen bg-white dark:bg-black pt-24 pb-32">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header with Search */}
-                <div className="mb-12 border-b border-gray-200 dark:border-gray-800 pb-8 flex flex-col md:flex-row justify-between items-end gap-6">
-                    <div>
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-3">
-                            Blog
+                <div className="mb-16 border-b border-gray-200 dark:border-gray-800 pb-12 flex flex-col md:flex-row justify-between items-end gap-8">
+                    <div className="max-w-3xl">
+                        <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight font-display">
+                            Insights & <span className="text-blue-600">Strategies</span>
                         </h1>
-                        <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl">
-                            Insights, strategies, and guides on buying, selling, and growing digital assets.
+                        <p className="text-xl text-gray-600 dark:text-gray-300 font-serif leading-relaxed">
+                            Expert guides on buying, selling, and growing digital assets.
                         </p>
                     </div>
 
@@ -115,10 +115,10 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                                     animate={{ opacity: 1, x: 0 }}
                                     exit={{ opacity: 0, x: 20 }}
                                     onClick={handleSearchClick}
-                                    className="flex items-center space-x-2 px-6 py-3 bg-gray-100 dark:bg-gray-900 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors font-medium whitespace-nowrap"
+                                    className="flex items-center space-x-2 px-6 py-3 bg-gray-100 dark:bg-gray-900 rounded-full text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors font-bold whitespace-nowrap"
                                 >
                                     <Search className="w-4 h-4" />
-                                    <span>Search for a blog</span>
+                                    <span>Search articles</span>
                                 </motion.button>
                             ) : (
                                 <motion.form
@@ -133,12 +133,12 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                                         type="text"
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        placeholder="Type to search..."
-                                        className="w-full pl-12 pr-12 py-3 bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-full focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-lg text-sm sm:text-base"
+                                        placeholder="Search topics..."
+                                        className="w-full pl-12 pr-12 py-3 bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-800 rounded-full focus:border-blue-500 outline-none transition-all shadow-lg text-sm sm:text-base font-medium"
                                     />
-                                    <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 ${isSearching ? 'opacity-0' : 'opacity-100'} transition-opacity`} />
+                                    <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 ${isSearching ? 'opacity-0' : 'opacity-100'} transition-opacity`} />
                                     {isSearching && (
-                                        <Loader2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 animate-spin" />
+                                        <Loader2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-600 animate-spin" />
                                     )}
                                     <button
                                         type="button"
@@ -156,64 +156,65 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                 {/* Posts Grid */}
                 {posts.length > 0 ? (
                     <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
                             {posts.map((post: any) => (
                                 <Link
                                     href={`/blog/${post.slug.current}`}
                                     key={post._id}
-                                    className="group flex flex-col bg-gray-50 dark:bg-gray-900/50 rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-800 hover:border-blue-500/50 dark:hover:border-blue-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/10"
+                                    className="group flex flex-col h-full"
                                 >
                                     {/* Image */}
-                                    <div className="relative h-64 w-full overflow-hidden">
+                                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl mb-6 bg-gray-100 dark:bg-gray-900">
                                         {post.mainImage ? (
                                             <Image
                                                 src={urlFor(post.mainImage).url()}
                                                 alt={post.title}
                                                 fill
-                                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
                                                 loading="lazy"
                                             />
                                         ) : (
-                                            <div className="w-full h-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-                                                <span className="text-white font-bold text-2xl opacity-50">Websites Arena</span>
+                                            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
+                                                <span className="text-gray-400 font-bold text-xl opacity-50">No Image</span>
                                             </div>
                                         )}
+                                        {/* Date Badge */}
+                                        <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 dark:bg-black/90 backdrop-blur-sm rounded-full text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white shadow-sm">
+                                            {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric'
+                                            })}
+                                        </div>
                                     </div>
 
                                     {/* Content */}
-                                    <div className="flex-1 p-8 flex flex-col">
-                                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4 space-x-2 font-medium">
-                                            <time dateTime={post.publishedAt}>
-                                                {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                                                    year: 'numeric',
-                                                    month: 'long',
-                                                    day: 'numeric'
-                                                })}
-                                            </time>
-                                        </div>
-
+                                    <div className="flex-1 flex flex-col">
                                         <h2 className="
-                                          text-2xl font-display font-bold
+                                          text-2xl font-bold
                                           text-gray-900 dark:text-white
-                                          mb-4 line-clamp-2
+                                          mb-3 line-clamp-2
                                           group-hover:text-blue-600 dark:group-hover:text-blue-400
-                                          transition-colors
+                                          transition-colors leading-tight
                                         ">
                                             {post.title}
                                         </h2>
 
                                         <p className="
                                           text-gray-600 dark:text-gray-400
-                                          mb-8 line-clamp-3 flex-grow
-                                          leading-relaxed font-serif
+                                          mb-4 line-clamp-3 flex-grow
+                                          leading-relaxed font-serif text-lg
                                         ">
                                             {post.excerpt}
                                         </p>
 
+                                        <div className="flex items-center text-blue-600 dark:text-blue-400 font-bold text-sm group-hover:translate-x-1 transition-transform mb-6">
+                                            Read Article <ArrowRight className="w-4 h-4 ml-2" />
+                                        </div>
+
                                         {/* Author Info */}
-                                        <div className="flex items-center gap-3 mb-6 pb-6 border-t border-gray-200 dark:border-gray-800 pt-6">
-                                            {post.authorImage && (
-                                                <div className="relative w-10 h-10 flex-shrink-0 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 ring-1 ring-gray-300 dark:ring-gray-600">
+                                        <div className="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100 dark:border-gray-800/50">
+                                            {post.authorImage ? (
+                                                <div className="relative w-8 h-8 flex-shrink-0 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
                                                     <Image
                                                         src={urlFor(post.authorImage).url()}
                                                         alt={post.author || 'Author'}
@@ -222,17 +223,14 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                                                         loading="lazy"
                                                     />
                                                 </div>
+                                            ) : (
+                                                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-500">
+                                                    WA
+                                                </div>
                                             )}
-                                            <div className="flex-grow min-w-0">
-                                                <p className="text-sm font-semibold text-gray-900 dark:text-white truncate font-display">
-                                                    {post.author || 'Websites Arena'}
-                                                </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Author</p>
+                                            <div className="flex items-center text-sm font-medium text-gray-900 dark:text-white">
+                                                {post.author || 'Websites Arena'}
                                             </div>
-                                        </div>
-
-                                        <div className="flex items-center text-blue-600 font-bold group-hover:translate-x-2 transition-transform">
-                                            Read Article <ArrowRight className="ml-2 w-4 h-4" />
                                         </div>
                                     </div>
                                 </Link>
@@ -241,7 +239,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
 
                         {/* Loading Spinner / Infinite Scroll Trigger */}
                         {!searchQuery && hasMore && (
-                            <div ref={ref} className="mt-16 flex justify-center">
+                            <div ref={ref} className="mt-20 flex justify-center">
                                 {isLoadingMore && (
                                     <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
                                 )}
@@ -253,7 +251,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                             {searchQuery ? `No results for "${searchQuery}"` : "No posts yet"}
                         </h2>
-                        <p className="text-gray-500 dark:text-gray-400">
+                        <p className="text-gray-500 dark:text-gray-400 font-serif text-lg">
                             {searchQuery ? "Try searching for something else." : "Check back soon for the latest updates."}
                         </p>
                     </div>

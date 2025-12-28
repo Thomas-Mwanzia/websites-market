@@ -65,9 +65,16 @@ export async function GET(request: NextRequest) {
         const fileBuffer = await response.arrayBuffer();
         console.log(`   ✅ File fetched (${fileBuffer.byteLength} bytes)`);
 
+        // Detect file type from buffer header
+        const headerCheck = Buffer.from(fileBuffer).toString('utf8', 0, 5);
+        const isPdfHeader = headerCheck.includes('%PDF-');
+
+        // Use either the query param OR the header detection
+        const shouldProcessAsPdf = isPdf || isPdfHeader;
+
         // Handle PDF watermarking
-        if (isPdf) {
-            console.log(`   Processing as PDF...`);
+        if (shouldProcessAsPdf) {
+            console.log(`   Processing as PDF (Detected: ${isPdfHeader ? 'Header' : 'Param'})...`);
             try {
                 const pdfDoc = await PDFDocument.load(fileBuffer);
                 const pages = pdfDoc.getPages();
@@ -161,7 +168,7 @@ export async function GET(request: NextRequest) {
             // Safety check: if the file starts with %PDF, it's a PDF being mishandled
             const fileStart = Buffer.from(fileBuffer).toString('utf8', 0, 4);
             if (fileStart.includes('PDF') || Buffer.from(fileBuffer).toString('utf8', 0, 5) === '%PDF-') {
-                console.warn(`   ⚠️ WARNING: Received PDF content but isPdf=false! Returning as application/pdf instead`);
+                console.warn(`   ⚠️ WARNING: PDF header detected in Image block. This should not happen.`);
                 const originalFilename = getFilenameFromUrl(decodedUrl);
                 const filename = originalFilename.endsWith('.pdf') ? originalFilename : `${originalFilename}.pdf`;
                 return new NextResponse(Buffer.from(fileBuffer), {

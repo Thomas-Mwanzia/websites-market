@@ -36,10 +36,18 @@ export function ProductCard({ product }: { product: ProductProps }) {
     return (
         <motion.div
             whileHover={{ y: -4 }}
-            className="group bg-white dark:bg-black rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-900 transition-all duration-300"
+            className="group bg-white dark:bg-black rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
         >
-            <Link href={`/shop/${product.slug.current}`}>
-                <div className="relative aspect-[16/10] overflow-hidden bg-gray-50 dark:bg-gray-900">
+            <Link href={`/shop/${product.slug.current}`} className="flex flex-col h-full">
+                {/* 1. Header Section: Title */}
+                <div className="px-5 pt-5 pb-3">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight line-clamp-1">
+                        {product.title}
+                    </h3>
+                </div>
+
+                {/* 2. Image Section */}
+                <div className="relative aspect-[16/10] overflow-hidden bg-gray-50 dark:bg-gray-900 mx-5 rounded-2xl">
                     {product.image ? (
                         <Image
                             src={urlForImage(product.image).url()}
@@ -52,101 +60,74 @@ export function ProductCard({ product }: { product: ProductProps }) {
                             No Image
                         </div>
                     )}
-
-                    {/* Category Badge */}
-                    <div className="absolute top-4 right-4 bg-white/90 dark:bg-black/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-2 border border-gray-200 dark:border-gray-800">
-                        <CategoryIcon className="w-4 h-4 text-blue-600" />
-                        <span className="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white">
-                            {product.category || 'Asset'}
-                        </span>
-                    </div>
-
-                    {/* Seller Badge */}
-                    {product.sellerType === 'premium' && (
-                        <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-10">
-                            <Gem className="w-3 h-3 fill-current" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Premium</span>
-                        </div>
-                    )}
-                    {product.sellerType === 'verified' && (
-                        <div className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1.5 rounded-full flex items-center gap-2 shadow-lg z-10">
-                            <ShieldCheck className="w-3 h-3" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Verified</span>
-                        </div>
-                    )}
                 </div>
 
-                <div className="p-8">
-                    {/* Title and Quick Stats */}
-                    <div className="mb-4">
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight mb-2">
-                            {product.title}
-                        </h3>
-                        
-                        {/* Star Rating */}
-                        {product.avgRating !== undefined && (
-                            <div className="flex items-center gap-2 mb-3">
-                                <div className="flex items-center gap-1">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star
-                                            key={i}
-                                            className={`w-4 h-4 ${
-                                                i < Math.floor(product.avgRating!)
-                                                    ? 'fill-yellow-400 text-yellow-400'
-                                                    : i < Math.ceil(product.avgRating!)
-                                                    ? 'fill-yellow-200 text-yellow-400'
-                                                    : 'text-gray-300 dark:text-gray-600'
-                                            }`}
-                                        />
-                                    ))}
-                                </div>
-                                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                                    {product.avgRating?.toFixed(1)} 
-                                </span>
-                                <span className="text-xs text-gray-500 dark:text-gray-400">
-                                    ({product.reviewCount || 0})
-                                </span>
+                <div className="p-5 flex-1 flex flex-col">
+                    {/* 3. Badges Row (Moved from Image Overlay) */}
+                    <div className="flex items-center gap-2 mb-4 flex-wrap">
+                        {/* Category Badge */}
+                        <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                            <CategoryIcon className="w-3.5 h-3.5 text-blue-600" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+                                {product.category || 'Asset'}
+                            </span>
+                        </div>
+
+                        {/* Premium Badge */}
+                        {product.sellerType === 'premium' && (
+                            <div className="bg-blue-600 text-white px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                                <Gem className="w-3 h-3 fill-current" />
+                                <span className="text-[10px] font-black uppercase tracking-widest">Premium</span>
+                            </div>
+                        )}
+
+                        {/* Verified Badge */}
+                        {product.sellerType === 'verified' && (
+                            <div className="bg-green-500 text-white px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+                                <ShieldCheck className="w-3 h-3" />
+                                <span className="text-[10px] font-black uppercase tracking-widest">Verified</span>
                             </div>
                         )}
                     </div>
 
-                    {/* Price and Quick Badges Row */}
-                    <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                        <div className="flex items-center gap-2">
-                            <div className="text-2xl font-black text-blue-600">
-                                ${product.price}
+                    {/* Star Rating */}
+                    {product.avgRating !== undefined && (
+                        <div className="flex items-center gap-1.5 mb-2">
+                            <div className="flex items-center gap-0.5">
+                                {[...Array(5)].map((_, i) => (
+                                    <Star
+                                        key={i}
+                                        className={`w-3.5 h-3.5 ${i < Math.floor(product.avgRating!)
+                                            ? 'fill-yellow-400 text-yellow-400'
+                                            : i < Math.ceil(product.avgRating!)
+                                                ? 'fill-yellow-200 text-yellow-400'
+                                                : 'text-gray-300 dark:text-gray-600'
+                                            }`}
+                                    />
+                                ))}
                             </div>
+                            <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                                {product.avgRating?.toFixed(1)}
+                            </span>
+                            <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                                ({product.reviewCount || 0})
+                            </span>
                         </div>
-                        
-                        {/* Quick Info Badges */}
-                        <div className="flex items-center gap-2 flex-wrap">
-                            {product.deliveryMethod === 'instant' && (
-                                <div className="inline-flex items-center gap-1 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-400 px-2 py-1 rounded-lg text-xs font-semibold">
-                                    <Download className="w-3 h-3" />
-                                    Instant
-                                </div>
-                            )}
-                            {product.sellerType === 'verified' && (
-                                <div className="inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-lg text-xs font-semibold">
-                                    <ShieldCheck className="w-3 h-3" />
-                                    Verified
-                                </div>
-                            )}
+                    )}
+                    {/* Price and Quick Badges Row */}
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="text-xl font-black text-blue-600">
+                            ${product.price}
+                        </div>
+
+                        <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-900 flex items-center justify-center text-gray-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <ArrowRight className="w-4 h-4" />
                         </div>
                     </div>
 
-                    <p className="text-gray-500 dark:text-gray-400 text-base line-clamp-2 mb-8 font-medium">
+                    <p className="text-gray-500 dark:text-gray-400 text-sm line-clamp-2 font-medium leading-relaxed">
                         {product.description}
                     </p>
-
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold uppercase tracking-widest text-gray-400 dark:text-gray-600">
-                            View Details
-                        </span>
-                        <div className="w-10 h-10 bg-gray-100 dark:bg-gray-900 rounded-full flex items-center justify-center text-gray-900 dark:text-white group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-all">
-                            <ArrowRight className="w-5 h-5" />
-                        </div>
-                    </div>
                 </div>
             </Link>
         </motion.div>
