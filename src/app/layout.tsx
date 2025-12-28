@@ -36,7 +36,12 @@ export const metadata: Metadata = {
     type: "website",
   },
   verification: {
-    google: "google-site-verification-code", // Replace with your actual Google Site Verification code
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "google-site-verification-code",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@websitesarena",
+    creator: "@websitesarena",
   }
 };
 

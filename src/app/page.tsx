@@ -179,6 +179,7 @@ export default async function Home({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section - Concise */}
           <div className="text-center mb-24">
+            <h1 className="sr-only">Websites Arena - Buy & Sell Digital Assets, Websites, and SaaS</h1>
 
             {params.q && (
               <div className="mb-8">

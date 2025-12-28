@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { client } from '@/sanity/lib/client'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = 'https://websitesarena.com'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://websitesarena.com'
 
     // Fetch all products
     const products = await client.fetch(`*[_type == "product"] {

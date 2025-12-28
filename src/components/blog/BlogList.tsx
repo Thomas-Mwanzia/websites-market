@@ -158,82 +158,83 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
                             {posts.map((post: any) => (
-                                <Link
-                                    href={`/blog/${post.slug.current}`}
-                                    key={post._id}
-                                    className="group flex flex-col h-full"
-                                >
-                                    {/* Image */}
-                                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl mb-6 bg-gray-100 dark:bg-gray-900">
-                                        {post.mainImage ? (
-                                            <Image
-                                                src={urlFor(post.mainImage).url()}
-                                                alt={post.title}
-                                                fill
-                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                                loading="lazy"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
-                                                <span className="text-gray-400 font-bold text-xl opacity-50">No Image</span>
+                                <article key={post._id} className="h-full">
+                                    <Link
+                                        href={`/blog/${post.slug.current}`}
+                                        className="group flex flex-col h-full"
+                                    >
+                                        {/* Image */}
+                                        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl mb-6 bg-gray-100 dark:bg-gray-900">
+                                            {post.mainImage ? (
+                                                <Image
+                                                    src={urlFor(post.mainImage).url()}
+                                                    alt={post.title}
+                                                    fill
+                                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                                    loading="lazy"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center">
+                                                    <span className="text-gray-400 font-bold text-xl opacity-50">No Image</span>
+                                                </div>
+                                            )}
+                                            {/* Date Badge */}
+                                            <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 dark:bg-black/90 backdrop-blur-sm rounded-full text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white shadow-sm">
+                                                {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                })}
                                             </div>
-                                        )}
-                                        {/* Date Badge */}
-                                        <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 dark:bg-black/90 backdrop-blur-sm rounded-full text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white shadow-sm">
-                                            {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric'
-                                            })}
                                         </div>
-                                    </div>
 
-                                    {/* Content */}
-                                    <div className="flex-1 flex flex-col">
-                                        <h2 className="
+                                        {/* Content */}
+                                        <div className="flex-1 flex flex-col">
+                                            <h2 className="
                                           text-2xl font-bold
                                           text-gray-900 dark:text-white
                                           mb-3 line-clamp-2
                                           group-hover:text-blue-600 dark:group-hover:text-blue-400
                                           transition-colors leading-tight
                                         ">
-                                            {post.title}
-                                        </h2>
+                                                {post.title}
+                                            </h2>
 
-                                        <p className="
+                                            <p className="
                                           text-gray-600 dark:text-gray-400
                                           mb-4 line-clamp-3 flex-grow
                                           leading-relaxed font-serif text-lg
                                         ">
-                                            {post.excerpt}
-                                        </p>
+                                                {post.excerpt}
+                                            </p>
 
-                                        <div className="flex items-center text-blue-600 dark:text-blue-400 font-bold text-sm group-hover:translate-x-1 transition-transform mb-6">
-                                            Read Article <ArrowRight className="w-4 h-4 ml-2" />
-                                        </div>
+                                            <div className="flex items-center text-blue-600 dark:text-blue-400 font-bold text-sm group-hover:translate-x-1 transition-transform mb-6">
+                                                Read Article <ArrowRight className="w-4 h-4 ml-2" />
+                                            </div>
 
-                                        {/* Author Info */}
-                                        <div className="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100 dark:border-gray-800/50">
-                                            {post.authorImage ? (
-                                                <div className="relative w-8 h-8 flex-shrink-0 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                                                    <Image
-                                                        src={urlFor(post.authorImage).url()}
-                                                        alt={post.author || 'Author'}
-                                                        fill
-                                                        className="object-cover"
-                                                        loading="lazy"
-                                                    />
+                                            {/* Author Info */}
+                                            <div className="flex items-center gap-3 mt-auto pt-4 border-t border-gray-100 dark:border-gray-800/50">
+                                                {post.authorImage ? (
+                                                    <div className="relative w-8 h-8 flex-shrink-0 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800">
+                                                        <Image
+                                                            src={urlFor(post.authorImage).url()}
+                                                            alt={post.author || 'Author'}
+                                                            fill
+                                                            className="object-cover"
+                                                            loading="lazy"
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-500">
+                                                        WA
+                                                    </div>
+                                                )}
+                                                <div className="flex items-center text-sm font-medium text-gray-900 dark:text-white">
+                                                    {post.author || 'Websites Arena'}
                                                 </div>
-                                            ) : (
-                                                <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-500">
-                                                    WA
-                                                </div>
-                                            )}
-                                            <div className="flex items-center text-sm font-medium text-gray-900 dark:text-white">
-                                                {post.author || 'Websites Arena'}
                                             </div>
                                         </div>
-                                    </div>
-                                </Link>
+                                    </Link>
+                                </article>
                             ))}
                         </div>
 

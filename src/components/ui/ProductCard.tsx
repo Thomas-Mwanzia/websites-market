@@ -34,7 +34,7 @@ export function ProductCard({ product }: { product: ProductProps }) {
     const CategoryIcon = getIcon(product.category || '')
 
     return (
-        <motion.div
+        <motion.article
             whileHover={{ y: -4 }}
             className="group bg-white dark:bg-black rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
         >
@@ -130,6 +130,6 @@ export function ProductCard({ product }: { product: ProductProps }) {
                     </p>
                 </div>
             </Link>
-        </motion.div>
+        </motion.article>
     )
 }
