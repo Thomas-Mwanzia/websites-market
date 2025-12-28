@@ -82,48 +82,64 @@ export async function GET(request: NextRequest) {
                 pages.forEach((page: PDFPage) => {
                     const { width, height } = page.getSize();
 
-                    // Define watermark size (20% of page width)
-                    const watermarkScale = (width * 0.2) / 24; // Base SVG is 24x24
-                    const watermarkWidth = 24 * watermarkScale;
-                    const watermarkHeight = 24 * watermarkScale;
+                    // Calculate center position
+                    const centerX = width / 2;
+                    const centerY = height / 2;
 
-                    // Position in Bottom Right corner with padding
-                    const x = width - watermarkWidth - 30;
-                    const y = 30;
+                    // Get page rotation to ensure watermark is upright relative to content
+                    const rotation = page.getRotation();
 
-                    // Draw Shield Background
+                    console.log(`   Page ${pages.indexOf(page) + 1}: ${width}x${height}, Rotation: ${rotation.angle} degrees`);
+
+                    // Define watermark size (30% of page width for better visibility in center)
+                    const watermarkScale = (width * 0.3) / 24; // Base SVG is 24x24
+
+                    // Draw Shield Background (Centered)
                     page.drawSvgPath('M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', {
-                        x,
-                        y,
+                        x: centerX - (12 * watermarkScale), // Center X (12 is half of 24)
+                        y: centerY + (12 * watermarkScale), // Center Y (SVG coordinates are flipped in PDF)
                         scale: watermarkScale,
                         color: rgb(1, 1, 1), // White
                         borderColor: rgb(0, 0, 0), // Black
                         borderWidth: 1,
-                        opacity: 0.15,
-                        rotate: degrees(-45),
+                        opacity: 0.5,
+                        rotate: degrees(0), // No rotation needed if we want it flat, or match page rotation if needed
                     });
 
                     // Draw W Path
                     page.drawSvgPath('M5.5 9L7 14L9 9L11 14L12.5 9', {
-                        x,
-                        y,
+                        x: centerX - (12 * watermarkScale),
+                        y: centerY + (12 * watermarkScale),
                         scale: watermarkScale,
                         borderColor: rgb(0, 0, 0),
                         borderWidth: 1.5,
-                        opacity: 0.15,
-                        rotate: degrees(-45),
+                        opacity: 0.5,
+                        rotate: degrees(0),
                     });
 
                     // Draw A Path
                     page.drawSvgPath('M14 14L16 9L18 14M14.5 12.5H17.5', {
-                        x,
-                        y,
+                        x: centerX - (12 * watermarkScale),
+                        y: centerY + (12 * watermarkScale),
                         scale: watermarkScale,
                         borderColor: rgb(0, 0, 0),
                         borderWidth: 1.5,
-                        opacity: 0.15,
-                        rotate: degrees(-45),
+                        opacity: 0.5,
+                        rotate: degrees(0),
                     });
+
+                    // Fallback/Debug Text (Small, at bottom center)
+                    try {
+                        page.drawText('Websites Arena', {
+                            x: centerX - 35,
+                            y: 20,
+                            size: 10,
+                            color: rgb(0.5, 0.5, 0.5),
+                            opacity: 0.5,
+                        });
+                    } catch (e) {
+                        console.error('   Failed to draw fallback text:', e);
+                    }
                 });
 
                 const pdfBytes = await pdfDoc.save();

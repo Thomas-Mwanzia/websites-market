@@ -82,12 +82,12 @@ export default function SellGuidePage() {
         {
             number: 5,
             title: "Go Live & Get Paid",
-            description: "Your listing goes live. When a sale happens, we handle the delivery and send you 85% of the sale price.",
+            description: "Your listing goes live. When a sale happens, we handle the delivery and send you your payout.",
             details: [
                 "Instant file delivery",
                 "Secure payment processing",
                 "15% commission deducted",
-                "85% paid to you",
+                "Net proceeds paid to you",
                 "Automated payouts"
             ],
             icon: TrendingUp
@@ -117,7 +117,7 @@ export default function SellGuidePage() {
         },
         {
             icon: DollarSign,
-            title: "Keep 85%",
+            title: "Competitive Payouts",
             description: "We only take a 15% commission. You keep the majority of your profit."
         },
         {
@@ -138,7 +138,7 @@ export default function SellGuidePage() {
         },
         {
             question: "What's your commission?",
-            answer: "We take a 15% commission on successful sales. You keep 85% of the sale price. No hidden fees."
+            answer: "We take a 15% commission on successful sales. You keep the majority of the sale price. No hidden fees."
         },
         {
             question: "How is code transferred?",

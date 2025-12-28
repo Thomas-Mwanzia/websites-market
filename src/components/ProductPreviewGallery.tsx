@@ -15,15 +15,15 @@ export function ProductPreviewGallery({ previewImages, previewFileUrl, previewFi
     const [isOpen, setIsOpen] = useState(false);
 
     // Determine if previewFileUrl is actually a PDF using MIME type (server-side) or URL extension (client-side fallback)
-    const isPdfFile = previewFileMime?.toLowerCase().includes('pdf') || 
-                     previewFileUrl?.toLowerCase().includes('.pdf');
-    const isImageFile = previewFileMime?.toLowerCase().includes('image/') || 
-                       (previewFileUrl && 
-                        (previewFileUrl.toLowerCase().includes('.jpg') || 
-                         previewFileUrl.toLowerCase().includes('.jpeg') ||
-                         previewFileUrl.toLowerCase().includes('.png') ||
-                         previewFileUrl.toLowerCase().includes('.webp') ||
-                         previewFileUrl.toLowerCase().includes('.gif')));
+    const isPdfFile = previewFileMime?.toLowerCase().includes('pdf') ||
+        previewFileUrl?.toLowerCase().includes('.pdf');
+    const isImageFile = previewFileMime?.toLowerCase().includes('image/') ||
+        (previewFileUrl &&
+            (previewFileUrl.toLowerCase().includes('.jpg') ||
+                previewFileUrl.toLowerCase().includes('.jpeg') ||
+                previewFileUrl.toLowerCase().includes('.png') ||
+                previewFileUrl.toLowerCase().includes('.webp') ||
+                previewFileUrl.toLowerCase().includes('.gif')));
 
     // If previewFileUrl is actually an image, add it to previewImages instead
     const displayPreviewImages = previewImages || [];

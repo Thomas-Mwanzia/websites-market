@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, X, Search, SlidersHorizontal } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
@@ -35,6 +35,17 @@ export function Navbar() {
         }
         router.push(`${pathname}?${params.toString()}`)
     }
+
+    const [showGlow, setShowGlow] = useState(false)
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowGlow(true)
+        }, 3000)
+        return () => clearTimeout(timer)
+    }, [])
+
+    const MotionLink = motion(Link)
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-900">
@@ -100,13 +111,26 @@ export function Navbar() {
                     <div className="hidden md:flex items-center space-x-8">
                         {navLinks.map((link) => (
                             link.name === 'Sell' ? (
-                                <Link
+                                <MotionLink
                                     key={link.href}
                                     href={link.href}
-                                    className="px-5 py-2.5 bg-black text-white dark:bg-white dark:text-black rounded-full text-sm font-bold hover:opacity-80 transition-opacity shadow-sm"
+                                    className="relative overflow-hidden px-5 py-2.5 bg-black text-white dark:bg-white dark:text-black rounded-full text-sm font-bold hover:opacity-80 transition-opacity shadow-sm"
                                 >
-                                    {link.name}
-                                </Link>
+                                    <span className="relative z-10">{link.name}</span>
+                                    {showGlow && (
+                                        <motion.div
+                                            className="absolute top-0 bottom-0 w-1/2 bg-gradient-to-r from-transparent via-white/90 to-transparent dark:via-black/40 -skew-x-12"
+                                            initial={{ left: '-100%' }}
+                                            animate={{ left: '200%' }}
+                                            transition={{
+                                                duration: 1.5,
+                                                repeat: Infinity,
+                                                repeatDelay: 3,
+                                                ease: "easeInOut"
+                                            }}
+                                        />
+                                    )}
+                                </MotionLink>
                             ) : (
                                 <Link
                                     key={link.href}

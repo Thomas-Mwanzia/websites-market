@@ -406,7 +406,7 @@ export async function POST(request: Request) {
             }.</li>
                         <li><strong>Approval Notification:</strong> We'll email you with the status and any feedback.</li>
                         <li><strong>Live on Marketplace:</strong> Once approved, your listing goes live to thousands of buyers.</li>
-                        <li><strong>Get Paid:</strong> When your site sells, you keep 85% of the profit.</li>
+                        <li><strong>Get Paid:</strong> When your site sells, you keep the majority of the profit.</li>
                     </ol>
 
                     <p style="margin-top: 20px; color: #666;">

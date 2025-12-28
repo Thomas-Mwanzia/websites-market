@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: "Sell Your Digital Assets | Websites Arena Marketplace",
-    description: "Sell your starter website, e-book, UI kit, or template on Websites Arena. Reach thousands of buyers, keep 85% of the profit, and enjoy secure, automated delivery.",
+    description: "Sell your starter website, e-book, UI kit, or template on Websites Arena. Reach thousands of buyers, keep the majority of the profit, and enjoy secure, automated delivery.",
     keywords: ["sell website", "sell saas", "sell e-book", "sell templates", "digital asset marketplace", "passive income", "creator economy", "sell notion template", "sell figma ui kit", "sell code", "sell software"],
 }
 
@@ -112,7 +112,7 @@ export default function SellPage() {
                             <div className="w-14 h-14 bg-white dark:bg-gray-900 rounded-2xl flex items-center justify-center mb-8 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-800 shadow-sm">
                                 <DollarSign className="w-7 h-7" />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Keep 85% Profit</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Competitive Payouts</h3>
                             <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
                                 We only take a small 15% commission on successful sales. You keep the rest of your hard-earned money.
                             </p>
@@ -169,7 +169,7 @@ export default function SellPage() {
                             <div>
                                 <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Get Paid Automatically</h3>
                                 <p className="text-gray-500 dark:text-gray-400 text-lg leading-relaxed">
-                                    When a sale happens, we handle the transaction and file delivery. You get paid your 85% share directly to your account.
+                                    When a sale happens, we handle the transaction and file delivery. You get paid your share directly to your account.
                                 </p>
                             </div>
                         </div>

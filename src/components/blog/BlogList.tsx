@@ -99,10 +99,10 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                 <div className="mb-16 border-b border-gray-200 dark:border-gray-800 pb-12 flex flex-col md:flex-row justify-between items-end gap-8">
                     <div className="max-w-3xl">
                         <h1 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tight font-display">
-                            Insights & <span className="text-blue-600">Strategies</span>
+                            Insights , <span className="text-blue-600">Strategies</span> & More
                         </h1>
                         <p className="text-xl text-gray-600 dark:text-gray-300 font-serif leading-relaxed">
-                            Expert guides on buying, selling, and growing digital assets.
+                            Expert guides on buying, selling, growing and more around digital assets.
                         </p>
                     </div>
 

@@ -277,8 +277,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                     {/* Main Content Column */}
                     <div className="lg:col-span-8 lg:col-start-3">
                         {/* Header */}
-                        <header className="mb-12 text-center">
-                            <div className="flex items-center justify-center space-x-2 text-sm text-blue-600 font-bold uppercase tracking-widest mb-6">
+                        <header className="mb-12 text-left">
+                            <div className="flex items-center justify-start space-x-2 text-sm text-blue-600 font-bold uppercase tracking-widest mb-6">
                                 <time dateTime={post.publishedAt}>
                                     {new Date(post.publishedAt).toLocaleDateString('en-US', {
                                         year: 'numeric',
@@ -298,7 +298,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                             </h1>
 
                             {/* Author Byline */}
-                            <div className="flex items-center justify-center gap-3 mb-12">
+                            <div className="flex items-center justify-start gap-3 mb-12">
                                 {post.authorImage && (
                                     <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700">
                                         <Image
