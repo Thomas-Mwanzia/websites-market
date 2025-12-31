@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 const inter = Inter({
@@ -166,6 +167,7 @@ export default function RootLayout({
         <ScrollToTop />
         <Analytics />
         <SpeedInsights />
+        <GoogleAnalytics gaId="G-K03TW21HE7" />
       </body>
     </html>
   );
