@@ -131,6 +131,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
     const productImage = urlForImage(product.image).url()
 
+    // Money Back Guarantee Logic
+    const MONEY_BACK_CATEGORIES = ['saas', 'domain', 'ecommerce', 'blog', 'tool', 'boilerplate', 'template', 'course']
+    const MONEY_BACK_THRESHOLD = 150
+    const showMoneyBack = MONEY_BACK_CATEGORIES.includes(product.category) && product.price > MONEY_BACK_THRESHOLD
+
     const jsonLd = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -486,9 +491,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                                         <><Zap className="w-3 h-3 mr-1" /> Instant</>
                                     )}
                                 </div>
-                                <div className="flex items-center">
-                                    <Eye className="w-3 h-3 mr-1" /> 10 Day Refund
-                                </div>
+                                {showMoneyBack && (
+                                    <div className="flex items-center">
+                                        <Eye className="w-3 h-3 mr-1" /> 10 Day Refund
+                                    </div>
+                                )}
                                 {product.support && product.support !== 'none' && (
                                     <div className="flex items-center text-blue-600 dark:text-blue-400">
                                         <Shield className="w-3 h-3 mr-1" />
@@ -520,11 +527,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                         </div>
 
                         {/* Refund Policy Info */}
-                        <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg">
-                            <p className="text-xs text-gray-700 dark:text-gray-300">
-                                <strong>10-Day Money-Back Guarantee:</strong> Not satisfied with your purchase? Get a refund within 10 days of delivery. <a href="/terms" className="text-blue-600 dark:text-blue-400 hover:underline">Learn more</a>
-                            </p>
-                        </div>
+                        {showMoneyBack && (
+                            <div className="p-4 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg">
+                                <p className="text-xs text-gray-700 dark:text-gray-300">
+                                    <strong>Conditional 10-Day Refund Policy:</strong> Refunds available for technical issues or material misrepresentation. Subject to review. <a href="/terms" className="text-blue-600 dark:text-blue-400 hover:underline">Learn more</a>
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
 
