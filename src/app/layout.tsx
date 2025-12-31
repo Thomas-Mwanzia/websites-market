@@ -124,6 +124,12 @@ const navigationJsonLd = {
     {
       "@type": "SiteNavigationElement",
       "position": 7,
+      "name": "Contact",
+      "url": "https://websitesarena.com/contact"
+    },
+    {
+      "@type": "SiteNavigationElement",
+      "position": 8,
       "name": "About",
       "url": "https://websitesarena.com/about"
     }

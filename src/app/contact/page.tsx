@@ -1,6 +1,6 @@
-import { Mail, MessageSquare, Loader2, Send } from 'lucide-react'
-import { useState } from 'react'
-import { toast } from 'react-hot-toast'
+import { Mail, MessageSquare } from 'lucide-react'
+import { ContactForm } from '@/components/contact/ContactForm'
+
 
 export const metadata = {
     title: 'Contact Us | Websites Arena',
@@ -41,4 +41,4 @@ export default function ContactPage() {
             </div>
         </div>
     )
-}
+
