@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Star } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 
 export function ReviewForm({ productId, productTitle }: { productId: string; productTitle: string }) {
   const [rating, setRating] = useState(5)
@@ -10,13 +11,10 @@ export function ReviewForm({ productId, productTitle }: { productId: string; pro
   const [author, setAuthor] = useState('')
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError('')
 
     try {
       const response = await fetch('/api/reviews', {
@@ -37,7 +35,8 @@ export function ReviewForm({ productId, productTitle }: { productId: string; pro
         throw new Error(data.error || 'Failed to submit review')
       }
 
-      setSuccess(true)
+      toast.success('Review submitted successfully!')
+      // Reset form
       // Reset form
       setRating(5)
       setTitle('')
@@ -48,7 +47,7 @@ export function ReviewForm({ productId, productTitle }: { productId: string; pro
       // Redirect to product page after 2 seconds
       setTimeout(() => window.location.reload(), 2000)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong')
+      toast.error(err instanceof Error ? err.message : 'Something went wrong')
     } finally {
       setLoading(false)
     }
@@ -59,17 +58,7 @@ export function ReviewForm({ productId, productTitle }: { productId: string; pro
       <h3 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Leave a Review</h3>
       <p className="text-gray-500 dark:text-gray-400 mb-6">Share your experience with {productTitle}</p>
 
-      {success && (
-        <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-          <p className="text-green-700 dark:text-green-400 font-semibold">✅ Thank you! Your review has been submitted.</p>
-        </div>
-      )}
 
-      {error && (
-        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-red-700 dark:text-red-400">{error}</p>
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Star Rating */}

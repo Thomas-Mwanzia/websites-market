@@ -4,7 +4,7 @@ import { useState, FormEvent, ChangeEvent, useEffect } from 'react'
 import { ArrowLeft, Send, CheckCircle2, Globe, DollarSign, FileText, Code, Shield, BookOpen, Layout, Monitor, Link as LinkIcon, Upload, AlertCircle, Video, GraduationCap, Camera, Image as ImageIcon, Film, Calendar, RotateCcw, Star, Plus, X, ChevronRight, ChevronLeft, ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import ReCAPTCHA from 'react-google-recaptcha'
 
 const ASSET_CATEGORIES = ['photography', 'video', 'digital-art', 'template', 'ebook', 'course']
@@ -315,7 +315,6 @@ export default function SubmitPage() {
 
     return (
         <div className="min-h-screen bg-white dark:bg-black pt-24 pb-32">
-            <Toaster position="top-center" />
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
                 <Link href="/sell" className="inline-flex items-center text-sm font-bold text-gray-400 hover:text-gray-900 dark:hover:text-white mb-8 transition-colors uppercase tracking-widest">
                     <ArrowLeft className="w-4 h-4 mr-2" /> Back

@@ -69,6 +69,7 @@ export default defineType({
             title: 'YouTube Demo URL',
             type: 'url',
             description: 'Link to a YouTube video demonstrating the website.',
+            hidden: ({ document }) => !['saas', 'course', 'template', 'boilerplate', 'ecommerce', 'tool', 'blog'].includes(document?.category as string),
         }),
         defineField({
             name: 'checkoutUrl',
@@ -81,18 +82,21 @@ export default defineType({
             title: 'Key Features',
             type: 'array',
             of: [{ type: 'string' }],
+            hidden: ({ document }) => !['saas', 'template', 'boilerplate', 'ecommerce', 'tool', 'blog', 'course'].includes(document?.category as string),
         }),
         defineField({
             name: 'techStack',
             title: 'Tech Stack',
             type: 'array',
             of: [{ type: 'string' }],
+            hidden: ({ document }) => !['saas', 'template', 'boilerplate', 'ecommerce', 'tool', 'blog'].includes(document?.category as string),
         }),
         defineField({
             name: 'digitalAsset',
             title: 'Digital Asset File',
             type: 'file',
             description: 'Upload the digital asset directly (PDF, Zip, etc.) if not using an external link.',
+            hidden: ({ document }) => !['ebook', 'template', 'digital-art', 'photography', 'video'].includes(document?.category as string),
         }),
         defineField({
             name: 'assetExternalLink',
@@ -155,6 +159,7 @@ export default defineType({
             title: 'Preview PDF',
             type: 'file',
             description: 'Upload a TRUNCATED version of the PDF for public preview (e.g., first 5 pages).',
+            hidden: ({ document }) => document?.category !== 'ebook',
         }),
         defineField({
             name: 'metadata',
@@ -164,7 +169,8 @@ export default defineType({
                 defineField({ name: 'resolution', title: 'Resolution', type: 'string', description: 'e.g., 4K, 6000x4000px' }),
                 defineField({ name: 'fileFormat', title: 'File Format', type: 'string', description: 'e.g., RAW, JPG, MP4' }),
                 defineField({ name: 'aspectRatio', title: 'Aspect Ratio', type: 'string', description: 'e.g., 16:9' }),
-            ]
+            ],
+            hidden: ({ document }) => !['photography', 'video', 'digital-art'].includes(document?.category as string),
         }),
         defineField({
             name: 'metrics',
@@ -175,7 +181,8 @@ export default defineType({
                 defineField({ name: 'profit', title: 'Monthly Profit ($)', type: 'number' }),
                 defineField({ name: 'traffic', title: 'Monthly Traffic', type: 'number' }),
                 defineField({ name: 'age', title: 'Project Age (Months)', type: 'number' }),
-            ]
+            ],
+            hidden: ({ document }) => !['saas', 'ecommerce', 'blog', 'tool', 'boilerplate'].includes(document?.category as string),
         }),
         defineField({
             name: 'domainDetails',
@@ -186,7 +193,8 @@ export default defineType({
                 defineField({ name: 'expiryDate', title: 'Expiry Date', type: 'date' }),
                 defineField({ name: 'renewalPrice', title: 'Yearly Renewal ($)', type: 'number' }),
                 defineField({ name: 'age', title: 'Domain Age (Years)', type: 'number' }),
-            ]
+            ],
+            hidden: ({ document }) => document?.category !== 'domain',
         }),
     ],
 })

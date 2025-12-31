@@ -8,6 +8,7 @@ import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Toaster } from "react-hot-toast";
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 const inter = Inter({
@@ -164,6 +165,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </ThemeProvider>
+        <Toaster position="bottom-right" />
         <ScrollToTop />
         <Analytics />
         <SpeedInsights />

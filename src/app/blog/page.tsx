@@ -72,27 +72,48 @@ export default async function BlogPage({
 }) {
     const { q } = await searchParams
     const posts = await getPosts(q)
-    
+
     // JSON-LD Structured Data
     const jsonLd = {
         '@context': 'https://schema.org',
-        '@type': 'CollectionPage',
-        name: 'Websites Arena Blog',
-        description: 'Expert insights on buying and selling digital assets, websites, SaaS, templates, and online businesses.',
-        url: 'https://websitesarena.com/blog',
-        publisher: {
-            '@type': 'Organization',
-            name: 'Websites Arena',
-            url: 'https://websitesarena.com',
-        },
-        hasPart: posts.map((post: any) => ({
-            '@type': 'BlogPosting',
-            headline: post.title,
-            description: post.excerpt,
-            url: `https://websitesarena.com/blog/${post.slug.current}`,
-            datePublished: post.publishedAt,
-            image: post.mainImage ? `https://websitesarena.com/api/og?image=${encodeURIComponent(post.mainImage.asset.url)}` : undefined,
-        }))
+        '@graph': [
+            {
+                '@type': 'CollectionPage',
+                name: 'Websites Arena Blog',
+                description: 'Expert insights on buying and selling digital assets, websites, SaaS, templates, and online businesses.',
+                url: 'https://websitesarena.com/blog',
+                publisher: {
+                    '@type': 'Organization',
+                    name: 'Websites Arena',
+                    url: 'https://websitesarena.com',
+                },
+                hasPart: posts.map((post: any) => ({
+                    '@type': 'BlogPosting',
+                    headline: post.title,
+                    description: post.excerpt,
+                    url: `https://websitesarena.com/blog/${post.slug.current}`,
+                    datePublished: post.publishedAt,
+                    image: post.mainImage ? `https://websitesarena.com/api/og?image=${encodeURIComponent(post.mainImage.asset.url)}` : undefined,
+                }))
+            },
+            {
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                    {
+                        '@type': 'ListItem',
+                        position: 1,
+                        name: 'Home',
+                        item: 'https://websitesarena.com'
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: 'Blog',
+                        item: 'https://websitesarena.com/blog'
+                    }
+                ]
+            }
+        ]
     }
 
     return (

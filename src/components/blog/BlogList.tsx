@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import { fetchMorePosts } from '@/app/actions'
 import { useInView } from 'react-intersection-observer'
+import { BlogSubmissionModal } from './BlogSubmissionModal'
 
 interface BlogListProps {
     initialPosts: any[]
@@ -107,7 +108,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                     </div>
 
                     {/* Search Component */}
-                    <div className="relative h-12 flex items-center justify-end w-full md:w-auto">
+                    <div className="relative h-12 flex items-center justify-end w-full md:w-auto gap-4">
                         <AnimatePresence mode="wait">
                             {!isSearchOpen && !initialSearch ? (
                                 <motion.button
@@ -150,6 +151,7 @@ export function BlogList({ initialPosts, initialSearch }: BlogListProps) {
                                 </motion.form>
                             )}
                         </AnimatePresence>
+                        <BlogSubmissionModal />
                     </div>
                 </div>
 

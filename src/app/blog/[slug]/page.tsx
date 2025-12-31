@@ -231,29 +231,60 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     // JSON-LD Structured Data
     const jsonLd = {
         '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
-        headline: post.title,
-        image: post.mainImage ? urlFor(post.mainImage).url() : undefined,
-        datePublished: post.publishedAt,
-        dateModified: post._updatedAt || post.publishedAt,
-        author: {
-            '@type': 'Organization',
-            name: 'Websites Arena',
-            url: 'https://websitesarena.com'
-        },
-        publisher: {
-            '@type': 'Organization',
-            name: 'Websites Arena',
-            logo: {
-                '@type': 'ImageObject',
-                url: 'https://websitesarena.com/icon.png'
+        '@graph': [
+            {
+                '@type': 'BlogPosting',
+                headline: post.title,
+                image: post.mainImage ? urlFor(post.mainImage).url() : undefined,
+                datePublished: post.publishedAt,
+                dateModified: post._updatedAt || post.publishedAt,
+                author: post.author ? {
+                    '@type': 'Person',
+                    name: post.author,
+                    image: post.authorImage ? urlFor(post.authorImage).url() : undefined
+                } : {
+                    '@type': 'Organization',
+                    name: 'Websites Arena',
+                    url: 'https://websitesarena.com'
+                },
+                publisher: {
+                    '@type': 'Organization',
+                    name: 'Websites Arena',
+                    logo: {
+                        '@type': 'ImageObject',
+                        url: 'https://websitesarena.com/icon.png'
+                    }
+                },
+                mainEntityOfPage: {
+                    '@type': 'WebPage',
+                    '@id': `https://websitesarena.com/blog/${post.slug.current}`
+                },
+                description: post.excerpt,
+            },
+            {
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                    {
+                        '@type': 'ListItem',
+                        position: 1,
+                        name: 'Home',
+                        item: 'https://websitesarena.com'
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: 'Blog',
+                        item: 'https://websitesarena.com/blog'
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 3,
+                        name: post.title,
+                        item: `https://websitesarena.com/blog/${post.slug.current}`
+                    }
+                ]
             }
-        },
-        mainEntityOfPage: {
-            '@type': 'WebPage',
-            '@id': `https://websitesarena.com/blog/${post.slug.current}`
-        },
-        description: post.excerpt,
+        ]
     }
 
     return (
