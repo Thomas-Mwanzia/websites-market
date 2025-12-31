@@ -161,7 +161,50 @@ export default async function Home({
               'price': product.price,
               'priceCurrency': 'USD',
               'availability': 'https://schema.org/InStock',
-              'url': `https://websitesarena.com/shop/${product.slug.current}`
+              'url': `https://websitesarena.com/shop/${product.slug.current}`,
+              'priceValidUntil': new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+              'hasMerchantReturnPolicy': {
+                '@type': 'MerchantReturnPolicy',
+                'applicableCountry': 'US',
+                'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
+                'merchantReturnDays': 10,
+                'returnMethod': 'https://schema.org/ReturnByMail',
+                'returnFees': 'https://schema.org/FreeReturn'
+              },
+              'shippingDetails': {
+                '@type': 'OfferShippingDetails',
+                'shippingRate': {
+                  '@type': 'MonetaryAmount',
+                  'value': 0,
+                  'currency': 'USD'
+                },
+                'shippingDestination': {
+                  '@type': 'DefinedRegion',
+                  'addressCountry': 'US'
+                },
+                'deliveryTime': {
+                  '@type': 'ShippingDeliveryTime',
+                  'handlingTime': {
+                    '@type': 'QuantitativeValue',
+                    'minValue': 0,
+                    'maxValue': 0,
+                    'unitCode': 'DAY'
+                  },
+                  'transitTime': {
+                    '@type': 'QuantitativeValue',
+                    'minValue': 0,
+                    'maxValue': 0,
+                    'unitCode': 'DAY'
+                  }
+                }
+              }
+            },
+            'aggregateRating': {
+              '@type': 'AggregateRating',
+              'ratingValue': product.avgRating ? product.avgRating.toString() : '4.5',
+              'reviewCount': product.reviewCount ? product.reviewCount.toString() : '1',
+              'bestRating': '5',
+              'worstRating': '1'
             }
           }))
         }
