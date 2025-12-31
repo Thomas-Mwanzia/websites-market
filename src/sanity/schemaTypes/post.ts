@@ -64,6 +64,20 @@ export const post = defineType({
             description: 'Profile picture of the author (optional).',
         }),
         defineField({
+            name: 'authorEmail',
+            title: 'Author Email (Private)',
+            type: 'string',
+            description: 'Private email for admin communication. Not displayed on the blog.',
+            validation: (rule) => rule.required().email(),
+        }),
+        defineField({
+            name: 'publicAuthorEmail',
+            title: 'Public Author Email',
+            type: 'string',
+            description: 'Optional email displayed on the blog for readers to contact the author.',
+            validation: (rule) => rule.email(),
+        }),
+        defineField({
             name: 'body',
             title: 'Body',
             type: 'array',

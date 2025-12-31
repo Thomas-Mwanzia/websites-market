@@ -1,4 +1,6 @@
-import { Mail, MessageSquare } from 'lucide-react'
+import { Mail, MessageSquare, Loader2, Send } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'react-hot-toast'
 
 export const metadata = {
     title: 'Contact Us | Websites Arena',
@@ -16,15 +18,13 @@ export default function ContactPage() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-3xl mx-auto">
-                    <div className="p-10 bg-gray-50 dark:bg-gray-900/30 rounded-[2.5rem] border border-gray-200 dark:border-gray-800 text-center">
-                        <div className="w-14 h-14 bg-white dark:bg-black rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-sm">
+                    <div className="p-8 bg-gray-50 dark:bg-gray-900/30 rounded-[2.5rem] border border-gray-200 dark:border-gray-800">
+                        <div className="w-14 h-14 bg-white dark:bg-black rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
                             <Mail className="w-7 h-7 text-blue-600" />
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Email Us</h3>
-                        <p className="text-gray-500 dark:text-gray-400 mb-6 font-medium">For general inquiries and support.</p>
-                        <a href="mailto:support@websitesarena.com" className="text-blue-600 font-bold hover:underline">
-                            support@websitesarena.com
-                        </a>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 text-center">Email Us</h3>
+
+                        <ContactForm />
                     </div>
 
                     <div className="p-10 bg-gray-50 dark:bg-gray-900/30 rounded-[2.5rem] border border-gray-200 dark:border-gray-800 text-center">

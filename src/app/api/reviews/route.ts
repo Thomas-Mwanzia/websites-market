@@ -1,6 +1,7 @@
 import { client } from '@/sanity/lib/client'
 import { writeClient } from '@/sanity/lib/write-client'
 import { NextRequest, NextResponse } from 'next/server'
+import { Resend } from 'resend'
 
 export async function POST(request: NextRequest) {
   try {
@@ -71,15 +72,41 @@ export async function POST(request: NextRequest) {
 
     console.log('Review created successfully:', review._id)
 
+    // Send Admin Notification
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      await resend.emails.send({
+        from: 'Websites Arena <hello@websitesarena.com>',
+        to: ['hello@websitesarena.com'],
+        replyTo: email,
+        subject: `New Review for Product: ${product.title || 'Unknown Product'}`,
+        html: `
+                <h1>New Review Submitted</h1>
+                <p><strong>Product:</strong> ${product.title || productId}</p>
+                <p><strong>Rating:</strong> ${rating} / 5</p>
+                <p><strong>Title:</strong> ${title}</p>
+                <p><strong>Reviewer:</strong> ${author} (${email})</p>
+                <p><strong>Review:</strong></p>
+                <blockquote style="border-left: 4px solid #ccc; padding-left: 10px; color: #555;">
+                    ${text}
+                </blockquote>
+                <p>Review ID: ${review._id}</p>
+            `
+      })
+    } catch (emailError) {
+      console.error('Failed to send review notification email:', emailError)
+      // Don't fail the request if email fails
+    }
+
     return NextResponse.json(
       { success: true, reviewId: review._id },
       { status: 201 }
     )
   } catch (error) {
     console.error('Review submission error:', error)
-    
+
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    
+
     // Provide more specific error messages for debugging
     if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
       return NextResponse.json(
@@ -87,7 +114,7 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
-    
+
     return NextResponse.json(
       { error: 'Failed to submit review. Please try again.' },
       { status: 500 }
