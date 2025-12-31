@@ -29,7 +29,7 @@ export function Footer() {
                     <div>
                         <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-6 uppercase tracking-widest">Marketplace</h3>
                         <ul className="space-y-4">
-                            <li><Link href="/shop" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">Browse Sites</Link></li>
+                            <li><Link href="/" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">Browse Sites</Link></li>
                             <li><Link href="/sell" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">Sell</Link></li>
                             <li><Link href="/about" className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-medium transition-colors">How it Works</Link></li>
                         </ul>
