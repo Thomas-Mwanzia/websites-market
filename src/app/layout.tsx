@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     icon: "/icon.png",
     apple: "/apple-icon.png",
   },
+  manifest: "/manifest.json",
   openGraph: {
     title: "Websites Arena | Buy & Sell Digital Assets, Websites, Online businesses & Templates",
     description: "The premier marketplace for buying and selling premium digital assets: starter websites, SaaS codebases, e-books, design templates, and more.",
