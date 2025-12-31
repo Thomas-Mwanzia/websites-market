@@ -407,7 +407,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                               mb-8 max-w-md mx-auto
                               leading-relaxed font-serif
                             ">
-                                Browse our marketplace of vetted starter sites and micro-SaaS projects.
+                                Explore our marketplace to find more and investment opportunities to earn you money.
                             </p>
                             <Link
                                 href="/"

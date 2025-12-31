@@ -41,7 +41,7 @@ export function ProductCard({ product }: { product: ProductProps }) {
             <Link href={`/shop/${product.slug.current}`} className="flex flex-col h-full">
                 {/* 1. Header Section: Title */}
                 <div className="px-5 pt-5 pb-3">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight line-clamp-1">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight line-clamp-2">
                         {product.title}
                     </h3>
                 </div>
