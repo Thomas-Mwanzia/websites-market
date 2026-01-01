@@ -44,7 +44,7 @@ export default function SocialPreviewPage() {
             // Get the element's current dimensions
             const element = previewRef.current
             const rect = element.getBoundingClientRect()
-            
+
             // Calculate the scale to get 1200x630 output
             const targetWidth = 1200
             const targetHeight = 630
@@ -56,7 +56,7 @@ export default function SocialPreviewPage() {
                 width: targetWidth,
                 height: targetHeight
             })
-            
+
             const link = document.createElement('a')
             link.download = 'social-preview.png'
             link.href = dataUrl
@@ -229,7 +229,7 @@ export default function SocialPreviewPage() {
                                     color: textColor,
                                     width: '100%',
                                     maxWidth: '900px',
-                                    aspectRatio: '900 / 950',
+                                    aspectRatio: '1200 / 630',
                                 }}
                                 className="flex flex-col items-center justify-center p-8 md:p-12 lg:p-16 text-center relative shadow-2xl overflow-hidden"
                             >
@@ -254,12 +254,12 @@ export default function SocialPreviewPage() {
                                             className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 object-contain mb-4 sm:mb-6 md:mb-8 ${isLogoRounded ? 'rounded-full' : ''}`}
                                         />
                                     )}
-                                    <h1 
+                                    <h1
                                         style={{ color: headingColor }}
                                         className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 sm:mb-4 md:mb-6 leading-tight">
                                         {title}
                                     </h1>
-                                    <p 
+                                    <p
                                         style={{ color: descriptionColor }}
                                         className="text-sm sm:text-base md:text-lg lg:text-2xl font-medium opacity-80 max-w-3xl leading-relaxed">
                                         {description}
