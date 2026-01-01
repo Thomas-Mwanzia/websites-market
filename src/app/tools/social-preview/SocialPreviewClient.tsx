@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { ArrowLeft, Download, Image as ImageIcon, Type, Palette, Upload, RefreshCw, CheckCircle2, HelpCircle, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { toPng } from 'html-to-image'
@@ -21,6 +21,24 @@ export default function SocialPreviewPage() {
     const [isGenerating, setIsGenerating] = useState(false)
 
     const previewRef = useRef<HTMLDivElement>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [scale, setScale] = useState(1)
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (containerRef.current) {
+                const containerWidth = containerRef.current.offsetWidth
+                const padding = 64 // 32px padding on each side (p-8)
+                const availableWidth = containerWidth - padding
+                const newScale = Math.min(availableWidth / 1200, 1)
+                setScale(newScale)
+            }
+        }
+
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         const file = acceptedFiles[0]
@@ -41,20 +59,14 @@ export default function SocialPreviewPage() {
         setIsGenerating(true)
 
         try {
-            // Get the element's current dimensions
-            const element = previewRef.current
-            const rect = element.getBoundingClientRect()
-
-            // Calculate the scale to get 1200x630 output
-            const targetWidth = 1200
-            const targetHeight = 630
-            const scale = targetWidth / rect.width
-
-            const dataUrl = await toPng(element, {
+            const dataUrl = await toPng(previewRef.current, {
                 quality: 1.0,
-                pixelRatio: scale,
-                width: targetWidth,
-                height: targetHeight
+                width: 1200,
+                height: 630,
+                style: {
+                    transform: 'none',
+                    transformOrigin: 'top left'
+                }
             })
 
             const link = document.createElement('a')
@@ -220,18 +232,20 @@ export default function SocialPreviewPage() {
 
                     {/* Preview Area */}
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-gray-100 dark:bg-gray-900 rounded-3xl p-4 md:p-8 flex items-center justify-center min-h-[600px] md:min-h-[700px] overflow-auto">
+                        <div ref={containerRef} className="bg-gray-100 dark:bg-gray-900 rounded-3xl p-4 md:p-8 flex items-center justify-center min-h-[400px] overflow-hidden">
                             {/* The actual card to capture */}
                             <div
                                 ref={previewRef}
                                 style={{
                                     backgroundColor: bgColor,
                                     color: textColor,
-                                    width: '100%',
-                                    maxWidth: '900px',
-                                    aspectRatio: '1200 / 630',
+                                    width: '1200px',
+                                    height: '630px',
+                                    transform: `scale(${scale})`,
+                                    transformOrigin: 'center center',
+                                    flexShrink: 0,
                                 }}
-                                className="flex flex-col items-center justify-center p-8 md:p-12 lg:p-16 text-center relative shadow-2xl overflow-hidden"
+                                className="flex flex-col items-center justify-center p-16 text-center relative shadow-2xl overflow-hidden"
                             >
                                 {/* Background Logo */}
                                 {logo && showBgLogo && (
